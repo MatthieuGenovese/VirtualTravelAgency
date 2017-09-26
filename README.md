@@ -13,8 +13,8 @@
 ## 2. Executer le programme
 
 Vérifier que le service docker est bien lancé (service --status-all) si ce n'est pas le cas : sudo service docker start  
-Se placer dans le dossier deployment du projet puis éxecuter le build.sh  
-Se placer dans le dossier services du projet puis éxecuter la commande : sudo docker-compose up -d  
+Se placer dans le dossier services du projet puis éxecuter le build.sh  
+Se placer dans le dossier deployment du projet puis éxecuter la commande : sudo docker-compose up -d  
 "Normalement" le serveur tourne apr-s ca, pour vérifier : ouvrer un navigateur et tappez http://localhost:9080  
   
 ## 3. Exectuer les tests gatling
