@@ -5,15 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>travelagency</groupId>
-    <artifactId>root</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>virtual travel agency</name>
+    <artifactId>resource</artifactId>
+    <packaging>war</packaging>
+    <version>1.0</version>
+    <name>Service Resource</name>
 
-    <modules>
-        <module>services</module>
-        <module>tests</module>
-    </modules>
+    <parent>
+        <groupId>travelagency</groupId>
+        <artifactId>services</artifactId>
+        <version>1.0</version>
+    </parent>
 
-
+    
 </project>
