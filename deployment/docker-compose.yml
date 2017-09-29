@@ -1,0 +1,23 @@
+########################################
+##      Fly Reservation System        ##
+########################################
+# Docker system composition descriptor #
+########################################
+# Author: Génovèse Matthieu           #
+# Version: 1.0                         #
+########################################
+
+## Start the system with "docker-compose up -d"
+## Shutdown it with "docker-compose down"
+## To clean your docker install: "docker system prune"
+## To purge your docker install: "docker system prune -a"
+
+version: '3'
+
+services:
+
+  fly-reservation:
+    container_name: fly-reservation
+    image: travelagency/flyreservation-rest
+    ports:
+      - "9090:8080"

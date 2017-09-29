@@ -10,6 +10,14 @@
     <packaging>pom</packaging>
     <name>virtual travel agency</name>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <versions.maven.compiler>3.6.1</versions.maven.compiler>
+        <versions.java>1.8</versions.java>
+    </properties>
+
     <modules>
         <module>services</module>
         <module>tests</module>
