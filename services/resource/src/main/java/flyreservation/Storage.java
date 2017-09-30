@@ -1,8 +1,9 @@
 package flyreservation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+
+import org.apache.commons.beanutils.BeanComparator;
+
+import java.util.*;
 
 public class Storage {
 
@@ -13,8 +14,17 @@ public class Storage {
         contents.put(destination + date + Double.toString(price), new FlyReservation(destination, date, isDirect, stops, price));
     }
 
-    public static FlyReservation read(String destination, String date, double price) {
-        return contents.get(destination + date + Double.toString(price));
+    public static ArrayList<FlyReservation> read(String destination, String date) {
+        ArrayList<FlyReservation> results = new ArrayList<>();
+        for(FlyReservation f : contents.values()){
+            if(f.getDate().equalsIgnoreCase(date) && f.getDestination().equalsIgnoreCase(destination)){
+                results.add(f);
+            }
+        }
+        BeanComparator fieldComparator = new BeanComparator(
+                "price");
+        Collections.sort(results, fieldComparator);
+        return results;
     }
 
     public static void delete(String destination, String date, double price) {
@@ -28,6 +38,7 @@ public class Storage {
 
     static {
         Storage.create("demofly", "28122018", true, new ArrayList<String>(), 1548.58);
+        Storage.create("demofly", "28122018", true, new ArrayList<String>(), 1560.58);
     }
 
 }

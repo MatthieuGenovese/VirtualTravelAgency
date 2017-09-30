@@ -48,4 +48,16 @@ public class FlyReservation {
     public double getPrice(){
         return price;
     }
+
+    public String toString(){
+        if(!isDirect){
+            String tmp = "Escales : ";
+            for(String s : stops){
+                tmp += " " + s;
+            }
+            return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + Double.toString(getPrice());
+        }
+        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Double.toString(getPrice()) + "\n";
+    }
+
 }
