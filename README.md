@@ -24,10 +24,8 @@ A la racine du projet, exécuter la commande : sudo ./start.sh
   
 ## 3. Exectuer les tests gatling
 
-Se placer dans tests/stress  
-Exécuter la commande : mvn package  
-Exécuter la commande : mvn gatling:execute  
-  
+A la racine du projet, exécuter : sudo ./test.sh  
+
 ## 4. Executer les tests d'acceptation
   
 Se placer dans tests/acceptation  
