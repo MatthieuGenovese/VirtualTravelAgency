@@ -57,7 +57,7 @@ public class FlyReservation {
             }
             return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + Double.toString(getPrice());
         }
-        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Double.toString(getPrice()) + "\n";
+        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Double.toString(getPrice());
     }
 
 }

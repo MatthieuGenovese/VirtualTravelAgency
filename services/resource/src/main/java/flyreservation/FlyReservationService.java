@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 
 
-@Path("/flyreservation")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class FlyReservationService {
 
@@ -29,11 +29,11 @@ public class FlyReservationService {
         if(Storage.read(dest,date) == null){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        String value = "";
+        JSONArray result = new JSONArray();
         for(FlyReservation f : Storage.read(dest,date)){
-            value += f.toString();
+            result.put(f.toString());
         }
-        return Response.ok().entity("\""+value+"\"").build();
+        return Response.ok().entity(result.toString(2)).build();
 
     }
 }
