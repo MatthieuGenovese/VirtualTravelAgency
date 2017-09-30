@@ -5,6 +5,8 @@
  */
 package carshotels;
 
+import org.jongo.marshall.jackson.oid.MongoObjectId;
+import org.json.JSONObject;
 /**
  *
  * @author lm203441
@@ -13,17 +15,21 @@ public class Hotel {
     
     private String name;
     
-    private double price;
+    private Integer price;
     
     private String date;
     
     private String destination;
     
-    public Hotel(String name, double price, String date, String destination) {
-        this.price = price;
-        this.date = date;
-        this.destination = destination;
-    }
+    @MongoObjectId
+    String _id;
+    
+//    public Hotel(String name, Integer price, String date, String destination) {
+//        this.name = name;
+//        this.price = price;
+//        this.date = date;
+//        this.destination = destination;
+//    }
     
     public String getName() {
         return name;
@@ -39,6 +45,23 @@ public class Hotel {
 
     public String getDestination() {
         return destination;
+    }
+    
+    public Hotel() {}
+    
+    public Hotel(JSONObject data) {
+        this.name = data.getString("name");
+        this.date = data.getString("date");
+        this.destination = data.getString("destination");
+        this.price = data.getInt("price");
+    }
+    
+    JSONObject toJson() {
+        return new JSONObject()
+                .put("name", name)
+                .put("date", date)
+                .put("destination", destination)
+                .put("price", price);
     }
     
     

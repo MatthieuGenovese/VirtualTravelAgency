@@ -21,3 +21,19 @@ services:
     image: travelagency/flyreservation-rest
     ports:
       - "9090:8080"
+      
+  carshotels-registry:               # Cars & Hotels registry, on port 9080
+    container_name: carshotels-reservation
+    image: travelagency/carshotelsreservation-document
+    depends_on:
+      - database
+    ports:
+      - "9080:8080"
+      
+  database:                       # MongoDB database, on port 27017
+    container_name: tcs-database
+    image: mongo:3.0
+    volumes:
+      - "./mongo_data:/data/db"
+    ports:
+      - "27547:27547"

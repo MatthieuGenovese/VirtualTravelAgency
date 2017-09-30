@@ -15,3 +15,4 @@ mvn -q clean package
 
 # Build docker images
 build resource  travelagency/flyreservation-rest
+build document  travelagency/carshotelsreservation-document
