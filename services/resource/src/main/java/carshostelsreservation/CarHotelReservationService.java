@@ -1,4 +1,4 @@
-package flyreservation;
+package carshostelsreservation;
 
 import org.json.JSONArray;
 
@@ -10,20 +10,31 @@ import java.util.Collection;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class FlyReservationService {
+public class CarHotelReservationService {
 
-
+    @Path("/hotels")
     @GET
-    public Response getAllReservations(){
-        Collection<FlyReservation> resas = Storage.findAll();
+    public Response getAllHotelsReservations(){
+        Collection<HotelReservation> resas = Storage.findAllHotels();
         JSONArray result = new JSONArray();
-        for(FlyReservation f : resas){
-            result.put(f.toString());
+        for(HotelReservation h : resas){
+            result.put(h.toJson());
         }
         return Response.ok().entity(result.toString(2)).build();
     }
 
-    @Path("/{date}/{dest}")
+    @Path("/cars")
+    @GET
+    public Response getAllCarsReservations(){
+        Collection<CarReservation> resas = Storage.findAllCars();
+        JSONArray result = new JSONArray();
+        for(CarReservation c : resas){
+            result.put(c.toJson());
+        }
+        return Response.ok().entity(result.toString(2)).build();
+    }
+
+    /*@Path("/{date}/{dest}")
     @GET
     public Response getWithDateandDest(@PathParam("date") String date, @PathParam("dest") String dest, @QueryParam("direct") boolean isDirect, @QueryParam("maxEscale") int maxEscale){
         if(Storage.read(dest,date) == null){
@@ -45,5 +56,5 @@ public class FlyReservationService {
         }
         return Response.ok().entity(result.toString(2)).build();
 
-    }
+    }*/
 }

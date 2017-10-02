@@ -3,6 +3,7 @@ package flyreservation;
 
 import org.apache.commons.beanutils.BeanComparator;
 
+
 import java.util.*;
 
 public class Storage {
@@ -37,8 +38,19 @@ public class Storage {
 
 
     static {
-        Storage.create("demofly", "28122018", true, new ArrayList<String>(), 1548.58);
-        Storage.create("demofly", "28122018", true, new ArrayList<String>(), 1560.58);
+        ArrayList<String> l1 = new ArrayList<>();
+        ArrayList<String> l2 = new ArrayList<>();
+        l1.add("Nancy");
+        l1.add("Nice");
+        l1.add("Berlin");
+        l2.add("Nancy");
+        l2.add("Nice");
+        Storage.create("paris", "28122018", true, new ArrayList<String>(), 1654.58);
+        Storage.create("paris", "28122018", false, l1, 1648.58);
+        Storage.create("paris", "28122018", false, l2, 1600.58);
+        Storage.create("nice", "28122018", true, new ArrayList<String>(), 1500.58);
+        Storage.create("nice", "28122018", false, l1, 1560.58);
+        Storage.create("nice", "28122018", false, l2, 1530.58);
     }
 
 }

@@ -6,6 +6,7 @@
 
     <groupId>travelagency</groupId>
     <artifactId>document</artifactId>
+
     <packaging>war</packaging>
     <version>1.0</version>
     <name>Service Document</name>

@@ -16,9 +16,9 @@ version: '3'
 
 services:
 
-  fly-reservation:
-    container_name: fly-reservation
-    image: travelagency/flyreservation-rest
+  cars-hotels-reservation:
+    container_name: cars-hotels-reservation
+    image: travelagency/cars-hotels-reservation-rest
     ports:
       - "9090:8080"
       

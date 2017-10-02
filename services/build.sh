@@ -14,5 +14,5 @@ build() { # $1: directory, $2: image_name
 mvn -q clean package
 
 # Build docker images
-build resource  travelagency/flyreservation-rest
+build resource  travelagency/cars-hotels-reservation-rest
 build document  travelagency/carshotelsreservation-document
