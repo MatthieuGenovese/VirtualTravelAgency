@@ -15,10 +15,9 @@
 Vérifier que le service docker est bien lancé (service --status-all) si ce n'est pas le cas : sudo service docker start  
 A la racine du projet, exécuter la commande : sudo ./start.sh
 
-### 1. Partie Réservation d'avions
-  http://localhost:9090/flyreservation-service-rest/ vous affiche la liste de TOUS les vols  
-  http://localhost:9090/flyreservation-service-rest/date/destination vous affiche la liste des vols correspondants par ordre croissant de prix 
-  une liste des destionations se trouve dans la classe Storage  
+### 1. Partie Réservation d'hotels / voitures
+  http://localhost:9090/cars-hotels-reservation-service-rest/hotels vous affiche la liste de TOUS les hotels  
+  http://localhost:9090/cars-hotels-reservation-service-rest/cars vous affiche la liste de TOUTES les voitures  
   
   
   
