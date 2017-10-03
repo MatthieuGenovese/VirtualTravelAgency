@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package carshotels;
+package flyreservation;
 
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 import org.json.JSONObject;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package carshotels;
+package flyreservation;
 import com.mongodb.MongoClient;
 import org.bson.types.ObjectId;
 import org.jongo.Jongo;
@@ -16,33 +16,33 @@ import org.json.JSONObject;
 class Handler {
 
     static JSONObject register(JSONObject input) {
-        MongoCollection hotels = getHotels();
-        Hotel data = new Hotel(input.getJSONObject("hotel"));
-        hotels.insert(data);
-        return new JSONObject().put("inserted", true).put("hotel",data.toJson());
+        MongoCollection vols = getVols();
+        FlyReservation data = new FlyReservation(input.getJSONObject("flyreservation"));
+        vols.insert(data);
+        return new JSONObject().put("inserted", true).put("flyreservation",data.toJson());
     }
     
     static JSONObject delete(JSONObject input) {
-        MongoCollection hotels = getHotels();
-        String ssn = input.getString("name");
-        Hotel theOne = hotels.findOne("{name:#}",ssn).as(Hotel.class);
+        MongoCollection vols = getVols();
+        String ssn = input.getString("destination");
+        FlyReservation theOne = vols.findOne("{destination:#}",ssn).as(FlyReservation.class);
         if (null == theOne) {
             return new JSONObject().put("deleted", false);
         }
-        hotels.remove(new ObjectId(theOne._id));
+        vols.remove(new ObjectId(theOne._id));
         return new JSONObject().put("deleted", true);
     }
 
     static JSONObject list(JSONObject input) {
-        MongoCollection hotels = getHotels();
+        MongoCollection vols = getVols();
         String filter = input.getString("filter");
-        MongoCursor<Hotel> cursor =
-                hotels.find("{name: {$regex: #}}", filter).as(Hotel.class);
+        MongoCursor<FlyReservation> cursor =
+                vols.find("{destination: {$regex: #}}", filter).as(FlyReservation.class);
         JSONArray contents = new JSONArray(); int size = 0;
         while(cursor.hasNext()) {
             contents.put(cursor.next().toJson()); size++;
         }
-        return new JSONObject().put("size", size).put("hotels", contents);
+        return new JSONObject().put("size", size).put("vols", contents);
     }
 
     static JSONObject dump(JSONObject input) {
@@ -50,18 +50,18 @@ class Handler {
     }
 
     static JSONObject purge(JSONObject input) {
-        MongoCollection hotels = getHotels();
+        MongoCollection vols = getVols();
         if(input.getString("use_with").equals("caution")) {
-            hotels.drop();
+            vols.drop();
             return new JSONObject().put("purge", "done");
         }
         throw new RuntimeException("Safe word does not match what is expected!");
     }
 
     static JSONObject retrieve(JSONObject input) {
-        MongoCollection hotels = getHotels();
-        String ssn = input.getString("name");
-        Hotel theOne = hotels.findOne("{name:#}",ssn).as(Hotel.class);
+        MongoCollection vols = getVols();
+        String ssn = input.getString("destination");
+        FlyReservation theOne = vols.findOne("{destination:#}",ssn).as(FlyReservation.class);
         if (theOne == null) {
             throw new RuntimeException("No match found for " + ssn);
         }
@@ -69,6 +69,11 @@ class Handler {
     }
     
     private static MongoCollection getHotels() {
+        MongoClient client = new MongoClient(Network.HOST, Network.PORT);
+        return new Jongo(client.getDB(Network.DATABASE)).getCollection(Network.COLLECTION);
+    }
+    
+    private static MongoCollection getVols() {
         MongoClient client = new MongoClient(Network.HOST, Network.PORT);
         return new Jongo(client.getDB(Network.DATABASE)).getCollection(Network.COLLECTION);
     }

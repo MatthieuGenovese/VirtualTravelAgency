@@ -6,6 +6,6 @@ MAINTAINER Génovèse Matthieu
 
 WORKDIR /usr/local/tomee/
 
-COPY ./target/carshotels-service-document.war ./webapps/.
+COPY ./target/flyreservation-service-document.war ./webapps/.
 
 EXPOSE 8080

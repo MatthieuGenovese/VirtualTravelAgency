@@ -22,9 +22,9 @@ services:
     ports:
       - "9090:8080"
       
-  carshotels-registry:               # Cars & Hotels registry, on port 9080
-    container_name: carshotels-reservation
-    image: travelagency/carshotelsreservation-document
+  flyreservation-registry:               # Fly reservation registry, on port 9080
+    container_name: flyreservation
+    image: travelagency/flyreservation-document
     depends_on:
       - database
     ports:
