@@ -1,7 +1,6 @@
 package carshostelsreservation;
 
 
-import flyreservation.FlyReservation;
 import org.apache.commons.beanutils.BeanComparator;
 
 import java.util.ArrayList;
@@ -23,18 +22,31 @@ public class Storage {
         contentsCars.put(destination + name, new CarReservation(name, price, date, destination));
     }
 
-    /*public static ArrayList<FlyReservation> readHotel(String destination, String date) {
-        ArrayList<FlyReservation> results = new ArrayList<>();
-        for(FlyReservation f : contents.values()){
-            if(f.getDate().equalsIgnoreCase(date) && f.getDestination().equalsIgnoreCase(destination)){
-                results.add(f);
+    public static ArrayList<CarReservation> readCar(String destination, String date) {
+        ArrayList<CarReservation> results = new ArrayList<>();
+        for(CarReservation c : contentsCars.values()){
+            if((c.getDate().equalsIgnoreCase(date) || date.length() ==0) && (destination.length() == 0 || c.getDestination().equalsIgnoreCase(destination))){
+                results.add(c);
             }
         }
         BeanComparator fieldComparator = new BeanComparator(
                 "price");
         Collections.sort(results, fieldComparator);
         return results;
-    }*/
+    }
+
+    public static ArrayList<HotelReservation> readHotel(String destination, String date) {
+        ArrayList<HotelReservation> results = new ArrayList<>();
+        for(HotelReservation h : contentsHotels.values()){
+            if((h.getDate().equalsIgnoreCase(date) || date.length() ==0) && (destination.length() == 0 || h.getDestination().equalsIgnoreCase(destination))){
+                results.add(h);
+            }
+        }
+        BeanComparator fieldComparator = new BeanComparator(
+                "price");
+        Collections.sort(results, fieldComparator);
+        return results;
+    }
 
     public static void deleteHotel(String destination, String name) {
         contentsHotels.remove(destination + name);

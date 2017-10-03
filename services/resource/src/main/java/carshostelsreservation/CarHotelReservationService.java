@@ -12,49 +12,44 @@ import java.util.Collection;
 @Produces(MediaType.APPLICATION_JSON)
 public class CarHotelReservationService {
 
-    @Path("/hotels")
-    @GET
-    public Response getAllHotelsReservations(){
-        Collection<HotelReservation> resas = Storage.findAllHotels();
-        JSONArray result = new JSONArray();
-        for(HotelReservation h : resas){
-            result.put(h.toJson());
-        }
-        return Response.ok().entity(result.toString(2)).build();
-    }
-
     @Path("/cars")
     @GET
-    public Response getAllCarsReservations(){
-        Collection<CarReservation> resas = Storage.findAllCars();
-        JSONArray result = new JSONArray();
-        for(CarReservation c : resas){
-            result.put(c.toJson());
+    public Response getCarsWithParam(@QueryParam("date") String date, @QueryParam("dest") String dest) {
+        if(date == null){
+            date = "";
         }
-        return Response.ok().entity(result.toString(2)).build();
-    }
-
-    /*@Path("/{date}/{dest}")
-    @GET
-    public Response getWithDateandDest(@PathParam("date") String date, @PathParam("dest") String dest, @QueryParam("direct") boolean isDirect, @QueryParam("maxEscale") int maxEscale){
-        if(Storage.read(dest,date) == null){
+        if(dest == null){
+            dest = "";
+        }
+        if(Storage.readCar(dest,date) == null){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         JSONArray result = new JSONArray();
-        for(FlyReservation f : Storage.read(dest,date)){
-            if(isDirect){
-                if(f.isDirect()){
-                    result.put(f.toString());
-                }
-            }
-            else if(Integer.valueOf(maxEscale) != null && f.getStops().size() <= Integer.valueOf(maxEscale)){
-                result.put(f.toString());
-            }
-            else{
-                result.put(f.toString());
-            }
+        for (CarReservation c : Storage.readCar(dest, date)){
+            result.put(c.toJson());
         }
         return Response.ok().entity(result.toString(2)).build();
 
-    }*/
+    }
+
+    @Path("/hotels")
+    @GET
+    public Response getHotelsWithParam(@QueryParam("date") String date, @QueryParam("dest") String dest) {
+        if(date == null){
+            date = "";
+        }
+        if(dest == null){
+            dest = "";
+        }
+        if(Storage.readHotel(dest,date) == null){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        JSONArray result = new JSONArray();
+        for (HotelReservation h : Storage.readHotel(dest, date)){
+            result.put(h.toJson());
+        }
+        return Response.ok().entity(result.toString(2)).build();
+
+    }
+
 }
