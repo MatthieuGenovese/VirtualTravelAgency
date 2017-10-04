@@ -16,8 +16,15 @@ Vérifier que le service docker est bien lancé (service --status-all) si ce n'e
 A la racine du projet, exécuter la commande : sudo ./start.sh
 
 ### 1. Partie Réservation d'hotels / voitures
+
   http://localhost:9090/cars-hotels-reservation-service-rest/hotels vous affiche la liste de TOUS les hotels  
   http://localhost:9090/cars-hotels-reservation-service-rest/cars vous affiche la liste de TOUTES les voitures  
+  
+  On peut ajouter des paramètres optionnels (date et destination) voila des exemples d'utilisation :  
+  http://localhost:9090/cars-hotels-reservation-service-rest/hotels?date=28/11/2018  
+  http://localhost:9090/cars-hotels-reservation-service-rest/hotels?date=28/11/2018&dest=Paris  
+    
+  L'ordre des requetes n'a pas d'importance, les résultats seront toujours par ordre croissant de prix.
   
   
   

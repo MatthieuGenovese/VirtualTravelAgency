@@ -10,23 +10,23 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class AccessSimulation extends Simulation {
+class AccessSimulationAllCar extends Simulation {
 
   val httpConf =
     http
-      .baseURL("http://localhost:9090/flyreservation-service-rest/")
+      .baseURL("http://localhost:9090/cars-hotels-reservation-service-rest/cars")
       .acceptHeader("application/json")
       .header("Content-Type", "application/json")
 
   val stressSample =
-    scenario("Request All Fly Reservations")
+    scenario("Request All Cars Reservations")
         .repeat(10)
         {
           exec(session =>
             session.set("ssn", UUID.randomUUID().toString)
           )
             .exec(
-              http("Access All Reservations")
+              http("localhost:9090/cars-hotels-reservation-service-rest/cars")
                 .get("")
                 .check(status.is(200))
             )

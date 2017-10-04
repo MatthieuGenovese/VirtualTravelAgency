@@ -2,7 +2,7 @@
 
 cd tests
 
-mvn package
+mvn clean package
 
 cd stress
 
