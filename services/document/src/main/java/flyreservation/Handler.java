@@ -35,9 +35,14 @@ class Handler {
 
     static JSONObject list(JSONObject input) {
         MongoCollection vols = getVols();
-        String filter = input.getString("filter");
+        JSONObject filter = input.getJSONObject("filter");
+        String liste = "";
+        for(int i=0;i<filter.length();i++){
+            liste += filter.toString(i);
+        }
+        
         MongoCursor<FlyReservation> cursor =
-                vols.find("{destination: {$regex: #}}", filter).as(FlyReservation.class);
+                vols.find(liste).as(FlyReservation.class);
         JSONArray contents = new JSONArray(); int size = 0;
         while(cursor.hasNext()) {
             contents.put(cursor.next().toJson()); size++;
