@@ -40,7 +40,6 @@ class Handler {
         for(int i=0;i<filter.length();i++){
             liste += filter.toString(i);
         }
-        
         MongoCursor<FlyReservation> cursor =
                 vols.find(liste).as(FlyReservation.class);
         JSONArray contents = new JSONArray(); int size = 0;
@@ -51,7 +50,7 @@ class Handler {
     }
 
     static JSONObject dump(JSONObject input) {
-        return list(new JSONObject().put("filter",".*"));
+        return list(new JSONObject().put("filter",new JSONObject()));
     }
 
     static JSONObject purge(JSONObject input) {

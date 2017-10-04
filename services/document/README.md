@@ -6,27 +6,15 @@ Installer SoapUI, RESTClient ou autre...
 
 Exemples de fichiers Json à fournir dans le body de la requête:
 
-- Ajouter un hotel:
+- Ajouter un vol:
 
-{
-    "event":"REGISTER",
-    "hotel":
-    {
-            "name":"Hotel de la prairie",
-            "date":"2017-09-30",
-            "destination":"Paris",
-            "price":"200"
-    }
-}
+{"event": "REGISTER", "flyreservation":{"destination":"Paris", "date":"2017-09-30", "isDirect":"true", "price":"200", "stops":[{"stop":"abc"}, {"stop":"def"}]}}}
 
-- Récupérer une liste des hotels (par nom pour l'instant):
+- Récupérer une liste des vols (les champs doivent être stockés en string pour l'instant):
 
-{
-    "event":"LIST",
-    "filter":"prairie"
-}
+{"event": "LIST", "filter":{"destination":"Paris", "date":"2017-09-30"}}
 
-- Récupérer tous les hotels :
+- Récupérer tous les vols :
 
 {
     "event":"DUMP"
