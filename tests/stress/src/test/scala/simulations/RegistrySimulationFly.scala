@@ -23,7 +23,7 @@ class RegistrySimulationFly extends Simulation {
         .repeat(10)
         {
           exec(session =>
-            session.set("destination", UUID.randomUUID().toString)
+            session.set("id", UUID.randomUUID().toString)
           )
             .exec(
               http("registering a fly")
@@ -41,25 +41,26 @@ class RegistrySimulationFly extends Simulation {
         }
 
   def buildRegister(session: Session): String = {
-    val destination = session("destination").as[String]
+    val id = session("id").as[String]
     raw"""{
       "event": "REGISTER",
       "flyreservation": {
+        "id": "$id",
         "date": "2017-09-30",
-        "isDirect": "true",
-        "destination": "$destination",
+        "isDirect": "false",
+        "destination": "Paris",
         "price": "543",
-        "stops": [{"stop":"abc"},{"stop":"def"}]
+        "stops": [{"stop":"Marseille"},{"stop":"Toulouse"}]
       }
     }""""
   }
 
 
   def buildRetrieve(session: Session): String = {
-    val destination = session("destination").as[String]
+    val id = session("id").as[String]
     raw"""{
       "event": "RETRIEVE",
-      "destination": "$destination"
+      "id": "$id"
     }""""
   }
 

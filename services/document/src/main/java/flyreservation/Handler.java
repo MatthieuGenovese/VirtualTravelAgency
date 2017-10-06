@@ -5,6 +5,10 @@
  */
 package flyreservation;
 import com.mongodb.MongoClient;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
@@ -24,8 +28,8 @@ class Handler {
     
     static JSONObject delete(JSONObject input) {
         MongoCollection vols = getVols();
-        String ssn = input.getString("destination");
-        FlyReservation theOne = vols.findOne("{destination:#}",ssn).as(FlyReservation.class);
+        String ssn = input.getString("id");
+        FlyReservation theOne = vols.findOne("{id:#}",ssn).as(FlyReservation.class);
         if (null == theOne) {
             return new JSONObject().put("deleted", false);
         }
@@ -42,9 +46,29 @@ class Handler {
         }
         MongoCursor<FlyReservation> cursor =
                 vols.find(liste).as(FlyReservation.class);
+        List array = new ArrayList();
         JSONArray contents = new JSONArray(); int size = 0;
         while(cursor.hasNext()) {
-            contents.put(cursor.next().toJson()); size++;
+            array.add(cursor.next().toJson()); size++;
+//            contents.put(cursor.next().toJson()); size++;
+        }
+        Collections.sort(array, new Comparator<JSONObject>() {
+            //You can change "Name" with "ID" if you want to sort by ID
+            private static final String KEY_NAME = "price";
+
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = new String();
+                String valB = new String();
+
+                valA = (String) a.get(KEY_NAME);
+                valB = (String) b.get(KEY_NAME);
+
+                return valA.compareTo(valB);
+            }
+        });
+        for (int i = 0; i < array.size(); i++) {
+            contents.put(array.get(i));
         }
         return new JSONObject().put("size", size).put("vols", contents);
     }
@@ -64,17 +88,12 @@ class Handler {
 
     static JSONObject retrieve(JSONObject input) {
         MongoCollection vols = getVols();
-        String ssn = input.getString("destination");
-        FlyReservation theOne = vols.findOne("{destination:#}",ssn).as(FlyReservation.class);
+        String ssn = input.getString("id");
+        FlyReservation theOne = vols.findOne("{id:#}",ssn).as(FlyReservation.class);
         if (theOne == null) {
             throw new RuntimeException("No match found for " + ssn);
         }
         return theOne.toJson();
-    }
-    
-    private static MongoCollection getHotels() {
-        MongoClient client = new MongoClient(Network.HOST, Network.PORT);
-        return new Jongo(client.getDB(Network.DATABASE)).getCollection(Network.COLLECTION);
     }
     
     private static MongoCollection getVols() {

@@ -15,6 +15,8 @@ import org.json.JSONObject;
  * Created by Matthieu on 26/09/2017.
  */
 public class FlyReservation {
+    
+    private String id;
 
     private String destination;
 
@@ -22,14 +24,15 @@ public class FlyReservation {
 
     private boolean isDirect;
 
-    private double price;
+    private Integer price;
 
     private ArrayList<String> stops;
     
     @MongoObjectId
     String _id;
 
-    public FlyReservation(String destination, String date, boolean isDirect, ArrayList<String> stops, double price){
+    public FlyReservation(String id, String destination, String date, boolean isDirect, ArrayList<String> stops, Integer price){
+        this.id = id;
         this.date = date;
         this.destination = destination;
         this.isDirect = isDirect;
@@ -37,8 +40,24 @@ public class FlyReservation {
         this.price = price;
     }
 
-    public String getID(){
-        return destination + date + Double.toString(price);
+//    public String getID(){
+//        return id;
+//    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isIsDirect() {
+        return isDirect;
+    }
+
+    public void setIsDirect(boolean isDirect) {
+        this.isDirect = isDirect;
     }
 
     public String getDestination() {
@@ -57,7 +76,7 @@ public class FlyReservation {
         return stops;
     }
 
-    public double getPrice(){
+    public Integer getPrice(){
         return price;
     }
 
@@ -67,14 +86,15 @@ public class FlyReservation {
             for(String s : stops){
                 tmp += " " + s;
             }
-            return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + Double.toString(getPrice());
+            return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + Integer.toString(getPrice());
         }
-        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Double.toString(getPrice());
+        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Integer.toString(getPrice());
     }
     
     public FlyReservation() {}
     
     public FlyReservation(JSONObject data) {
+        this.id = data.getString("id");
         this.destination = data.getString("destination");
         this.date = data.getString("date");
         this.price = data.getInt("price");
@@ -89,6 +109,7 @@ public class FlyReservation {
     
     JSONObject toJson() {
         return new JSONObject()
+                .put("id", id)
                 .put("destination", destination)
                 .put("date", date)
                 .put("price", price)
