@@ -16,6 +16,12 @@ version: '3'
 
 services:
 
+  submittravel:                # Submit Travel, on port 9070
+    container_name: submittravel
+    image: travelagency/submittravel-rpc
+    ports:
+      - "9070:8080"
+
   cars-hotels-reservation:
     container_name: cars-hotels-reservation
     image: travelagency/cars-hotels-reservation-rest

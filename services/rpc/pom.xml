@@ -16,5 +16,9 @@
         <version>1.0</version>
     </parent>
 
+    <build>
+        <finalName>submittravel-service-rpc</finalName>
+    </build>
+
     
 </project>
