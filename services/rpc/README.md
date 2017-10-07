@@ -72,3 +72,4 @@ Le document se compose des sections suivantes:
     
     * Enfin, une intance du service est définie dans l'éléments "WSDL:service" 
     Un WSDL service contient une liste déléments de port WSDL.Chaque port définit une instance spécifique d'un serveur conforme à l'une des liaisons WSDL définies précédemment 
+    
