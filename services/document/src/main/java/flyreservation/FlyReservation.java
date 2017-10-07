@@ -24,14 +24,14 @@ public class FlyReservation {
 
     private boolean isDirect;
 
-    private Integer price;
+    private String price;
 
     private ArrayList<String> stops;
     
     @MongoObjectId
     String _id;
 
-    public FlyReservation(String id, String destination, String date, boolean isDirect, ArrayList<String> stops, Integer price){
+    public FlyReservation(String id, String destination, String date, boolean isDirect, ArrayList<String> stops, String price){
         this.id = id;
         this.date = date;
         this.destination = destination;
@@ -76,7 +76,7 @@ public class FlyReservation {
         return stops;
     }
 
-    public Integer getPrice(){
+    public String getPrice(){
         return price;
     }
 
@@ -86,9 +86,9 @@ public class FlyReservation {
             for(String s : stops){
                 tmp += " " + s;
             }
-            return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + Integer.toString(getPrice());
+            return "Destination : " + getDestination() + " Date : " + getDate() + " " + tmp + " " + getPrice();
         }
-        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + Integer.toString(getPrice());
+        return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + getPrice();
     }
     
     public FlyReservation() {}
@@ -97,7 +97,7 @@ public class FlyReservation {
         this.id = data.getString("id");
         this.destination = data.getString("destination");
         this.date = data.getString("date");
-        this.price = data.getInt("price");
+        this.price = data.getString("price");
         this.isDirect = data.getBoolean("isDirect");
         JSONArray stops = data.getJSONArray("stops");
         List<String> stoplist = new ArrayList<String>();
