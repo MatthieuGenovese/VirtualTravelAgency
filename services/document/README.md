@@ -1,18 +1,49 @@
-Pour tester le service document :
+Pour utiliser le service de réservation de vols :
 
-Installer SoapUI, RESTClient ou autre...
+Header nécéssaire :
 
--> requêtes REST, on utilise uniquement des POST
+Content-Type : application/json
+
+Requêtes POST
 
 Exemples de fichiers Json à fournir dans le body de la requête:
 
 - Ajouter un vol:
 
-{"event": "REGISTER", "flightreservation":{"destination":"Paris", "date":"2017-09-30", "isDirect":"true", "price":"200", "stops":[{"stop":"abc"}, {"stop":"def"}]}}}
+{
+    "event": "REGISTER",
+    "flightreservation":
+        {
+            "id":"1",
+            "destination":"Paris", 
+            "date":"2017-09-30", 
+            "isDirect":"false", 
+            "price":"200", 
+            "stops":[
+                {"stop":"Marseille"}, {"stop":"Toulouse"}
+            ]
+        }
+}
 
-- Récupérer une liste des vols (les champs doivent être stockés en string pour l'instant):
 
-{"event": "LIST", "filter":{"destination":"Paris", "date":"2017-09-30"}}
+- Récupérer une liste des vols :
+
+{
+    "event": "LIST", 
+    "filter":
+    {
+        "destination":"Paris", 
+        "date":"2017-09-30",
+        "stops":[Marseille, Toulouse]
+    }
+}
+
+- Récupérer un vol :
+
+{
+    "event":"RETRIEVE",
+    "id":"1"
+}
 
 - Récupérer tous les vols :
 
@@ -20,4 +51,16 @@ Exemples de fichiers Json à fournir dans le body de la requête:
     "event":"DUMP"
 }
 
-Enjoy !
+- Supprimer un vol :
+
+{
+    "event":"DELETE",
+    "id":"1"
+}
+
+- Supprimer tous les champs de la base de données :
+
+{
+    "event":"PURGE",
+    "use_with":"caution"
+}
