@@ -1,3 +1,4 @@
+
 package simulations
 
 import java.util.UUID
@@ -10,7 +11,7 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class RegistrySimulationFly extends Simulation {
+class AccessSimulationAllFly extends Simulation {
 
   val httpConf =
     http
@@ -57,10 +58,8 @@ class RegistrySimulationFly extends Simulation {
 
 
   def buildRetrieve(session: Session): String = {
-    val id = session("id").as[String]
     raw"""{
-      "event": "RETRIEVE",
-      "id": "$id"
+      "event": "DUMP"
     }""""
   }
 
