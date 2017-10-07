@@ -24,6 +24,9 @@ public class StepsCarHotelReservation {
     private CarReservation c1;
     private CarReservation c2;
     private CarReservation c3;
+    private HotelReservation h1;
+    private HotelReservation h2;
+    private  HotelReservation h3;
     Response r;
 
 
@@ -35,6 +38,9 @@ public class StepsCarHotelReservation {
         c1 = new CarReservation("Car1", 60, "28/11/2017", "Lyon");
         c2 = new CarReservation("Car2", 80, "28/12/2017", "Paris");
         c3 = new CarReservation("Car3", 70, "28/11/2017", "Paris");
+        h1 = new HotelReservation("Hotel1", 180, "28/12/2017", "Paris");
+        h2 = new HotelReservation("Hotel2", 220, "28/11/2017", "Lyon");
+        h3 = new HotelReservation("Hotel3", 250, "28/11/2017", "Paris");
     }
 
 
@@ -76,5 +82,48 @@ public class StepsCarHotelReservation {
     public void leResultatRenvoiLesVoituresDisponibleAParisLe(int arg0, int arg1, int arg2) throws Throwable {
         JSONObject j = c3.toJson();
         String s = r.getEntity().toString();
-        assertTrue(s.equals("[" + j.toString(2) + "]"));    }
+        assertTrue(s.equals("[" + j.toString(2) + "]"));
+    }
+
+    @When("^la methode getHotelWithParam est appele$")
+    public void laMethodeGetHotelWithParamEstAppele() throws Throwable {
+        r = service.getHotelsWithParam("","");
+    }
+
+    @Then("^le resultat renvoi toutes les resas d'hotels$")
+    public void leResultatRenvoiToutesLesResasDHotels() throws Throwable {
+        JSONArray comp = new JSONArray();
+        comp.put(h1.toJson());
+        comp.put(h2.toJson());
+        comp.put(h3.toJson());
+        String s = r.readEntity(String.class);
+        assertTrue(s.equals(comp.toString(2)));
+    }
+
+    @When("^la methode getHotelWithParam est appele avec Paris$")
+    public void laMethodeGetHotelWithParamEstAppeleAvecParis() throws Throwable {
+        r = service.getHotelsWithParam("","Paris");
+    }
+
+    @Then("^le resultat renvoi toutes les resas d'hotel triées par prix$")
+    public void leResultatRenvoiToutesLesResasDHotelTriéesParPrix() throws Throwable {
+        JSONArray comp = new JSONArray();
+        comp.put(h1.toJson());
+        comp.put(h3.toJson());
+        String s = r.readEntity(String.class);
+        assertTrue(s.equals(comp.toString(2)));
+    }
+
+    @When("^la methode getHotelWithParam est appele avec Paris pour le (\\d+)/(\\d+)/(\\d+)$")
+    public void laMethodeGetHotelWithParamEstAppeleAvecParisPourLe(int arg0, int arg1, int arg2) throws Throwable {
+        String s = arg0 + "/" +arg1 +"/" + arg2;
+        r = service.getHotelsWithParam(s,"Paris");
+    }
+
+    @Then("^le resultat renvoi toutes les resas d'hotels disponibles pour Paris le (\\d+)/(\\d+)/(\\d+)$")
+    public void leResultatRenvoiToutesLesResasDHotelsDisponiblesPourParisLe(int arg0, int arg1, int arg2) throws Throwable {
+        JSONObject j = h1.toJson();
+        String s = r.getEntity().toString();
+        assertTrue(s.equals("[" + j.toString(2) + "]"));
+    }
 }

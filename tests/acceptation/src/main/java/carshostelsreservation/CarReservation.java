@@ -35,7 +35,7 @@ public class CarReservation {
     }
 
 
-    JSONObject toJson() {
+    public JSONObject toJson() {
         return new JSONObject()
                 .put("name", name)
                 .put("date", date)

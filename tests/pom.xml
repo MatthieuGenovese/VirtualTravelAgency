@@ -18,6 +18,7 @@
 
     <modules>
         <module>stress</module>
+        <module>acceptation</module>
     </modules>
 
     
