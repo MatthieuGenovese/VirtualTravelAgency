@@ -19,9 +19,7 @@ Exemples de fichiers Json à fournir dans le body de la requête:
             "date":"2017-09-30", 
             "isDirect":"false", 
             "price":"200", 
-            "stops":[
-                {"stop":"Marseille"}, {"stop":"Toulouse"}
-            ]
+            "stops":["Marseille", "Toulouse]
         }
 }
 

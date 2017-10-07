@@ -102,7 +102,7 @@ public class FlightReservation {
         JSONArray stops = data.getJSONArray("stops");
         List<String> stoplist = new ArrayList<String>();
         for(int i=0;i<stops.length();i++){
-            stoplist.add(stops.getJSONObject(i).getString("stop"));
+            stoplist.add(stops.getString(i));
         }
         this.stops = (ArrayList<String>) stoplist;
     }

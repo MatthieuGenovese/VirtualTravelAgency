@@ -3,7 +3,8 @@ package scenarios;
 
 import cucumber.api.java.en.*;
 import org.json.JSONObject;
-
+import java.util.Collections;
+import org.json.JSONArray;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class RegistryFlightDefinition {
                     .put("date", "2017-10-10")
                     .put("isDirect", "true")
                     .put("stops", new JSONArray());
-        
+//        System.out.println(flight.toString());
         JSONObject ans = call(new JSONObject().put("event", "REGISTER").put("flightreservation", flight));
         assertEquals(true, ans.getBoolean("inserted"));
     }
@@ -55,8 +56,17 @@ public class RegistryFlightDefinition {
     @Given("^A flight identified as (.*)$")
     public void initialize_a_flight(String identifier) { flight = new JSONObject(); flight.put("id", identifier); }
 
-    @Given("^with (.*) set to (.*)$")
-    public void add_flight_attribute(String key, String value) { flight.put(key.trim(),value);  }
+    @Given("^with a string (.*) set to (.*)$")
+    public void add_flight_attribute_string(String key, String value) {
+        flight.put(key.trim(),value);  }
+    
+    @Given("^with an array (.*) set to (.*)$")
+    public void add_flight_attribute_array(String key, JSONArray value) {
+        flight.put(key.trim(),value);  }
+    
+    @Given("^with a boolean (.*) set to (.*)$")
+    public void add_flight_attribute_boolean(String key, boolean value) {
+        flight.put(key.trim(),value);  }
 
     @Given("^a POI identified as (.*)$")
     public void perso_of_interest_id(String id) { this.id = id; }
@@ -72,7 +82,9 @@ public class RegistryFlightDefinition {
         JSONObject request = new JSONObject();
         switch(message) {
             case "REGISTER":
-                request.put("event", message).put("flightreservation", flight); break;
+                request.put("event", message).put("flightreservation", flight);
+                System.out.println(flight.toString());
+                break;
             case "RETRIEVE":
                 request.put("event", message).put("id", id); break;
             case "DELETE":
@@ -102,10 +114,17 @@ public class RegistryFlightDefinition {
 
     @Then("^the (.*) is equals to (.*)$")
     public void check_flight_content(String key, String value) {
-        Object data = answer.getJSONObject("flight").get(key.trim());
+        Object data = answer.getJSONObject("flightreservation").get(key.trim());
         if(data.getClass().equals(Integer.class)) {
             assertEquals(Integer.parseInt(value.trim()), data);
-        } else {
+        } 
+        else if(data.getClass().equals(JSONArray.class)){
+            assertEquals(value, data.toString());
+        } 
+        else if (data.getClass().equals(Boolean.class)){
+            assertEquals(Boolean.parseBoolean(value), data);
+        }
+        else{
             assertEquals(value.trim(), data);
         }
     }
@@ -119,7 +138,7 @@ public class RegistryFlightDefinition {
     @Then("^the flight exists$")
     public void the_flight_exists() {
         JSONObject flight = new JSONObject(answer.toString());
-        answer = new JSONObject().put("flight", flight);
+        answer = new JSONObject().put("flightreservation", flight);
     }
 
     @Then("^the answer contains (\\d+) result(?:s)?$")
