@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package flyreservation;
+package flightreservation;
 import com.mongodb.MongoClient;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,15 +21,15 @@ class Handler {
 
     static JSONObject register(JSONObject input) {
         MongoCollection vols = getVols();
-        FlyReservation data = new FlyReservation(input.getJSONObject("flyreservation"));
+        FlightReservation data = new FlightReservation(input.getJSONObject("flightreservation"));
         vols.insert(data);
-        return new JSONObject().put("inserted", true).put("flyreservation",data.toJson());
+        return new JSONObject().put("inserted", true).put("flightreservation",data.toJson());
     }
     
     static JSONObject delete(JSONObject input) {
         MongoCollection vols = getVols();
         String ssn = input.getString("id");
-        FlyReservation theOne = vols.findOne("{id:#}",ssn).as(FlyReservation.class);
+        FlightReservation theOne = vols.findOne("{id:#}",ssn).as(FlightReservation.class);
         if (null == theOne) {
             return new JSONObject().put("deleted", false);
         }
@@ -44,8 +44,8 @@ class Handler {
         for(int i=0;i<filter.length();i++){
             liste += filter.toString(i);
         }
-        MongoCursor<FlyReservation> cursor =
-                vols.find(liste).as(FlyReservation.class);
+        MongoCursor<FlightReservation> cursor =
+                vols.find(liste).as(FlightReservation.class);
         List array = new ArrayList();
         JSONArray contents = new JSONArray(); int size = 0;
         while(cursor.hasNext()) {
@@ -53,7 +53,6 @@ class Handler {
 //            contents.put(cursor.next().toJson()); size++;
         }
         Collections.sort(array, new Comparator<JSONObject>() {
-            //You can change "Name" with "ID" if you want to sort by ID
             private static final String KEY_NAME = "price";
 
             @Override
@@ -89,7 +88,7 @@ class Handler {
     static JSONObject retrieve(JSONObject input) {
         MongoCollection vols = getVols();
         String ssn = input.getString("id");
-        FlyReservation theOne = vols.findOne("{id:#}",ssn).as(FlyReservation.class);
+        FlightReservation theOne = vols.findOne("{id:#}",ssn).as(FlightReservation.class);
         if (theOne == null) {
             throw new RuntimeException("No match found for " + ssn);
         }
