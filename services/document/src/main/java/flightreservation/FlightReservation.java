@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package flyreservation;
+package flightreservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 /**
  * Created by Matthieu on 26/09/2017.
  */
-public class FlyReservation {
+public class FlightReservation {
     
     private String id;
 
@@ -31,7 +31,7 @@ public class FlyReservation {
     @MongoObjectId
     String _id;
 
-    public FlyReservation(String id, String destination, String date, boolean isDirect, ArrayList<String> stops, String price){
+    public FlightReservation(String id, String destination, String date, boolean isDirect, ArrayList<String> stops, String price){
         this.id = id;
         this.date = date;
         this.destination = destination;
@@ -91,9 +91,9 @@ public class FlyReservation {
         return "Destination : " + getDestination() + " Date : " + getDate() + " Vol direct " + getPrice();
     }
     
-    public FlyReservation() {}
+    public FlightReservation() {}
     
-    public FlyReservation(JSONObject data) {
+    public FlightReservation(JSONObject data) {
         this.id = data.getString("id");
         this.destination = data.getString("destination");
         this.date = data.getString("date");

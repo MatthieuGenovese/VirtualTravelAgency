@@ -1,3 +1,5 @@
+
+
 package simulations
 
 import java.util.UUID
@@ -10,30 +12,30 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class AccessSimulationRetrieveFly extends Simulation {
+class AccessSimulationAllQueryFlight extends Simulation {
 
   val httpConf =
     http
-      .baseURL("http://localhost:9080/flyreservation-service-document/")
+      .baseURL("http://localhost:9080/flightreservation-service-document/")
       .acceptHeader("application/json")
       .header("Content-Type", "application/json")
 
   val stressSample =
-    scenario("Registering Fly")
+    scenario("Registering Flight")
         .repeat(10)
         {
           exec(session =>
             session.set("id", UUID.randomUUID().toString)
           )
             .exec(
-              http("registering a fly")
+              http("registering a flight")
                 .post("registry")
                 .body(StringBody(session => buildRegister(session)))
                 .check(status.is(200))
             )
             .pause(1 seconds)
             .exec(
-              http("retrieving a fly")
+              http("retrieving a flight")
                 .post("registry")
                 .body(StringBody(session => buildRetrieve(session)))
                 .check(status.is(200))
@@ -44,7 +46,7 @@ class AccessSimulationRetrieveFly extends Simulation {
     val id = session("id").as[String]
     raw"""{
       "event": "REGISTER",
-      "flyreservation": {
+      "flightreservation": {
         "id": "$id",
         "date": "2017-09-30",
         "isDirect": "false",
@@ -57,10 +59,9 @@ class AccessSimulationRetrieveFly extends Simulation {
 
 
   def buildRetrieve(session: Session): String = {
-    val id = session("id").as[String]
     raw"""{
-      "event": "RETRIEVE",
-      "id": "$id"
+      "event": "LIST",
+      "filter": {"destination":"Paris","date":"2017-09-30"}
     }""""
   }
 

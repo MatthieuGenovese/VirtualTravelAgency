@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package flyreservation;
+package flightreservation;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 
-import static flyreservation.Handler.*;
+import static flightreservation.Handler.*;
 
 @Path("/registry")
 @Produces(MediaType.APPLICATION_JSON)

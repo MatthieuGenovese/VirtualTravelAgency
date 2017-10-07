@@ -1,5 +1,5 @@
 ########################################
-##      Fly Reservation System        ##
+##      Flight Reservation System        ##
 ########################################
 # Docker system composition descriptor #
 ########################################
@@ -22,9 +22,9 @@ services:
     ports:
       - "9090:8080"
       
-  flyreservation-registry:               # Fly reservation registry, on port 9080
-    container_name: flyreservation
-    image: travelagency/flyreservation-document
+  flightreservation-registry:               # Flight reservation registry, on port 9080
+    container_name: flightreservation
+    image: travelagency/flightreservation-document
     depends_on:
       - database
     ports:
