@@ -13,7 +13,8 @@
 ## 2. Executer le programme
 
 Vérifier que le service docker est bien lancé (service --status-all) si ce n'est pas le cas : sudo service docker start  
-A la racine du projet, exécuter la commande : sudo ./start.sh
+A la racine du projet, exécuter la commande : ./build.sh pour créer les images docker
+Ensuite exécuter la commande ./start.sh pour lancer les services.
 
 ### 1. Partie Réservation d'hotels / voitures
 
@@ -71,18 +72,13 @@ A la racine du projet, exécuter la commande : sudo ./start.sh
         Un WSDL service contient une liste déléments de port WSDL.Chaque port définit une instance spécifique d'un serveur conforme à l'une des liaisons WSDL définies précédemment 
       
   
-## 3. Exectuer les tests gatling
+## 3. Exectuer les tests
 
-A la racine du projet, exécuter : sudo ./test.sh  
-
-## 4. Executer les tests d'acceptation
-  
-Se placer dans tests/acceptation  
-Exécuter la commande : mvn generate-sources  
-Executer la commande : mvn integration-test  
+Ce projet comporte des tests d'acceptation et des tests de stress pour les différents services  
+Pour les lancer : ./test.sh à la racine du projet tout simplement (Attention les services doivent être lancé au préalable : lancez le start.sh)
 
 
-## 5. Choix de conception pour les différentes interface de service
+## 4. Choix de conception pour les différentes interface de service
 
 **Paradigme Document :**
 
@@ -106,7 +102,7 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
  modules n'ayant pas, à priori, à subir d'évolutions à court terme, pourront donc être très rigides en terme de contrat.
  L'utilisateur fera  toujours appel à la même procédure pour demander une validation.
 
- ## 6. Discussion
+ ## 5. Discussion
 
  Ces affectations n'étaient pas nos premiers choix. En effet, nous avons d'abord attribué l'interface *Document* pour la
  réservation d'hôtel et de voiture, afin que l'utilisateur ne se préoccupe que d'envoyer les paramètres qui l'intéresse
