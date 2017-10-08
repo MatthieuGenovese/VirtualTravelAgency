@@ -1,7 +1,7 @@
 #!/bin/sh
 
-PUSH=true
-#PUSH=false
+#PUSH=true
+PUSH=false
 
 cd services
 

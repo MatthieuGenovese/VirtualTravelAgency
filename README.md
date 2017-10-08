@@ -39,7 +39,7 @@ A la racine du projet, exécuter la commande : sudo ./start.sh
   Envoyer des fichiers JSON en body pour utiliser l'application (exemples de fichiers dans le readme de services/document)
   
   
-### 2. Partie Soumettre le voyage 
+### 3. Partie Soumettre le voyage 
 
 
   http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService?wsdl
