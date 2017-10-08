@@ -24,7 +24,8 @@ public class Planeticket extends ticket {
 
         public Planeticket(){};
 
+    @Override
     public String toString() {
-        return "name:" + name + "  departure date:" + departure_date+ "  departure place:"+departure_place+"  escale:"+escale+"  destination date:"+departure_place+"  seat:"+seat+"  prix:"+prix;
+        return "PlaneTicket{\n name:" + name + "  departure date:" + departure_date+ "  departure place:"+departure_place+"  escale:"+escale+"  destination date:"+departure_place+"  seat:"+seat+"  prix:"+prix+"}";
     }
 }

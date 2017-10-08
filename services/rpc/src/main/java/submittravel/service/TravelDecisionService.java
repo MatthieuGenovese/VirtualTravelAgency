@@ -12,6 +12,6 @@ import javax.jws.WebService;
 public interface TravelDecisionService {
 
     @WebResult(name="result")
-    TravelAnswer answer(@WebParam(name="request") TravelRequest request,@WebParam(name="answer") boolean answer);
+    TravelAnswer answer(@WebParam(name="request") TravelRequest request);
 
 }

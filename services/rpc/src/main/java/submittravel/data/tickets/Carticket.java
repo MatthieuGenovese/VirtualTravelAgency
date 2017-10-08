@@ -1,5 +1,9 @@
 package submittravel.data.tickets;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+
 public class Carticket extends ticket {
     private String start_date="";
     private String end_date="";
@@ -20,9 +24,9 @@ public class Carticket extends ticket {
     public Carticket(){};
 
 
+    @Override
     public String toString() {
-        return "name:"+name+"  start date:" + start_date + "  end date:" + end_date+ "  model:"+model+"  prix:"+prix;
+        return "CarTicket{\n name:"+name+"  start date:" + start_date + "  end date:" + end_date+ "  model:"+model+"  prix:"+prix+"}";
     }
-
 
 }
