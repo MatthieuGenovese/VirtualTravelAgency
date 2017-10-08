@@ -81,3 +81,46 @@ Se placer dans tests/acceptation
 Exécuter la commande : mvn generate-sources  
 Executer la commande : mvn integration-test  
 
+
+## 5. Choix de conception pour les différentes interface de service
+
+**Paradigme Document :**
+
+Nous avons choisi d'appliquer l'interface Document pour la réservation d'avion. Ce choix permet à l'utilisateur de
+de se détacher des procédures utilisées pour se concentrer sur les paramètres qui l'intéresse, ici définis par les
+ différents filtres qu'il souhaite appliquer sur sa demande de réservation d'avion. Le paradigme Document nous parait être
+ la meilleure structure, nous apportant assez de liberté pour gérer la complexité amenée par le nombre variable de filtres
+ souhaités par l'utilisateur.
+
+ **Paradigme Ressources :**
+
+ Nous avons choisi d'utiliser le paradigme *Ressources* comme interface du service de réservation de voitures et d'hôtels.
+ La réservation de voitures et d'hôtels ne prenant en compte que deux paramètres, une date et un lieu, nous avons décidé de les
+ lier. On peut dès lors voir ces objets comme des ressources auxquelles on accederait par une URL. Ce paradigme nous offre
+ aussi une grande modularité, on pourrait ajouter des chemins très aisément afin de compléter ce service de réservation en
+ changeant la ressource demandée à la base de l'URI et en complétant à chaque fois avec un champ date et un champ lieu.
+
+ **Paradigme RPC :**
+
+ Enfin, nous avons groupé l'envoi d'une demande de validation à un supérieur et l'envoi du mail de confirmation. Ces
+ modules n'ayant pas, à priori, à subir d'évolutions à court terme, pourront donc être très rigides en terme de contrat.
+ L'utilisateur fera  toujours appel à la même procédure pour demander une validation.
+
+ ## 6. Discussion
+
+ Ces affectations n'étaient pas nos premiers choix. En effet, nous avons d'abord attribué l'interface *Document* pour la
+ réservation d'hôtel et de voiture, afin que l'utilisateur ne se préoccupe que d'envoyer les paramètres qui l'intéresse
+ sans se soucier de la méthode qui allait être utilisée pour lui renvoyer le résultat  attendu.
+ Finalement, cette flexibilité de l'interface *Document* sied mieux à la réservation d'avion : le nombre
+ de paramètres variables est plus handicapant que le simple paramètre voiture/hôtel.
+
+ Aussi, nous avons attaché l'interface *Ressource* à la réservation d'avion, très vite nous avons compris les limitations
+ de cette interface dans ce cas précis : chemin  qu'on ne peut pas manipuler librement, impossibilité de mettre des valeurs
+ par défaut, l'utilsateur peut mettre les chemins dans n'importe quel ordre etc....
+
+ Enfin, après avoir attribué l'interface *Document* au service de réservation d'avion, nous avons découvert que ce
+ paradigme se prêtait bien aux discussions asynchrones idéales pour traiter la validation des demandes à son manager.
+ Cependant, le paradigme *RPC* aurait été néfaste si rattaché au service de réservation d'avion (Nombre élevé de
+ procédures : l'utilisateur devant toutes les connaitre avec l'ordre d'appel des filtres etc...), nous avons donc décidé de
+ garder l'interface *Document* pour le service de réservation d'avion et d'avoir une interface un peu plus rigide pour
+ la demande de validation et l'envoi de mail de confirmation.
