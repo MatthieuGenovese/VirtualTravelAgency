@@ -41,12 +41,5 @@ public class StepsValidation {
         tr.setHostelticket(ht);
         tr.setPlaneticket(pt);
     }
-
-    @Then("^i receive a mail response saying yes$")
-    public void iReceiveAMailResponse() throws Throwable {
-        TravelAnswer ta = service.answer(tr,true);
-        String s = "Your request has been accepted :\n";
-        s += tr.toString();
-        assertTrue(true);
-    }
+    
 }

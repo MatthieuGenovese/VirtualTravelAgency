@@ -42,8 +42,8 @@ L'interface est implémentée dans la class [TravelDecisionImpl](https://github.
 
   * Compiling: `mvn clean package` will create the file `target/submittravel-service-rpc.war`
   * Running: `mvn tomee:run` will deploy the created `war` inside a TomEE+ server, available on `localhost:8080`
-  * The WSDL interface is available at [http://localhost:8080/submittravel-service-rpc/ExternalSubmitTravelService?wsdl](http://localhost:8080/submittravel-service-rpc/ExternalSubmitTravelService?wsdl)
-
+  * The WSDL interface is available at [http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService?wsdl](http://localhost:8080/submittravel-service-rpc/ExternalSubmitTravelService?wsdl)
+  ** The WSDL interface is available at [http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService?wsdl](http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService?wsdl)
 ## Explication du résultat obtenu
 
 ```xml
