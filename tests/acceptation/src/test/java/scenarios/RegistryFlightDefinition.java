@@ -67,7 +67,7 @@ public class RegistryFlightDefinition {
     public void add_flight_attribute_boolean(String key, boolean value) {
         flight.put(key.trim(),value);  }
 
-    @Given("^a POI identified as (.*)$")
+    @Given("^an id identified as (.*)$")
     public void perso_of_interest_id(String id) { this.id = id; }
 
     @Given("^the (.*) safe word$")
