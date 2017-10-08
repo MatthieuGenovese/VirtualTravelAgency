@@ -18,7 +18,7 @@ public class RegistryFlightDefinition {
     private JSONObject flight;
     private JSONObject answer;
     private String id;
-    private String filter;
+    private JSONObject filter;
     private String safeWord;
 
     private JSONObject call(JSONObject request) {
@@ -73,9 +73,12 @@ public class RegistryFlightDefinition {
     @Given("^the (.*) safe word$")
     public void setting_safe_word(String word) { this.safeWord = word; }
 
-    @Given("^a filter set to \"(.*)\"$")
-    public void setting_filter(String filter) { this.filter = filter; }
+//    @Given("^a filter set to \"(.*)\"$")
+//    public void setting_filter(String filter) { this.filter = filter; }
 
+    @Given("^a filter set to (.*)$")
+    public void setting_filter(JSONObject filter) { this.filter = filter; }
+    
     @When("^the (.*) message is sent$")
     public void call_registry(String message) {
         JSONObject request = new JSONObject();
