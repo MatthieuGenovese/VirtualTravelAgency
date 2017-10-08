@@ -41,5 +41,5 @@ public class StepsValidation {
         tr.setHostelticket(ht);
         tr.setPlaneticket(pt);
     }
-    
+
 }

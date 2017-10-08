@@ -42,8 +42,11 @@ Ensuite exécuter la commande ./start.sh pour lancer les services.
   
 ### 3. Partie Soumettre le voyage 
 
-
+L'employé envoie une requete avec :
   http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService?wsdl
+  
+Le patron répond à la requete de l'emplé avec :
+  http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService?wsdl
   ```xml
              <wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://informatique.polytech.unice.fr/soa1/cookbook/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ExternalSubmitTravelService" targetNamespace="http://informatique.polytech.unice.fr/soa1/cookbook/">
              <wsdl:types>...</wsdl:types>
