@@ -50,7 +50,7 @@ class AccessSimulationRetrieveFlight extends Simulation {
         "isDirect": "false",
         "destination": "Paris",
         "price": "543",
-        "stops": [{"stop":"Marseille"},{"stop":"Toulouse"}]
+        "stops": ["Marseille","Toulouse"]
       }
     }""""
   }
