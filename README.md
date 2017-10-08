@@ -13,7 +13,7 @@
 ## 2. Executer le programme
 
 Vérifier que le service docker est bien lancé (service --status-all) si ce n'est pas le cas : sudo service docker start  
-A la racine du projet, exécuter la commande : ./build.sh pour créer les images docker
+A la racine du projet, exécuter la commande : ./build.sh pour créer les images docker  
 Ensuite exécuter la commande ./start.sh pour lancer les services.
 
 ### 1. Partie Réservation d'hotels / voitures
@@ -75,7 +75,8 @@ Ensuite exécuter la commande ./start.sh pour lancer les services.
 ## 3. Exectuer les tests
 
 Ce projet comporte des tests d'acceptation et des tests de stress pour les différents services  
-Pour les lancer : ./test.sh à la racine du projet tout simplement (Attention les services doivent être lancé au préalable : lancez le start.sh)
+Pour les lancer : ./test.sh à la racine du projet.  
+(Attention les services doivent être lancé au préalable : lancez le start.sh)
 
 
 ## 4. Choix de conception pour les différentes interface de service
