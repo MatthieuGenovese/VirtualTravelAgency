@@ -24,7 +24,19 @@ A la racine du projet, exécuter la commande : sudo ./start.sh
   http://localhost:9090/cars-hotels-reservation-service-rest/hotels?date=28/11/2018  
   http://localhost:9090/cars-hotels-reservation-service-rest/hotels?date=28/11/2018&dest=Paris  
     
-  L'ordre des requetes n'a pas d'importance, les résultats seront toujours par ordre croissant de prix.
+  L'ordre des requetes n'a pas d'importance, les résultats seront toujours par ordre croissant de prix
+
+
+### 2. Partie Réservation de vols
+
+  http://localhost:9080/flightreservation-service-document/registry pour accéder au service
+  
+  Header requis :
+    - Content-Type : application/json
+
+  Requêtes POST
+
+  Envoyer des fichiers JSON en body pour utiliser l'application (exemples de fichiers dans le readme de services/document)
   
   
 ### 2. Partie Soumettre le voyage 
