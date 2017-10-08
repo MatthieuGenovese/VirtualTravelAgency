@@ -16,8 +16,8 @@ Feature: Flight Registry
     When the REGISTER message is sent
     Then the flight is registered
       And there are 3 flights in the registry
-      And the destination of type string is equals to Paris
-      And the price of type string is equals to 230
-      And the date of type string is equals to 2017-10-10
-      And the isDirect of type boolean is equals to true
-      And the stops of type array is equals to ["Marseille","Toulon"]
+      And the destination is equals to Paris
+      And the price is equals to 230
+      And the date is equals to 2017-10-10
+      And the isDirect is equals to true
+      And the stops is equals to ["Marseille","Toulon"]

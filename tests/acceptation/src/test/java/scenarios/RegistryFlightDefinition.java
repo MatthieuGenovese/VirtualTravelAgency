@@ -47,7 +47,6 @@ public class RegistryFlightDefinition {
                     .put("date", "2017-10-10")
                     .put("isDirect", "true")
                     .put("stops", new JSONArray());
-//        System.out.println(flight.toString());
         JSONObject ans = call(new JSONObject().put("event", "REGISTER").put("flightreservation", flight));
         assertEquals(true, ans.getBoolean("inserted"));
     }
@@ -83,7 +82,6 @@ public class RegistryFlightDefinition {
         switch(message) {
             case "REGISTER":
                 request.put("event", message).put("flightreservation", flight);
-                System.out.println(flight.toString());
                 break;
             case "RETRIEVE":
                 request.put("event", message).put("id", id); break;
