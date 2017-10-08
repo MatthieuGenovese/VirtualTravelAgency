@@ -46,7 +46,7 @@ public class RegistryFlightDefinition {
                     .put("price", "200")
                     .put("date", "2017-10-10")
                     .put("isDirect", "true")
-                    .put("stops", new JSONArray());
+                    .put("stops", new JSONArray("[]"));
         JSONObject ans = call(new JSONObject().put("event", "REGISTER").put("flightreservation", flight));
         assertEquals(true, ans.getBoolean("inserted"));
     }
