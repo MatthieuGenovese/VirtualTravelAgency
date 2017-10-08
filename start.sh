@@ -1,9 +1,5 @@
 #!/bin/sh
 
-cd services
+cd deployment
 
-sudo ./build.sh
-
-cd ../deployment
-
-sudo docker-compose up -d
+docker-compose up -d
