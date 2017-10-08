@@ -37,7 +37,7 @@ Feature: Flight Registry
      Given an id identified as 1
      When the RETRIEVE message is sent
      Then the flight exists
-      And the destinations is equals to Paris
+      And the destination is equals to Paris
       And the price is equals to 200
       And the date is equals to 2017-10-10
       And the isDirect is equals to true
