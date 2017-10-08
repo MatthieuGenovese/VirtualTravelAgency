@@ -47,6 +47,9 @@ L'employé envoie une requete avec :
   
 Le patron répond à la requete de l'emplé avec :
   http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService?wsdl
+  
+ENSUITE mettre le wsdl dans un logiciel tel que SOAPUI pour pouvoir voir le xml et tester le service 
+
   ```xml
              <wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://informatique.polytech.unice.fr/soa1/cookbook/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ExternalSubmitTravelService" targetNamespace="http://informatique.polytech.unice.fr/soa1/cookbook/">
              <wsdl:types>...</wsdl:types>
