@@ -44,22 +44,22 @@ Feature: Flight Registry
       And the stops is equals to []
 
   Scenario: Looking for flights #1
-    Given a filter set to {"destination":"Paris", "date":"2017-10-10"}
+    Given a filter set to destination and Paris and date and 2017-10-10
     When the LIST message is sent
     Then the answer contains 2 results
 
   Scenario: Looking for flights #2
-    Given a filter set to {"id":"1"}
+    Given a filter set to id & 1
     When the LIST message is sent
     Then the answer contains 1 result
 
   Scenario: Looking for flights #3
-    Given a filter set to {"date":"2018-10-10"}
+    Given a filter set to date & 2018-10-10
     When the LIST message is sent
     Then the answer contains 0 results
 
   Scenario: Looking for flights #4
-    Given a filter set to {"id":"3"}
+    Given a filter set to id & 3
     When the LIST message is sent
     Then the answer contains 0 results
 

@@ -76,8 +76,21 @@ public class RegistryFlightDefinition {
 //    @Given("^a filter set to \"(.*)\"$")
 //    public void setting_filter(String filter) { this.filter = filter; }
 
-    @Given("^a filter set to (.*)$")
-    public void setting_filter(JSONObject filter) { this.filter = filter; }
+    @Given("^a filter set to (.*) & (.*)$")
+    public void setting_filte(String key, String value) {
+        JSONObject tmp = new JSONObject();
+        tmp.put(key,value);
+        this.filter = tmp;
+        System.out.println(filter.toString());
+    }
+
+    @Given("^a filter set to (.*) and (.*) and (.*) and (.*)$")
+    public void setting_filter2(String key, String value, String key2, String value2) {
+        JSONObject tmp = new JSONObject();
+        tmp.put(key,value);
+        tmp.put(key2,value2);
+        this.filter = tmp;
+    }
     
     @When("^the (.*) message is sent$")
     public void call_registry(String message) {
