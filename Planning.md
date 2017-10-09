@@ -9,8 +9,6 @@
  
  Micheline reçoit un résumé des notes de frais du commercial et peu des explications si l'employé a déplacé le seuil autorisé. Micheline a la possibilité de validé ou redus le remboursement total
  
- ## Diagramme de flot
- 
  ## Shéma du flow
  
  ![Google logo](/images_planning/flow1.jpg "google logo")
