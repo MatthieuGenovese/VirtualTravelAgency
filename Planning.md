@@ -17,4 +17,16 @@
  
  ![Google logo](/images_planning/flow2.jpg "google logo")
  
- ## Répartition du travaille
+ ## Planning 
+ 
+ *Week 1 : Diagramme de flow + première implémentation Camel.
+ 
+ *Week 2 : Un pipeline camel fonctionnel de bout en bout avec 1 service connecté au bus communiquant dedans.
+ 
+ *Week 3 : Ajout sur le bus des services de réservation de voiture et hotel + implémentation nouveau service de remboursement de frais.
+ 
+ *Week 4 : Intégration du service de remboursement de frais.
+ 
+ *Week 5 : Finition intégration du nouveau service
+ 
+ 
