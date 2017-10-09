@@ -3,8 +3,8 @@
  
  ## User Strories
  
- ## diagramme de flot
+ ## Diagramme de flot
  
  ## Shéma du flow-car
  
- ## répartition du travaille
+ ## Répartition du travaille
