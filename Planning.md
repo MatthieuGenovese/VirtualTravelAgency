@@ -11,8 +11,10 @@
  
  ## Diagramme de flot
  
- ## Shéma du flow-car
+ ## Shéma du flow
  
- ![Google logo](https://www.google.fr/images/srpr/logo11w.png "google logo")
+ ![Google logo](/images_planning/flow1.jpg "google logo")
+ 
+ ![Google logo](/images_planning/flow2.jpg "google logo")
  
  ## Répartition du travaille
