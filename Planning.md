@@ -1,5 +1,5 @@
 # SOA, Integration
- * Author: 
+ * Author: Genovese , Chennouf , Liechtensteger , Lefebvre
  
  ## User Strories
  Jean-Michel doit planifier un voyage d'affaires. Il va tout d'abord chercher une réservation d'avion puis réserver une chambre d'hôtel et enfin louer une voiture.
