@@ -35,6 +35,12 @@ services:
       - database
     ports:
       - "9080:8080"
+
+  vols-document:
+     container_name: vols-document
+     image: iliasnaamane/document-vol
+     ports:
+       - "9030:8080"
       
   database:                       # MongoDB database, on port 27017
     container_name: tcs-database

@@ -3,6 +3,8 @@ package scenarios;
 
 import cucumber.api.java.en.*;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.Collections;
 import org.json.JSONArray;
 import javax.ws.rs.core.MediaType;
@@ -46,7 +48,7 @@ public class RegistryFlightDefinition {
                     .put("price", "200")
                     .put("date", "2017-10-10")
                     .put("isDirect", "true")
-                    .put("stops", new JSONArray("[]"));
+                    .put("stops", new JSONArray());
         JSONObject ans = call(new JSONObject().put("event", "REGISTER").put("flightreservation", flight));
         assertEquals(true, ans.getBoolean("inserted"));
     }
@@ -58,11 +60,12 @@ public class RegistryFlightDefinition {
     @Given("^with a string (.*) set to (.*)$")
     public void add_flight_attribute_string(String key, String value) {
         flight.put(key.trim(),value);  }
-    
+
     @Given("^with an array (.*) set to (.*)$")
-    public void add_flight_attribute_array(String key, JSONArray value) {
-        flight.put(key.trim(),value);  }
-    
+    public void add_flight_attribute_array(String key, String value) {
+        JSONArray arr = new JSONArray(value);
+        flight.put(key.trim(),arr);  }
+
     @Given("^with a boolean (.*) set to (.*)$")
     public void add_flight_attribute_boolean(String key, boolean value) {
         flight.put(key.trim(),value);  }
