@@ -128,9 +128,9 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
  garder l'interface *Document* pour le service de réservation d'avion et d'avoir une interface un peu plus rigide pour
  la demande de validation et l'envoi de mail de confirmation.
  
-  ### 6. Ajouts des serices additionels
+  ## 6. Ajouts des serices additionels
   
-  ## 1. Service reservation d'avion
+  ### 1. Service reservation d'avion
   Commencer par pull l'image docker :  docker pull iliasnaamane/document-vol  
   Ensuite exécuter le buil.sh et le start.sh
   doc du service : doc du service : https://github.com/iliasnaamane/microservices-uns/tree/master/services/vols
