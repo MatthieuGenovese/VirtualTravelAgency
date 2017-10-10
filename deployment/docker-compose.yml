@@ -36,6 +36,17 @@ services:
     ports:
       - "9080:8080"
 
+  cars:               # Cars, on port 9060
+    container_name: travel-cars
+    image: matthieugenovese/cars-team9
+    ports:
+      - "9060:9060"
+
+  hotels:
+    image: matthieugenovese/hotels-team1
+    ports:
+      - "8003:8080"
+
   vols-document:
      container_name: vols-document
      image: iliasnaamane/document-vol
