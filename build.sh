@@ -19,3 +19,11 @@ mvn -q clean package
 build rpc       travelagency/submittravel-rpc
 build resource  travelagency/cars-hotels-reservation-rest
 build document  travelagency/flightreservation-document
+
+cd ../integration
+
+build esb travelagency/esb
+
+cd ..
+
+build integration travelagency/travelagency-bus
