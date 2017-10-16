@@ -17,7 +17,7 @@ RUN chmod u+x ./install-deps.sh
 RUN ./install-deps.sh
 
 # Port exposition
-EXPOSE 8181 8101 1099 61616 44444
+EXPOSE 8181 8101 1099 61618 44444
 
 # Starting ServiceMix
 ENTRYPOINT ["./bin/servicemix"]

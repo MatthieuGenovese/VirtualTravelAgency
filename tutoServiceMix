@@ -1,0 +1,10 @@
+lancer service mix : se rendre dans le dossier apache-servicemix-7.0.1 puis lancer la commande ./bin/servicemix
+
+installer dep camel :  feature:install -u camel-csv camel-http camel-saxon camel-spring-ws camel-servlet camel-jackson
+
+ensuite pour compiler uniquement l'esb utilisez le script cpServiceMix.sh (attention pour qu'il fonctionne il faut quand meme avoir fait start.sh avant)
+
+pour copier le test dans le bon endroit, utilisez le script cp.sh
+
+
+

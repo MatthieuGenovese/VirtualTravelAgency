@@ -8,26 +8,13 @@ import java.util.ArrayList;
 public class Flight implements Serializable {
 
 
-    @JsonProperty("id")private String id;
 
     @JsonProperty("destination") private String destination;
 
     @JsonProperty("date")private String date;
 
-    @JsonProperty("isDirect")private boolean isDirect;
-
     @JsonProperty("price")private String price;
 
-    private ArrayList<String> stops;
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getDestination() {
         return destination;
@@ -45,13 +32,6 @@ public class Flight implements Serializable {
         this.date = date;
     }
 
-    public boolean isDirect() {
-        return isDirect;
-    }
-
-    public void setDirect(boolean direct) {
-        isDirect = direct;
-    }
 
     public String getPrice() {
         return price;
@@ -61,12 +41,5 @@ public class Flight implements Serializable {
         this.price = price;
     }
 
-    public ArrayList<String> getStops() {
-        return stops;
-    }
-
-    public void setStops(ArrayList<String> stops) {
-        this.stops = stops;
-    }
 
 }
