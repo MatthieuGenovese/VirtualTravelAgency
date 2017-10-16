@@ -3,6 +3,9 @@
 #PUSH=true
 PUSH=false
 
+
+mvn clean package
+
 cd services
 
 build() { # $1: directory, $2: image_name
@@ -13,7 +16,6 @@ build() { # $1: directory, $2: image_name
 }
 
 # Compile services code
-mvn -q clean package
 
 # Build docker images
 build rpc       travelagency/submittravel-rpc
