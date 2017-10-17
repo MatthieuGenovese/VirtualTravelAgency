@@ -1,1 +1,1 @@
-{ "event":"RETRIEVE", "id":"1" }
+One_Way_Price,Nice,Paris,2017-09-30,false

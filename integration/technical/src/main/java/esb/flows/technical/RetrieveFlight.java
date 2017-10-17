@@ -1,5 +1,8 @@
 package esb.flows.technical;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import esb.flows.technical.data.*;
 import esb.flows.technical.utils.CsvFormat;
 import org.apache.camel.Exchange;
@@ -7,6 +10,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +20,7 @@ import static esb.flows.technical.utils.Endpoints.*;
 public class RetrieveFlight extends RouteBuilder {
 
 
-    private static final ExecutorService WORKERS = Executors.newFixedThreadPool(5);
+    private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
     @Override
     public void configure() throws Exception {
         from(FILE_INPUT_DIRECTORY)
@@ -46,10 +50,9 @@ public class RetrieveFlight extends RouteBuilder {
                 .log("j'ai recu des trucs !")
                 .process(flightreq2a) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
                 .inOut(FLIGHTSERVICE_ENDPOINTA) // on envoit la requete au service et on récupère la réponse
-                //.unmarshal().json(JsonLibrary.Jackson, String.class)
-                //.process(answermika2flight)
-                //.unmarshal().json(JsonLibrary.Jackson, Flight.class)
-                //.marshal().json(JsonLibrary.Jackson)
+                .unmarshal().string()
+                .process(answerservicea2flight)
+                .marshal().json(JsonLibrary.Jackson)
                 .to(CAMEL_OUTPUT_TESTA) // on stocke la reponse (ici dans un fichier)
         ;
 
@@ -62,6 +65,9 @@ public class RetrieveFlight extends RouteBuilder {
                 .log("j'ai recu des trucs !" + body().toString())
                 .process(flightreq2b) // on traite tous les objets flight reçus
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
+                .unmarshal().string()
+                .process(answerserviceb2flight)
+                .marshal().json(JsonLibrary.Jackson)
                 .to(CAMEL_OUTPUT_TESTB)
         ;
     }
@@ -114,14 +120,100 @@ public class RetrieveFlight extends RouteBuilder {
     }]
     }*/
 
+    /*{"Flights": {"Outbound": {
+  "sorted_flights": [
+    {
+      "date": "12-10-2017",
+      "prix": 450,
+      "cmpny": "Ryanair",
+      "nb_escales": 1,
+      "destination": "Paris",
+      "rating": 2.5,
+      "duree": 4,
+      "id": 3,
+      "origine": "Nice"
+    },
+    {
+      "date": "12-10-2017",
+      "prix": 500,
+      "cmpny": "Ryanair",
+      "nb_escales": 1,
+      "destination": "Paris",
+      "rating": 3,
+      "duree": 4,
+      "id": 4,
+      "origine": "Nice"
+    },
+    {
+      "date": "12-10-2017",
+      "prix": 2555,
+      "cmpny": "AirFrance",
+      "nb_escales": 1,
+      "destination": "Paris",
+      "rating": 5,
+      "duree": 4,
+      "id": 2,
+      "origine": "Nice"
+    }
+  ],
+  "DATE": "12-10-2017",
+  "Number_of_Results": 3
+}}}*/
 
-    private static Processor answermika2flight = (Exchange exchange) -> {
-        String tmpStr =  (String) exchange.getIn().getBody();
+    private static Processor answerserviceb2flight = (Exchange exchange) -> { // transforme la liste de flight en un flight unique (le moins cher)
+
+        Flight resultat = new Flight();
+        try {
+            JsonParser jparser = new JsonParser();
+            JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
+            JsonObject json = obj.getAsJsonObject();
+            JsonElement l1 = json.get("Flights");
+            JsonObject l1bis = l1.getAsJsonObject();
+            JsonElement l2 = l1bis.get("Outbound");
+            JsonObject l2bis = l2.getAsJsonObject();
+            JsonElement l3 = l2bis.get("sorted_flights");
+            JsonArray list = l3.getAsJsonArray();
+            ArrayList<Flight> listFlight = new ArrayList<>();
+            for (JsonElement j : list) {
+                Flight flighttmp = new Flight();
+                JsonObject jsontmp = j.getAsJsonObject();
+                flighttmp.setPrice(jsontmp.get("prix").getAsString());
+                flighttmp.setDestination(jsontmp.get("destination").getAsString());
+                flighttmp.setDate(jsontmp.get("date").getAsString());
+                listFlight.add(flighttmp);
+            }
+            resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+            for (Flight f : listFlight) {
+                if (Integer.valueOf(f.getPrice()) < Integer.valueOf(resultat.getPrice())) {
+                    resultat = f;
+                }
+            }
+        }
+        catch(Exception e){
+            resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+            resultat.setDate("not found");
+            resultat.setDestination("not found");
+        }
+
+        exchange.getIn().setBody(resultat);
+
+    };
+
+
+    private static Processor answerservicea2flight = (Exchange exchange) -> {
+        String tmpStr = (String) exchange.getIn().getBody();
         String[] array = tmpStr.split("\"");
         Flight fl = new Flight();
-        fl.setDate(array[7]);
-        fl.setDestination(array[15]);
-        fl.setPrice(array[11]);
+        try {
+            fl.setDate(array[7]);
+            fl.setDestination(array[15]);
+            fl.setPrice(array[11]);
+        }
+        catch(IndexOutOfBoundsException e){
+            fl.setDate("not found");
+            fl.setDestination(("not found"));
+            fl.setPrice(String.valueOf(Integer.MAX_VALUE));
+        }
         exchange.getIn().setBody(fl);
     };
 
