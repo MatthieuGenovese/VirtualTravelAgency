@@ -23,31 +23,50 @@ public class RetrieveFlight extends RouteBuilder {
                 .routeId("csv-to-retrieve-req")
                 .routeDescription("Recupérer un avion a partir de son id")
                 .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
-                .split(body())
+                .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2flightreq)
                 .log("je suis passé par la")
-                .to(RETRIEVE_A_FLIGHT)
+                .to(FLIGHT_QUEUE) // tous les objetc flight sont ensuite mis dans la queue
         ;
 
-        from(RETRIEVE_A_FLIGHT)
-                .routeId("calling-registry")
+        from(FLIGHT_QUEUE)
+                .routeId("flight-queue")
+                .routeDescription("queue des demandes de vols")
+                .multicast() // on multicast sur les 2 transformateurs
+                    .to(RETRIEVE_A_FLIGHTA, RETRIEVE_A_FLIGHTB)
+        ;
+
+        from(RETRIEVE_A_FLIGHTA) // transforme des FlightRequest
+                .routeId("calling-flighta")
                 .routeDescription("transfert de l'activemq vers le service document")
-                .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+                .setHeader(Exchange.HTTP_METHOD, constant("POST")) // on choisis le type de requete (ici du POST en json)
                 .setHeader("Content-Type", constant("application/json"))
                 .setHeader("Accept", constant("application/json"))
                 .log("j'ai recu des trucs !")
-                .process(flightreq2mika)
-                .inOut(FLIGHTSERVICE_ENDPOINT)
+                .process(flightreq2a) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
+                .inOut(FLIGHTSERVICE_ENDPOINTA) // on envoit la requete au service et on récupère la réponse
                 //.unmarshal().json(JsonLibrary.Jackson, String.class)
                 //.process(answermika2flight)
                 //.unmarshal().json(JsonLibrary.Jackson, Flight.class)
                 //.marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_TEST)
+                .to(CAMEL_OUTPUT_TESTA) // on stocke la reponse (ici dans un fichier)
+        ;
+
+        from(RETRIEVE_A_FLIGHTB) // meme princique que RETRIEVE_A_FLIGHTA
+                .routeId("calling-flightb")
+                .routeDescription("transfert de l'activemq vers le service document")
+                .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+                .setHeader("Content-Type", constant("application/json"))
+                .setHeader("Accept", constant("application/json"))
+                .log("j'ai recu des trucs !" + body().toString())
+                .process(flightreq2b) // on traite tous les objets flight reçus
+                .inOut(FLIGHTSERVICE_ENDPOINTB)
+                .to(CAMEL_OUTPUT_TESTB)
         ;
     }
 
-    private static Processor csv2flightreq = (Exchange exchange) -> {
+    private static Processor csv2flightreq = (Exchange exchange) -> { // fonction qui transforme la map issu du csv en objets de type FlightRequest
         Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
         FlightRequest p =  new FlightRequest();
         p.setDate((String) data.get("date"));
@@ -58,7 +77,21 @@ public class RetrieveFlight extends RouteBuilder {
         exchange.getIn().setBody(p);
     };
 
-    private static Processor flightreq2mika = (Exchange exchange) -> {
+    /*{
+        "event": "One_Way_Price",
+            "Outbound_date": "12-10-2017",
+            "from" :"Nice",
+            "to" : "Paris"
+    }*/
+
+    private static Processor flightreq2b = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service b
+        FlightRequest fr = (FlightRequest) exchange.getIn().getBody();
+        String req = "{ \"event\": \"" + fr.getEvent() + "\", \"Outbound_date\": \""+fr.getDate()+"\",\"from\" :\"" +
+                fr.getOrigine() + "\",\"to\" :\"" + fr.getDestination() + "\"}";
+        exchange.getIn().setBody(req);
+    };
+
+    private static Processor flightreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service a
         FlightRequest fr = (FlightRequest) exchange.getIn().getBody();
         //{ "event": "LIST", "filter": { "destination":"Paris", "date":"2017-09-30", "stops":["Marseille", "Toulouse"] } }
         String req = "{ \"event\": \"LIST\", \"filter\": {\"destination\" : \"" +
