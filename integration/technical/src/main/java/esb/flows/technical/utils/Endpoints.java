@@ -3,11 +3,11 @@ package esb.flows.technical.utils;
 public class Endpoints {
 
     // file entrées / sorties de camel
-    public static final String FILE_INPUT_HOTEL    = "file:/home/lm203441?fileName=test2Hotel.csv";
-    public static final String FILE_INPUT_DIRECTORY    = "file:/home/lm203441?fileName=test2Flight.csv";
-    public static final String CAMEL_OUTPUT_TESTA    = "file:/home/lm203441?fileName=resFlight.txt";
-    public static final String CAMEL_OUTPUT_TESTB    = "file:/home/lm203441?fileName=resFlight2.txt";
-    public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:/home/lm203441?fileName=resHotel.txt";
+    public static final String FILE_INPUT_HOTEL    = "file:/..?fileName=test2Hotel.csv";
+    public static final String FILE_INPUT_DIRECTORY    = "file:/..?fileName=test2Flight.csv";
+    public static final String CAMEL_OUTPUT_TESTA    = "file:/..?fileName=resFlight.txt";
+    public static final String CAMEL_OUTPUT_TESTB    = "file:/..?fileName=resFlight2.txt";
+    public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:/..?fileName=resHotel.txt";
     public static final String LETTER_OUTPUT_DIR = "file:/servicemix/camel/output";
 
     // Internal message queues
