@@ -82,7 +82,7 @@ public class RetrieveFlight extends RouteBuilder {
         p.setOrigine((String) data.get("origine"));
         exchange.getIn().setBody(p);
     };
-
+//aaaa-mm-jj
     /*{
         "event": "One_Way_Price",
             "Outbound_date": "12-10-2017",
@@ -99,26 +99,14 @@ public class RetrieveFlight extends RouteBuilder {
 
     private static Processor flightreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service a
         FlightRequest fr = (FlightRequest) exchange.getIn().getBody();
+        String[] dateArray = fr.getDate().split("-");
+        String parseDate = (dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0]);
         //{ "event": "LIST", "filter": { "destination":"Paris", "date":"2017-09-30", "stops":["Marseille", "Toulouse"] } }
         String req = "{ \"event\": \"LIST\", \"filter\": {\"destination\" : \"" +
-                    fr.getDestination() +"\", \"date\":\"" + fr.getDate()+"\", \"isDirect\": " + fr.getIsDirect() +" } }";
+                    fr.getDestination() +"\", \"date\":\"" + parseDate+"\", \"isDirect\": " + fr.getIsDirect() +" } }";
         exchange.getIn().setBody(req);
 
     };
-    /*{
-        "size": 1,
-            "vols": [{
-        "date": "2017-09-30",
-                "price": "200",
-                "destination": "Paris",
-                "id": "1",
-                "stops": [
-        "Marseille",
-                "Toulouse"
-    ],
-        "isDirect": false
-    }]
-    }*/
 
     /*{"Flights": {"Outbound": {
   "sorted_flights": [
@@ -163,6 +151,9 @@ public class RetrieveFlight extends RouteBuilder {
     private static Processor answerserviceb2flight = (Exchange exchange) -> { // transforme la liste de flight en un flight unique (le moins cher)
 
         Flight resultat = new Flight();
+        resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+        resultat.setDate("not found");
+        resultat.setDestination("not found");
         try {
             JsonParser jparser = new JsonParser();
             JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
@@ -173,48 +164,89 @@ public class RetrieveFlight extends RouteBuilder {
             JsonObject l2bis = l2.getAsJsonObject();
             JsonElement l3 = l2bis.get("sorted_flights");
             JsonArray list = l3.getAsJsonArray();
-            ArrayList<Flight> listFlight = new ArrayList<>();
             for (JsonElement j : list) {
-                Flight flighttmp = new Flight();
                 JsonObject jsontmp = j.getAsJsonObject();
-                flighttmp.setPrice(jsontmp.get("prix").getAsString());
-                flighttmp.setDestination(jsontmp.get("destination").getAsString());
-                flighttmp.setDate(jsontmp.get("date").getAsString());
-                listFlight.add(flighttmp);
-            }
-            resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
-            for (Flight f : listFlight) {
-                if (Integer.valueOf(f.getPrice()) < Integer.valueOf(resultat.getPrice())) {
-                    resultat = f;
+                if(Integer.valueOf(jsontmp.get("prix").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setPrice(jsontmp.get("prix").getAsString());
+                    resultat.setDestination(jsontmp.get("destination").getAsString());
+                    resultat.setDate(jsontmp.get("date").getAsString());
                 }
             }
         }
         catch(Exception e){
-            resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
-            resultat.setDate("not found");
-            resultat.setDestination("not found");
+            exchange.getIn().setBody(resultat);
         }
 
         exchange.getIn().setBody(resultat);
 
     };
+     /*{
+  "size": 3,
+  "vols": [
+    {
+      "date": "2017-10-12",
+      "price": "300",
+      "destination": "Paris",
+      "id": "3",
+      "stops": [
+        "Marseille",
+        "Toulouse"
+      ],
+      "isDirect": false
+    },
+    {
+      "date": "2017-10-12",
+      "price": "350",
+      "destination": "Paris",
+      "id": "4",
+      "stops": [
+        "Marseille",
+        "Toulouse"
+      ],
+      "isDirect": false
+    },
+    {
+      "date": "2017-10-12",
+      "price": "350",
+      "destination": "Paris",
+      "id": "4",
+      "stops": [
+        "Marseille",
+        "Toulouse"
+      ],
+      "isDirect": false
+    }
+  ]
+}*/
 
 
     private static Processor answerservicea2flight = (Exchange exchange) -> {
-        String tmpStr = (String) exchange.getIn().getBody();
-        String[] array = tmpStr.split("\"");
-        Flight fl = new Flight();
+        Flight resultat = new Flight();
+        resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+        resultat.setDate("not found");
+        resultat.setDestination("not found");
         try {
-            fl.setDate(array[7]);
-            fl.setDestination(array[15]);
-            fl.setPrice(array[11]);
+            JsonParser jparser = new JsonParser();
+            JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
+            JsonObject json = obj.getAsJsonObject();
+            JsonElement l1 = json.get("vols");
+            JsonArray list = l1.getAsJsonArray();
+            System.out.println("j'ai transformé le json") ;
+            for(JsonElement j : list){
+                JsonObject jsontmp = j.getAsJsonObject();
+                if(Integer.valueOf(jsontmp.get("price").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsontmp.get("destination").getAsString());
+                    resultat.setDate(jsontmp.get("date").getAsString());
+                    resultat.setPrice(jsontmp.get("price").getAsString());
+                }
+
+            }
         }
-        catch(IndexOutOfBoundsException e){
-            fl.setDate("not found");
-            fl.setDestination(("not found"));
-            fl.setPrice(String.valueOf(Integer.MAX_VALUE));
+        catch(Exception e){
+            e.printStackTrace();
+            exchange.getIn().setBody(resultat);
         }
-        exchange.getIn().setBody(fl);
+        exchange.getIn().setBody(resultat);
     };
 
 }
