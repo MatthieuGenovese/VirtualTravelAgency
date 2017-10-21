@@ -51,10 +51,10 @@ public class RetrieveHotel extends RouteBuilder {
                 .process(hotelreq2a) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
                 .inOut(HOTELSERVICE_ENDPOINTA)
                 .log(HOTELSERVICE_ENDPOINTA)
-                //.unmarshal().string()
+                .unmarshal().string()
                 .log("MARSHALL")
-//                .process(answerservicea2flight)
-                //.marshal().json(JsonLibrary.Jackson)
+                .process(answerservicea2hotel)
+                .marshal().json(JsonLibrary.Jackson)
                 .to(CAMEL_OUTPUT_TESTHOTEL) // on stocke la reponse (ici dans un fichier)
         ;
     }
@@ -71,6 +71,34 @@ public class RetrieveHotel extends RouteBuilder {
         HotelReservation hr = (HotelReservation) exchange.getIn().getBody();
         exchange.getIn().setHeader(Exchange.HTTP_QUERY, "dest=" + hr.getDestination()+"&date="+hr.getDate());
         exchange.getIn().setBody(null);
+    };
+    
+    private static Processor answerservicea2hotel = (Exchange exchange) -> {
+        Hotel resultat = new Hotel();
+        resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+        resultat.setName("not found");
+        resultat.setDate("not found");
+        resultat.setDestination("not found");
+        try {
+            JsonParser jparser = new JsonParser();
+            JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
+            JsonArray json = obj.getAsJsonArray();
+            for(JsonElement j : json){
+                JsonObject jsontmp = j.getAsJsonObject();
+                if(Integer.valueOf(jsontmp.get("price").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsontmp.get("destination").getAsString());
+                    resultat.setName(jsontmp.get("name").getAsString());
+                    resultat.setDate(jsontmp.get("date").getAsString());
+                    resultat.setPrice(jsontmp.get("price").getAsString());
+                }
+
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            exchange.getIn().setBody(resultat);
+        }
+        exchange.getIn().setBody(resultat);
     };
         
         
