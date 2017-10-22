@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by Jeremy on 22/10/2017.
  */
-public class Car implements Serializable {
+public class Car implements Serializable, ItemInterface {
 
     @JsonProperty("destination") private String destination;
     @JsonProperty("date") private String date;

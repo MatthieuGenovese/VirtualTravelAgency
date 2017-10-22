@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Flight implements Serializable {
+public class Flight implements Serializable, ItemInterface {
 
 
 
