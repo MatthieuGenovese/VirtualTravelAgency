@@ -4,13 +4,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import esb.flows.technical.data.*;
-import esb.flows.technical.utils.CsvFormat;
+import esb.flows.technical.utils.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
-
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,8 +50,8 @@ public class RetrieveFlight extends RouteBuilder {
                 .inOut(FLIGHTSERVICE_ENDPOINTA) // on envoit la requete au service et on récupère la réponse
                 .unmarshal().string()
                 .process(answerservicea2flight)
-                .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_TESTA) // on stocke la reponse (ici dans un fichier)
+                //.marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_FLIGHT) // on stocke la reponse (ici dans un fichier)
         ;
 
         from(RETRIEVE_A_FLIGHTB) // meme princique que RETRIEVE_A_FLIGHTA
@@ -67,8 +65,19 @@ public class RetrieveFlight extends RouteBuilder {
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
                 .unmarshal().string()
                 .process(answerserviceb2flight)
+                //.marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_FLIGHT)
+        ;
+
+        from(AGGREG_FLIGHT)
+                .routeId("aggreg-flight")
+                .routeDescription("l'aggregator des avions")
+                .log("before aggreg" + body())
+                .aggregate(constant(true), new AggregationStrategy())
+                    .completionSize(2)
+                .log("after aggreg" + body())
                 .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_TESTB)
+                .to(CAMEL_OUTPUT_FINALFLIGHT)
         ;
     }
 

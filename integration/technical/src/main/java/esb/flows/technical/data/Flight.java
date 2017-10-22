@@ -41,5 +41,10 @@ public class Flight implements Serializable, ItemInterface {
         this.price = price;
     }
 
+    @Override
+    public String toString(){
+        return "dest : " + getDestination() + " date : " + getDate() + " prix : " + getPrice() + "\n";
+    }
+
 
 }
