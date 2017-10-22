@@ -22,20 +22,20 @@ services:
     ports:
       - "9070:8080"
 
-  integration-bus:  # To attach to this container at runtime: docker exec -it tcs-bus sh
-    container_name: travelagency-bus
-    image: travelagency/travelagency-bus
-    volumes:
-      - "./camel_input:/servicemix/camel/input"
-      - "./camel_output:/servicemix/camel/output"
-    ports:
-      - "8181:8181"
-      - "8101:8101"
-      - "1099:1099"
-      - "61618:61618"
-      - "44444:44444"
-    depends_on:
-      - flightreservation-registry
+#  integration-bus:  # To attach to this container at runtime: docker exec -it tcs-bus sh
+#    container_name: travelagency-bus
+#    image: travelagency/travelagency-bus
+#    volumes:
+#      - "./camel_input:/servicemix/camel/input"
+#      - "./camel_output:/servicemix/camel/output"
+#    ports:
+#      - "8181:8181"
+#      - "8101:8101"
+#      - "1099:1099"
+#      - "61618:61618"
+#      - "44444:44444"
+#    depends_on:
+#      - flightreservation-registry
 
   cars-hotels-reservation:
     container_name: cars-hotels-reservation
