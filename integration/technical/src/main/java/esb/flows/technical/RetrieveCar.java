@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import esb.flows.technical.data.Car;
 import esb.flows.technical.data.CarRequest;
-import esb.flows.technical.data.HotelReservation;
 import esb.flows.technical.utils.CsvFormat;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExecutorServiceAware;
@@ -19,6 +18,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static esb.flows.technical.utils.Endpoints.*;
+
 /**
  * Created by Jeremy on 22/10/2017.
  */
@@ -26,7 +27,7 @@ public class RetrieveCar extends RouteBuilder {
 
     //TODO Mettre les endpoints qui vont bien + Terminer Route.
 
-    private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2)
+    private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
 
 
     @Override
@@ -42,7 +43,7 @@ public class RetrieveCar extends RouteBuilder {
                 .to(CAR_QUEUE)
         ;
 
-        from(HOTEL_QUEUE)
+        from(CAR_QUEUE)
                 .routeId("car-queue")
                 .routeDescription("queue des demandes de voitures")
                 .to(RETRIEVE_CAR_A)
@@ -69,7 +70,7 @@ public class RetrieveCar extends RouteBuilder {
     }
 
     private static Processor csv2Carreq = (Exchange exchange) -> {
-        Map<String, Object> data = (Map <String, Object>) exchange.getIn().getBody());
+        Map<String, Object> data = (Map <String, Object>) exchange.getIn().getBody();
         CarRequest p = new CarRequest();
         p.setDate((String) data.get("date"));
         p.setDestination((String) data.get("destination"));
