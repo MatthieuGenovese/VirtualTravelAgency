@@ -11,7 +11,7 @@ public class Hotel implements Serializable, ItemInterface {
 
     @JsonProperty("destination") private String destination;
 
-    @JsonProperty("date") private String date;
+//    @JsonProperty("date") private String date;
 
     @JsonProperty("price") private String price;
 
@@ -31,13 +31,13 @@ public class Hotel implements Serializable, ItemInterface {
         this.destination = destination;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
+//    public String getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(String date) {
+//        this.date = date;
+//    }
 
 
     public String getPrice() {
@@ -46,6 +46,11 @@ public class Hotel implements Serializable, ItemInterface {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" + "name=" + name + ", destination=" + destination + ", price=" + price + '}';
     }
 
 

@@ -11,6 +11,7 @@ public class Endpoints {
     public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:..?fileName=resHotel.txt";
     public static final String CAMEL_OUTPUT_CARFILE    = "file:..?fileName=resCar.txt";
     public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
+    public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";
     public static final String LETTER_OUTPUT_DIR = "file:/servicemix/camel/output";
 
     // Internal message queues
@@ -22,13 +23,16 @@ public class Endpoints {
     public static final String RETRIEVE_A_FLIGHTA = "direct:retrieve-a-flighta";
     public static final String RETRIEVE_A_FLIGHTB = "direct:retrieve-a-flightb";
     public static final String RETRIEVE_A_HOTELA = "direct:retrieve-a-hotela";
+    public static final String RETRIEVE_A_HOTELB = "direct:retrieve-a-hotelb";
     public static final String AGGREG_FLIGHT = "direct:agg-flight";
+    public static final String AGGREG_HOTEL = "direct:agg-hotel";
     public static final String RETRIEVE_CAR_A = "direct:retrieve-car-a";
     public static final String COMPUTE_TAXES    = "direct:handle-a-citizen";
 
     // External partners
     public static final String FLIGHTSERVICE_ENDPOINTA  = "http://localhost:9080/flightreservation-service-document/registry";
     public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
+    public static final String HOTELSERVICE_ENDPOINTB  = "http://localhost:8003/tcs-hotel-service/hotels";
     public static final String CARSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/cars";
     public static final String FLIGHTSERVICE_ENDPOINTB = "http://localhost:9030/vols/webapi/vols";
 

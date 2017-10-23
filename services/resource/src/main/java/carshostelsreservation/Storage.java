@@ -69,6 +69,7 @@ public class Storage {
         Storage.createHotel("Hotel1", 180, "28/12/2017", "Paris");
         Storage.createHotel("Hotel2", 220, "28/11/2017", "Lyon");
         Storage.createHotel("Hotel3", 250, "28/11/2017", "Paris");
+        Storage.createHotel("Hotel4", 30, "28/11/2017", "Ipaba");
         Storage.createCar("Car1", 60, "28/11/2017", "Lyon");
         Storage.createCar("Car2", 80, "28/12/2017", "Paris");
         Storage.createCar("Car3", 70, "28/11/2017", "Paris");

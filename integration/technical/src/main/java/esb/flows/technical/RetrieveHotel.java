@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import esb.flows.technical.data.*;
-import esb.flows.technical.utils.CsvFormat;
+import esb.flows.technical.utils.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -37,7 +37,8 @@ public class RetrieveHotel extends RouteBuilder {
         from(HOTEL_QUEUE)
                 .routeId("hotel-queue")
                 .routeDescription("queue des demandes d'hotels")
-                .to(RETRIEVE_A_HOTELA)
+                .multicast() // on multicast sur les 2 transformateurs
+                    .to(RETRIEVE_A_HOTELA, RETRIEVE_A_HOTELB)
         ;
         
         from(RETRIEVE_A_HOTELA) // transforme des HotelReservation
@@ -54,8 +55,37 @@ public class RetrieveHotel extends RouteBuilder {
                 .unmarshal().string()
                 .log("MARSHALL")
                 .process(answerservicea2hotel)
+//                .marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_HOTEL) // on stocke la reponse (ici dans un fichier)
+        ;
+        
+        from(RETRIEVE_A_HOTELB) // transforme des HotelReservation
+                .routeId("calling-hotelb")
+                .routeDescription("transfert de l'activemq vers le service rest")
+                .setHeader(Exchange.HTTP_METHOD, constant("GET")) // on choisis le type de requete (ici du POST en json)
+//                .setHeader("Content-Type", constant("application/json"))
+                .setHeader("Accept", constant("application/json"))
+                
+                .log("j'ai recu des trucs hotels !")
+                .process(hotelreq2b) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
+                .inOut(HOTELSERVICE_ENDPOINTB)
+                .log(HOTELSERVICE_ENDPOINTB)
+                .unmarshal().string()
+                .log("MARSHALL")
+                .process(answerserviceb2hotel)
+//                .marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_HOTEL) // on stocke la reponse (ici dans un fichier)
+        ;
+        
+        from(AGGREG_HOTEL)
+                .routeId("aggreg-hotel")
+                .routeDescription("l'aggregator des hotels")
+                .log("before aggreg" + body())
+                .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
+                    .completionSize(2)
+                .log("after aggreg" + body())
                 .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_TESTHOTEL) // on stocke la reponse (ici dans un fichier)
+                .to(CAMEL_OUTPUT_FINALHOTEL)
         ;
     }
         
@@ -73,11 +103,17 @@ public class RetrieveHotel extends RouteBuilder {
         exchange.getIn().setBody(null);
     };
     
+    private static Processor hotelreq2b = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service b
+        HotelReservation hr = (HotelReservation) exchange.getIn().getBody();
+        exchange.getIn().setHeader(Exchange.HTTP_QUERY, "destination=" + hr.getDestination()+"&date="+hr.getDate());
+        exchange.getIn().setBody(null);
+    };
+    
     private static Processor answerservicea2hotel = (Exchange exchange) -> {
         Hotel resultat = new Hotel();
         resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
         resultat.setName("not found");
-        resultat.setDate("not found");
+//        resultat.setDate("not found");
         resultat.setDestination("not found");
         try {
             JsonParser jparser = new JsonParser();
@@ -88,11 +124,41 @@ public class RetrieveHotel extends RouteBuilder {
                 if(Integer.valueOf(jsontmp.get("price").getAsString()) < Integer.valueOf(resultat.getPrice())){
                     resultat.setDestination(jsontmp.get("destination").getAsString());
                     resultat.setName(jsontmp.get("name").getAsString());
-                    resultat.setDate(jsontmp.get("date").getAsString());
+//                    resultat.setDate(jsontmp.get("date").getAsString());
                     resultat.setPrice(jsontmp.get("price").getAsString());
                 }
 
             }
+            System.out.println(resultat.toString());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            exchange.getIn().setBody(resultat);
+        }
+        exchange.getIn().setBody(resultat);
+    };
+    
+    private static Processor answerserviceb2hotel = (Exchange exchange) -> {
+        Hotel resultat = new Hotel();
+        resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+        resultat.setName("not found");
+//        resultat.setDate("not found");
+        resultat.setDestination("not found");
+        try {
+            JsonParser jparser = new JsonParser();
+            JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
+            JsonArray json = obj.getAsJsonArray();
+            for(JsonElement j : json){
+                JsonObject jsontmp = j.getAsJsonObject();
+                if(Integer.valueOf(jsontmp.get("roomCost").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsontmp.get("city").getAsString());
+                    resultat.setName(jsontmp.get("name").getAsString());
+//                    resultat.setDate(jsontmp.get("date").getAsString());
+                    resultat.setPrice(jsontmp.get("roomCost").getAsString());
+                }
+
+            }
+            System.out.println(resultat.toString());
         }
         catch(Exception e){
             e.printStackTrace();
