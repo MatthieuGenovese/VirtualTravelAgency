@@ -73,7 +73,7 @@ public class RetrieveFlight extends RouteBuilder {
                 .routeId("aggreg-flight")
                 .routeDescription("l'aggregator des avions")
                 .log("before aggreg" + body())
-                .aggregate(constant(true), new AggregationStrategy())
+                .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
                 .log("after aggreg" + body())
                 .marshal().json(JsonLibrary.Jackson)
