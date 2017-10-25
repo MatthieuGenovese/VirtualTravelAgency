@@ -53,7 +53,7 @@ services:
 
   cars:               # Cars, on port 9060
     container_name: travel-cars
-    image: matthieugenovese/cars-team9
+    image: matthieugenovese/travel-cars
     ports:
       - "9060:9060"
 

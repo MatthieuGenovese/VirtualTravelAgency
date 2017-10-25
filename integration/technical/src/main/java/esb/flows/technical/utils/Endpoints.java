@@ -26,7 +26,9 @@ public class Endpoints {
     public static final String RETRIEVE_A_HOTELB = "direct:retrieve-a-hotelb";
     public static final String AGGREG_FLIGHT = "direct:agg-flight";
     public static final String AGGREG_HOTEL = "direct:agg-hotel";
+    public static final String AGGREG_CAR = "direct:agg-car";
     public static final String RETRIEVE_CAR_A = "direct:retrieve-car-a";
+    public static final String RETRIEVE_CAR_B = "direct:retrieve-car-b";
     public static final String COMPUTE_TAXES    = "direct:handle-a-citizen";
 
     // External partners
@@ -34,6 +36,7 @@ public class Endpoints {
     public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
     public static final String HOTELSERVICE_ENDPOINTB  = "http://localhost:8003/tcs-hotel-service/hotels";
     public static final String CARSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/cars";
+    public static final String CARSERVICE_ENDPOINTB = "http://localhost:9060/cars";
     public static final String FLIGHTSERVICE_ENDPOINTB = "http://localhost:9030/vols/webapi/vols";
 
     // Dead letters channel

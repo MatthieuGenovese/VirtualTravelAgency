@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import esb.flows.technical.data.Car;
 import esb.flows.technical.data.CarRequest;
 import esb.flows.technical.utils.CsvFormat;
+import esb.flows.technical.utils.FlightCarHotelAggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExecutorServiceAware;
 import org.apache.camel.Processor;
@@ -50,7 +51,7 @@ public class RetrieveCar extends RouteBuilder {
         ;
 
         from(RETRIEVE_CAR_A)
-                .routeId("transfert de la activemq vers le service en ressources")
+                .routeId("transfert de la activemq vers le serviceA en ressources")
                 .routeDescription("trans")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET"))
                 .setHeader("Accept", constant("application/json"))
@@ -59,12 +60,41 @@ public class RetrieveCar extends RouteBuilder {
                 .process(carreq2a)
                 .inOut(CARSERVICE_ENDPOINTA)
                 .log(CARSERVICE_ENDPOINTA)
-                .unmarshal().string()
+                //.unmarshal().string()
                 .log("MARSHAL")
-                .process(answerservicea2Car)
+                //.process(answerservicea2Car)
+                //.marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_CAR)
+                ;
+
+        from(RETRIEVE_CAR_B)
+                .routeId("transfert de la activemq vers le serviceB en ressources")
+                .routeDescription("trans")
+                .setHeader(Exchange.HTTP_METHOD, constant("GET"))
+                .setHeader("Accept",constant("application/json"))
+
+                .log("Reception des cars serviceB")
+                .process(carreq2b)
+                .inOut(CARSERVICE_ENDPOINTB)
+                .log(CARSERVICE_ENDPOINTB)
+                .process(answerserviceb2Car)
+                .marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_CAR)
+                ;
+
+        from(AGGREG_CAR)
+                .routeId("aggreg-car")
+                .routeDescription("Aggregation des cars")
+                .log("Before agreg" + body())
+                .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
+                    .completionSize(2)
+                .log("After agreg" + body())
                 .marshal().json(JsonLibrary.Jackson)
                 .to(CAMEL_OUTPUT_CARFILE)
                 ;
+
+
+
 
 
     }
@@ -74,6 +104,8 @@ public class RetrieveCar extends RouteBuilder {
         CarRequest p = new CarRequest();
         p.setDate((String) data.get("date"));
         p.setDestination((String) data.get("destination"));
+        p.setEnd((String) data.get("end"));
+        p.setSort((String) data.get("sort"));
         exchange.getIn().setBody(p);
     };
 
@@ -82,14 +114,71 @@ public class RetrieveCar extends RouteBuilder {
         exchange.getIn().setHeader(Exchange.HTTP_QUERY, "dest=" + cr.getDestination() + "&date=" + cr.getDate());
         exchange.getIn().setBody(null);
 
+
     };
 
+    private static Processor carreq2b = (Exchange exchange) -> {
+        CarRequest cr = (CarRequest) exchange.getIn().getBody();
+        exchange.getIn().setHeader(Exchange.HTTP_QUERY, "dest=" + cr.getDestination() + "&date=" + cr.getDate() + "&end" + cr.getEnd() + "&sort=" + cr.getSort());
+        exchange.getIn().setBody(null);
+    };
+
+    /*
+    [
+  {
+    "date": "28/11/2017",
+    "price": 60,
+    "name": "Car1",
+    "destination": "Lyon"
+  },
+  {
+    "date": "28/11/2017",
+    "price": 70,
+    "name": "Car3",
+    "destination": "Paris"
+  },
+  {
+    "date": "28/12/2017",
+    "price": 80,
+    "name": "Car2",
+    "destination": "Paris"
+  }
+]
+     */
     private static Processor answerservicea2Car = (Exchange exchange) -> {
         Car resultat = new Car();
         resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
         resultat.setName("not found");
         resultat.setDate("not found");
-        resultat.setDestination("not foudnd");
+        resultat.setDestination("not found");
+        try {
+            JsonParser jparser = new JsonParser();
+            JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
+            JsonArray json = obj.getAsJsonArray();
+            for(JsonElement j : json){
+                JsonObject jsontmp = j.getAsJsonObject();
+                if(Integer.valueOf(jsontmp.get("price").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsontmp.get("destination").getAsString());
+                    resultat.setName(jsontmp.get("name").getAsString());
+                    resultat.setDate(jsontmp.get("date").getAsString());
+                    resultat.setPrice(jsontmp.get("price").getAsString());
+                }
+
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            exchange.getIn().setBody(resultat);
+        }
+        exchange.getIn().setBody(resultat);
+    };
+
+    private static Processor answerserviceb2Car = (Exchange exchange) -> {
+        Car resultat = new Car();
+        resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
+        resultat.setName("not found");
+        resultat.setDate("not found");
+        resultat.setDestination("not found");
         try {
             JsonParser jparser = new JsonParser();
             JsonElement obj = jparser.parse((String) exchange.getIn().getBody());
