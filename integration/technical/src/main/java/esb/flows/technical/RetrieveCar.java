@@ -173,6 +173,27 @@ public class RetrieveCar extends RouteBuilder {
         exchange.getIn().setBody(resultat);
     };
 
+   /* {
+        "id": 64,
+            "make": "Hyundai",
+            "model": "Elantra",
+            "year": 1998,
+            "agency": {
+        "name": "Feedspan",
+                "address": "34779 Harper Street",
+                "city": "Fontenay-sous-Bois",
+                "country": "France"
+    },
+        "bookings": [
+        {
+            "id": "5295aa7d-1ec8-4f44-82b7-4f3284689169",
+                "start": "2017-05-20T17:25:35Z",
+                "end": "2017-07-30T01:49:14Z"
+        }
+    ],
+        priceperday: 32.8
+    }*/
+
     private static Processor answerserviceb2Car = (Exchange exchange) -> {
         Car resultat = new Car();
         resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
@@ -185,11 +206,13 @@ public class RetrieveCar extends RouteBuilder {
             JsonArray json = obj.getAsJsonArray();
             for(JsonElement j : json){
                 JsonObject jsontmp = j.getAsJsonObject();
-                if(Integer.valueOf(jsontmp.get("price").getAsString()) < Integer.valueOf(resultat.getPrice())){
-                    resultat.setDestination(jsontmp.get("destination").getAsString());
-                    resultat.setName(jsontmp.get("name").getAsString());
-                    resultat.setDate(jsontmp.get("date").getAsString());
-                    resultat.setPrice(jsontmp.get("price").getAsString());
+                JsonObject jsonagency = jsontmp.getAsJsonObject("agency");
+                JsonObject jsonbooking = jsontmp.getAsJsonObject("bookings");
+                if(Integer.valueOf(jsontmp.get("priceperday").getAsString()) < Integer.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsonagency.get("country").getAsString());
+                    resultat.setName(jsontmp.get("make").getAsString());
+                    resultat.setDate(jsonbooking.get("start").getAsString());
+                    resultat.setPrice(jsontmp.get("priceperday").getAsString());
                 }
 
             }
