@@ -208,12 +208,13 @@ public class RetrieveCar extends RouteBuilder {
             JsonArray json = obj.getAsJsonArray();
             for(JsonElement j : json){
                 JsonObject jsontmp = j.getAsJsonObject();
-                JsonObject jsonagency = jsontmp.getAsJsonObject("agency");
-                JsonObject jsonbooking = jsontmp.getAsJsonObject("bookings");
-                if(Integer.valueOf(jsontmp.get("priceperday").getAsString()) < Integer.valueOf(resultat.getPrice())){
-                    resultat.setDestination(jsonagency.get("country").getAsString());
+                JsonElement jsontmp2 = jsontmp.get("agency");
+                JsonElement jsontmp3 = jsontmp.get("bookings");
+
+                if(Float.valueOf(jsontmp.get("priceperday").getAsString()) < Float.valueOf(resultat.getPrice())){
+                    resultat.setDestination(jsontmp2.getAsJsonObject().get("city").getAsString());
                     resultat.setName(jsontmp.get("make").getAsString());
-                    resultat.setDate(jsonbooking.get("start").getAsString());
+                    //resultat.setDate(jsontmp3.getAsJsonArray().get(1).getAsJsonObject().getAsString());
                     resultat.setPrice(jsontmp.get("priceperday").getAsString());
                 }
 
