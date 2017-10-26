@@ -47,7 +47,8 @@ public class RetrieveCar extends RouteBuilder {
         from(CAR_QUEUE)
                 .routeId("car-queue")
                 .routeDescription("queue des demandes de voitures")
-                .to(RETRIEVE_CAR_A)
+                .multicast()
+                .to(RETRIEVE_CAR_A, RETRIEVE_CAR_B)
         ;
 
         from(RETRIEVE_CAR_A)
@@ -60,9 +61,9 @@ public class RetrieveCar extends RouteBuilder {
                 .process(carreq2a)
                 .inOut(CARSERVICE_ENDPOINTA)
                 .log(CARSERVICE_ENDPOINTA)
-                //.unmarshal().string()
+                .unmarshal().string()
                 .log("MARSHAL")
-                //.process(answerservicea2Car)
+                .process(answerservicea2Car)
                 //.marshal().json(JsonLibrary.Jackson)
                 .to(AGGREG_CAR)
                 ;
@@ -77,8 +78,9 @@ public class RetrieveCar extends RouteBuilder {
                 .process(carreq2b)
                 .inOut(CARSERVICE_ENDPOINTB)
                 .log(CARSERVICE_ENDPOINTB)
+                .unmarshal().string()
                 .process(answerserviceb2Car)
-                .marshal().json(JsonLibrary.Jackson)
+                //.marshal().json(JsonLibrary.Jackson)
                 .to(AGGREG_CAR)
                 ;
 
