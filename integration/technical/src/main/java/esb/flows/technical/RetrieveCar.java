@@ -218,7 +218,8 @@ public class RetrieveCar extends RouteBuilder {
                         System.out.println(jsontmp3.getAsJsonArray().get(0).getAsJsonObject().get("start").getAsString());
                         resultat.setDate(jsontmp3.getAsJsonArray().get(0).getAsJsonObject().get("start").getAsString());
                     }
-                    resultat.setPrice(jsontmp.get("priceperday").getAsString());
+
+                    resultat.setPrice(jsontmp.get("priceperday").getAsString().split("\\.")[0]);
                 }
 
             }
