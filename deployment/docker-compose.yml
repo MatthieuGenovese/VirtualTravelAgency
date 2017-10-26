@@ -64,7 +64,7 @@ services:
 
   vols-document:
      container_name: vols-document
-     image: iliasnaamane/document-vol
+     image: matthieugenovese/document-vol
      ports:
        - "9030:8080"
       

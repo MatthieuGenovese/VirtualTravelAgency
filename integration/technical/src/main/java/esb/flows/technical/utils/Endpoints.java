@@ -12,6 +12,7 @@ public class Endpoints {
     public static final String CAMEL_OUTPUT_CARFILE    = "file:..?fileName=resCar.txt";
     public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
     public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";
+    public static final String CAMEL_FINAL = "file:..?fileName=final.txt";
     public static final String LETTER_OUTPUT_DIR = "file:/servicemix/camel/output";
 
     // Internal message queues
@@ -29,6 +30,7 @@ public class Endpoints {
     public static final String AGGREG_CAR = "direct:agg-car";
     public static final String RETRIEVE_CAR_A = "direct:retrieve-car-a";
     public static final String RETRIEVE_CAR_B = "direct:retrieve-car-b";
+    public static final String AGGREG_TRAVELREQUEST = "direct:aggreg-final-req";
     public static final String COMPUTE_TAXES    = "direct:handle-a-citizen";
 
     // External partners

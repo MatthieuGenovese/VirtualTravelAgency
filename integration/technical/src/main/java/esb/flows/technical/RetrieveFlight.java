@@ -76,8 +76,10 @@ public class RetrieveFlight extends RouteBuilder {
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
                 .log("after aggreg" + body())
-                .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_FINALFLIGHT)
+
+                .setHeader("type", constant("flight"))
+                //.marshal().json(JsonLibrary.Jackson)
+                .to(AGGREG_TRAVELREQUEST)
         ;
     }
 

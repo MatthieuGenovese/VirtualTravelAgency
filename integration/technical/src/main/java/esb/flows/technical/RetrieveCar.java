@@ -56,7 +56,6 @@ public class RetrieveCar extends RouteBuilder {
                 .routeDescription("trans")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET"))
                 .setHeader("Accept", constant("application/json"))
-
                 .log("Reception des cars du serviceA")
                 .process(carreq2a)
                 .inOut(CARSERVICE_ENDPOINTA)
@@ -64,7 +63,6 @@ public class RetrieveCar extends RouteBuilder {
                 .unmarshal().string()
                 .log("MARSHAL")
                 .process(answerservicea2Car)
-                //.marshal().json(JsonLibrary.Jackson)
                 .to(AGGREG_CAR)
                 ;
 
@@ -73,14 +71,12 @@ public class RetrieveCar extends RouteBuilder {
                 .routeDescription("trans")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET"))
                 .setHeader("Accept",constant("application/json"))
-
                 .log("Reception des cars serviceB")
                 .process(carreq2b)
                 .inOut(CARSERVICE_ENDPOINTB)
                 .log(CARSERVICE_ENDPOINTB)
                 .unmarshal().string()
                 .process(answerserviceb2Car)
-                //.marshal().json(JsonLibrary.Jackson)
                 .to(AGGREG_CAR)
                 ;
 
@@ -91,8 +87,9 @@ public class RetrieveCar extends RouteBuilder {
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
                 .log("After agreg" + body())
-                .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_CARFILE)
+                //.marshal().json(JsonLibrary.Jackson)
+                .setHeader("type", constant("car"))
+                .to(AGGREG_TRAVELREQUEST)
                 ;
 
 

@@ -84,8 +84,9 @@ public class RetrieveHotel extends RouteBuilder {
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
                 .log("after aggreg" + body())
-                .marshal().json(JsonLibrary.Jackson)
-                .to(CAMEL_OUTPUT_FINALHOTEL)
+                //.marshal().json(JsonLibrary.Jackson)
+                .setHeader("type", constant("hotel"))
+                .to(AGGREG_TRAVELREQUEST)
         ;
     }
         
