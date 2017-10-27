@@ -8,7 +8,7 @@ import esb.flows.technical.utils.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.dataformat.JsonLibrary;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +21,7 @@ public class RetrieveFlight extends RouteBuilder {
     private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
     @Override
     public void configure() throws Exception {
-        from(FILE_INPUT_DIRECTORY)
+        from(FILE_INPUT_FLIGHT)
                 .routeId("csv-to-retrieve-req")
                 .routeDescription("Recupérer un avion a partir de son id")
                 .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
@@ -110,6 +110,7 @@ public class RetrieveFlight extends RouteBuilder {
 
     private static Processor flightreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service a
         FlightRequest fr = (FlightRequest) exchange.getIn().getBody();
+        System.out.println(fr);
         String[] dateArray = fr.getDate().split("-");
         String parseDate = (dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0]);
         //{ "event": "LIST", "filter": { "destination":"Paris", "date":"2017-09-30", "stops":["Marseille", "Toulouse"] } }
@@ -185,6 +186,7 @@ public class RetrieveFlight extends RouteBuilder {
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             exchange.getIn().setBody(resultat);
         }
 
@@ -254,6 +256,7 @@ public class RetrieveFlight extends RouteBuilder {
             }
         }
         catch(Exception e){
+            System.out.println(exchange.getIn().getBody().toString() + " \n" + exchange.getIn().getHeaders());
             e.printStackTrace();
             exchange.getIn().setBody(resultat);
         }
