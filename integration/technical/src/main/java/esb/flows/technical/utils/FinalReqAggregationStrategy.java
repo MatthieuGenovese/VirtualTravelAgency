@@ -9,6 +9,17 @@ public class FinalReqAggregationStrategy  implements AggregationStrategy {
     public Exchange aggregate(Exchange oldEx, Exchange newEx) {
         if(oldEx == null){
             TravelAgencyRequest tr = new TravelAgencyRequest();
+            switch(newEx.getIn().getHeader("type").toString()){
+                case "car" :
+                    tr.setCarReq((Car) newEx.getIn().getBody());
+                    break;
+                case "hotel" :
+                    tr.setHotelReq((Hotel) newEx.getIn().getBody());
+                    break;
+                case "flight" :
+                    tr.setFlightReq((Flight) newEx.getIn().getBody());
+                    break;
+            }
             oldEx = newEx;
             oldEx.getIn().setBody(tr);
         }

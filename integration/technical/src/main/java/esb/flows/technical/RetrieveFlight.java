@@ -110,7 +110,6 @@ public class RetrieveFlight extends RouteBuilder {
 
     private static Processor flightreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service a
         FlightRequest fr = (FlightRequest) exchange.getIn().getBody();
-        System.out.println(fr);
         String[] dateArray = fr.getDate().split("-");
         String parseDate = (dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0]);
         //{ "event": "LIST", "filter": { "destination":"Paris", "date":"2017-09-30", "stops":["Marseille", "Toulouse"] } }

@@ -13,12 +13,12 @@ public class Endpoints {
     public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
     public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";*/
     public static final String CAMEL_FINAL = "file:..?fileName=final.txt";
-    //public static final String LETTER_OUTPUT_DIR = "file:/servicemix/camel/output";
 
     // Internal message queues
     public static final String FLIGHT_QUEUE = "activemq:flight-queue";
     public static final String HOTEL_QUEUE = "activemq:hotel-queue";
     public static final String CAR_QUEUE = "activemq:car-queue";
+    public static final String REQUETE_QUEUE = "activemq:requete-manager-queue";
 
     // Direct endpoints (flow modularity without a message queue overhead)
     public static final String RETRIEVE_A_FLIGHTA = "direct:retrieve-a-flighta";
