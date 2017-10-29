@@ -40,7 +40,7 @@ Ensuite exécuter la commande ./start.sh pour lancer les services.
   Envoyer des fichiers JSON en body pour utiliser l'application (exemples de fichiers dans le readme de services/document)
   
   
-### 3. Partie Soumettre le voyage 
+### 3. Partie Soumettre le voyage (mettre à jour)
 
 L'employé envoie une requete avec :
   http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService?wsdl
@@ -134,3 +134,10 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   Commencer par pull l'image docker :  docker pull iliasnaamane/document-vol  
   Ensuite exécuter le buil.sh et le start.sh
   doc du service : doc du service : https://github.com/iliasnaamane/microservices-uns/tree/master/services/vols
+
+
+  ### 2. Service Gestion des dépenses de l'employé
+  
+ Pour se service nous avons choisis "document" car le nombres informations qu'utilise se service n'est pas connu à l'avance.
+  En effet, selon l'employé , le nombre de dépense varie et ne peut etre défini  : il faut donc servir un service très adaptable au niveau des données manipulées. 
+  Les données transitant par JSON, le traitement côté back-end en est facilité.
