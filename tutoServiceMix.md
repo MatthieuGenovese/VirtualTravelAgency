@@ -1,7 +1,7 @@
 TUTO SERVICE MIX POUR BONOBO
 
 lancer service mix :
-t?l?charger et d?zipper apache-service mix : http://www.apache.org/dyn/closer.lua/servicemix/servicemix-7/7.0.1/apache-servicemix-7.0.1.zip
+télécharger et dézipper apache-service mix : http://www.apache.org/dyn/closer.lua/servicemix/servicemix-7/7.0.1/apache-servicemix-7.0.1.zip
 se rendre dans le dossier apache-servicemix-7.0.1 puis lancer la commande ./bin/servicemix
 
 installer dep camel :
