@@ -324,7 +324,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(RETRIEVE_A_HOTELA).expectedMessageCount(2);
         mock(RETRIEVE_A_HOTELB).expectedMessageCount(2);
-        template.sendBody(RETRIEVE_A_HOTELA, carReq);
+        template.sendBody(RETRIEVE_A_HOTELA, hotelReq);
 
         mock(HOTELSERVICE_ENDPOINTA).assertIsSatisfied();
 
@@ -340,7 +340,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
         assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());*/
 
-        template.sendBody(RETRIEVE_A_HOTELB, carReq);
+        template.sendBody(RETRIEVE_A_HOTELB, hotelReq);
 
         mock(HOTELSERVICE_ENDPOINTB).assertIsSatisfied();
 
