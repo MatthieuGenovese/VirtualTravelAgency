@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static esb.flows.technical.utils.Endpoints.*;
+import static esb.flows.technical.utils.Endpoints.CARSERVICE_ENDPOINTB;
 import static org.apache.camel.builder.Builder.constant;
 
 public class CallExternalPartnersTest extends ActiveMQTest {
@@ -26,6 +27,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
 
 
 
+    //on definie ici les endpoint non testé (on mettra leurs réponses en durs)
     @Override
     public String isMockEndpointsAndSkip() {
         return FLIGHTSERVICE_ENDPOINTA + "|" + FLIGHTSERVICE_ENDPOINTB + "|" + CARSERVICE_ENDPOINTA  + "|" + CARSERVICE_ENDPOINTB  + "|" +
@@ -33,6 +35,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
                 ;
     }
 
+    //on définie ici les endpoints à tester
     @Override
     public String isMockEndpoints() {
         return DEATH_POOL +
@@ -45,6 +48,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         ;
     }
 
+    //On vérifie que le context d'execution est bien mocké
     @Test
     public void testExecutionContext() throws Exception {
         isAvailableAndMocked(FLIGHTSERVICE_ENDPOINTA);
@@ -66,6 +70,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
     }
 
 
+    //on initialise les requetes de tests
     @Before
     public void initRequests(){
         flightReq = new FlightRequest();
@@ -87,10 +92,11 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         hotelReq.setDestination("Ipaba");
     }
 
+    //on déifinie ici les reponses automatiques des services non testé
     @Before
     public void initMocks() {
         resetMocks();
-        System.out.println("TOIOTROERIUTEROPGFJUDKHGFDLGDLKDFHLKDGR");
+        //chaque fois que ce service recevra un echange,  il retournera cette réponse
        mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange e) -> {
             String res = "{\n" +
                     "  \"size\": 3,\n" +
@@ -179,6 +185,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         });
 
         //config flight service A
+        //ici on définit les headers attendus du endpoint, si il ne sont pas respecté cela provoquera une erreur
         mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("Content-Type", "application/json");
         mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("Accept", "application/json");
         mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("CamelHttpMethod", "POST");
@@ -214,21 +221,21 @@ public class CallExternalPartnersTest extends ActiveMQTest {
     @Test
     public void testRetrive2Flight() throws Exception {
 
+        //ici on définit qui doit recevoir X messages
         mock(AGGREG_FLIGHT).expectedMessageCount(2);
-        //mock(FLIGHTSERVICE_ENDPOINTA).expectedMessageCount(1);
         mock(FLIGHTSERVICE_ENDPOINTA).expectedMessageCount(1);
         mock(FLIGHTSERVICE_ENDPOINTB).expectedMessageCount(1);
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(RETRIEVE_A_FLIGHTA).expectedMessageCount(2);
         mock(RETRIEVE_A_FLIGHTB).expectedMessageCount(2);
-        // Calling the integration flow
-        template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
-        //template.asyncSendBody(RETRIEVE_A_FLIGHTA, flightReq);
-        //template.send(RETRIEVE_A_FLIGHTA, (Exchange) flightReq);
-        //template.requestBody(RETRIEVE_A_FLIGHTA, flightReq);
 
+        //on envoit la requete au service A
+        template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
+
+        //on vérifie que le endpoint a bien recu le message de RETRIEVEA
         mock(FLIGHTSERVICE_ENDPOINTA).assertIsSatisfied();
 
+        //on recupere la reponse, et on crée la requete attendu
         Flight expectedFlightA = new Flight();
         Flight responseFlightA = (Flight)  mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
 
@@ -236,11 +243,12 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         expectedFlightA.setDate("2017-10-12");
         expectedFlightA.setPrice("300");
 
+        //on compare les champs de la requete reçu avec ceux de la requete attendu
         assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
         assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
         assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());
 
-       // template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
+        //meme chose que pour le service A
         template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
 
         mock(FLIGHTSERVICE_ENDPOINTB).assertIsSatisfied();
@@ -257,6 +265,98 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
 
         mock(AGGREG_FLIGHT).assertIsSatisfied();
+        mock(DEATH_POOL).assertIsSatisfied();
+    }
+
+    //@Test
+    //TODO Remplacer la ou il faut par les voitures
+    public void testRetrive2Car() throws Exception {
+
+        mock(AGGREG_CAR).expectedMessageCount(2);
+        mock(CARSERVICE_ENDPOINTA).expectedMessageCount(1);
+        mock(CARSERVICE_ENDPOINTB).expectedMessageCount(1);
+        mock(DEATH_POOL).expectedMessageCount(0);
+        mock(RETRIEVE_CAR_A).expectedMessageCount(2);
+        mock(RETRIEVE_CAR_B).expectedMessageCount(2);
+        template.sendBody(RETRIEVE_CAR_A, carReq);
+
+        mock(CARSERVICE_ENDPOINTA).assertIsSatisfied();
+
+        //TODO Replacer par des voitures
+        /*Flight expectedFlightA = new Flight();
+        Flight responseFlightA = (Flight)  mock(AGGREG_CAR).getReceivedExchanges().get(0).getIn().getBody();
+
+        expectedFlightA.setDestination("Paris");
+        expectedFlightA.setDate("2017-10-12");
+        expectedFlightA.setPrice("300");
+
+        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
+        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
+        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());*/
+
+        template.sendBody(RETRIEVE_CAR_B, carReq);
+
+        mock(CARSERVICE_ENDPOINTB).assertIsSatisfied();
+
+        //TODO Replacer par des voitures
+        /*Flight expectedFlightB = new Flight();
+        Flight responseFlightB = (Flight)  mock(AGGREG_CAR).getReceivedExchanges().get(1).getIn().getBody();
+
+        expectedFlightB.setDestination("Paris");
+        expectedFlightB.setDate("12-10-2017");
+        expectedFlightB.setPrice("450");
+
+        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
+        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
+        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());*/
+
+        mock(AGGREG_CAR).assertIsSatisfied();
+        mock(DEATH_POOL).assertIsSatisfied();
+    }
+
+    //@Test
+    //TODO Remplacer la ou il faut par les hotels
+    public void testRetrive2Hotel() throws Exception {
+
+        mock(AGGREG_HOTEL).expectedMessageCount(2);
+        mock(HOTELSERVICE_ENDPOINTA).expectedMessageCount(1);
+        mock(HOTELSERVICE_ENDPOINTB).expectedMessageCount(1);
+        mock(DEATH_POOL).expectedMessageCount(0);
+        mock(RETRIEVE_A_HOTELA).expectedMessageCount(2);
+        mock(RETRIEVE_A_HOTELB).expectedMessageCount(2);
+        template.sendBody(RETRIEVE_A_HOTELA, carReq);
+
+        mock(HOTELSERVICE_ENDPOINTA).assertIsSatisfied();
+
+        //TODO Replacer par des hotels
+        /*Flight expectedFlightA = new Flight();
+        Flight responseFlightA = (Flight)  mock(AGGREG_HOTEL).getReceivedExchanges().get(0).getIn().getBody();
+
+        expectedFlightA.setDestination("Paris");
+        expectedFlightA.setDate("2017-10-12");
+        expectedFlightA.setPrice("300");
+
+        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
+        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
+        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());*/
+
+        template.sendBody(RETRIEVE_A_HOTELB, carReq);
+
+        mock(HOTELSERVICE_ENDPOINTB).assertIsSatisfied();
+
+        //TODO Replacer par des hotels
+        /*Flight expectedFlightB = new Flight();
+        Flight responseFlightB = (Flight)  mock(AGGREG_HOTEL).getReceivedExchanges().get(1).getIn().getBody();
+
+        expectedFlightB.setDestination("Paris");
+        expectedFlightB.setDate("12-10-2017");
+        expectedFlightB.setPrice("450");
+
+        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
+        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
+        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());*/
+
+        mock(AGGREG_HOTEL).assertIsSatisfied();
         mock(DEATH_POOL).assertIsSatisfied();
     }
 
