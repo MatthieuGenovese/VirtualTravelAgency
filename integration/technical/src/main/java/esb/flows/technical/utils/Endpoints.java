@@ -33,12 +33,13 @@ public class Endpoints {
     public static final String AGGREG_TRAVELREQUEST = "direct:aggreg-final-req";
 
     // External partners
-    public static final String FLIGHTSERVICE_ENDPOINTA  = "http://localhost:9080/flightreservation-service-document/registry";
-    public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
-    public static final String HOTELSERVICE_ENDPOINTB  = "http://localhost:8003/tcs-hotel-service/hotels";
-    public static final String CARSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/cars";
-    public static final String CARSERVICE_ENDPOINTB = "http://localhost:9060/cars";
-    public static final String FLIGHTSERVICE_ENDPOINTB = "http://localhost:9030/vols/webapi/vols";
+    public static final String FLIGHTSERVICE_ENDPOINTA  = "http:localhost:9080/flightreservation-service-document/registry";
+    //public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
+    public static final String HOTELSERVICE_ENDPOINTA  = "http:localhost:9090/cars-hotels-reservation-service-rest/hotels";
+    public static final String HOTELSERVICE_ENDPOINTB  = "http:localhost:8003/tcs-hotel-service/hotels";
+    public static final String CARSERVICE_ENDPOINTA  = "http:localhost:9090/cars-hotels-reservation-service-rest/cars";
+    public static final String CARSERVICE_ENDPOINTB = "http:localhost:9060/cars";
+    public static final String FLIGHTSERVICE_ENDPOINTB = "http:localhost:9030/vols/webapi/vols";
 
     // Dead letters channel
     public static final String DEATH_POOL = "activemq:global:dead";

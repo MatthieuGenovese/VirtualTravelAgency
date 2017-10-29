@@ -211,16 +211,16 @@ public class CallExternalPartnersTest extends ActiveMQTest {
     }
 
 
-    //@Test
+    @Test
     public void testRetrive2Flight() throws Exception {
 
         mock(AGGREG_FLIGHT).expectedMessageCount(2);
         //mock(FLIGHTSERVICE_ENDPOINTA).expectedMessageCount(1);
-        mock(FLIGHTSERVICE_ENDPOINTA).expectedBodiesReceived(1);
+        mock(FLIGHTSERVICE_ENDPOINTA).expectedMessageCount(1);
         mock(FLIGHTSERVICE_ENDPOINTB).expectedMessageCount(1);
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(RETRIEVE_A_FLIGHTA).expectedMessageCount(2);
-        //mock(RETRIEVE_A_FLIGHTB).expectedMessageCount(1);
+        mock(RETRIEVE_A_FLIGHTB).expectedMessageCount(2);
         // Calling the integration flow
         template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
         //template.asyncSendBody(RETRIEVE_A_FLIGHTA, flightReq);
@@ -249,8 +249,8 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         Flight responseFlightB = (Flight)  mock(AGGREG_FLIGHT).getReceivedExchanges().get(1).getIn().getBody();
 
         expectedFlightB.setDestination("Paris");
-        expectedFlightB.setDate("2017-10-12");
-        expectedFlightB.setPrice("300");
+        expectedFlightB.setDate("12-10-2017");
+        expectedFlightB.setPrice("450");
 
         assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
         assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
