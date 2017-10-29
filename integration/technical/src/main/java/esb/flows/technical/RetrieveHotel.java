@@ -86,6 +86,7 @@ public class RetrieveHotel extends RouteBuilder {
                 .log("after aggreg" + body())
                 //.marshal().json(JsonLibrary.Jackson)
                 .setHeader("type", constant("hotel"))
+                .removeHeader(Exchange.HTTP_QUERY)
                 .to(AGGREG_TRAVELREQUEST)
         ;
     }

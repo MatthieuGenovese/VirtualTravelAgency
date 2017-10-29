@@ -2,7 +2,9 @@ package esb.flows.technical.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TravelAgencyRequest {
+import java.io.Serializable;
+
+public class TravelAgencyRequest implements Serializable{
 
     @JsonProperty private Flight flight;
     @JsonProperty private Car car;

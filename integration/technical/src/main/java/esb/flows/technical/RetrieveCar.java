@@ -89,6 +89,7 @@ public class RetrieveCar extends RouteBuilder {
                 .log("After agreg" + body())
                 //.marshal().json(JsonLibrary.Jackson)
                 .setHeader("type", constant("car"))
+                .removeHeader(Exchange.HTTP_QUERY)
                 .to(AGGREG_TRAVELREQUEST)
                 ;
 

@@ -118,7 +118,6 @@ public class RetrieveFlight extends RouteBuilder {
         exchange.getIn().setBody(req);
 
     };
-
     /*{"Flights": {"Outbound": {
   "sorted_flights": [
     {
