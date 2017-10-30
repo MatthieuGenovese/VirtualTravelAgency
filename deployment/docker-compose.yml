@@ -67,7 +67,15 @@ services:
      image: matthieugenovese/document-vol
      ports:
        - "9030:8080"
-      
+
+  spends-management:
+    container_name: spends
+    image: travelagency/spends-document
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+
   database:                       # MongoDB database, on port 27017
     container_name: tcs-database
     image: mongo:3.0
@@ -75,3 +83,5 @@ services:
       - "./mongo_data:/data/db"
     ports:
       - "27017:27017"
+
+

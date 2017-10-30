@@ -20,6 +20,7 @@
         <module>rpc</module>
         <module>resource</module>
         <module>document</module>
+        <module>document2</module>
     </modules>
 
     <properties>

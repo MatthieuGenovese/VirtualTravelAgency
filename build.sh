@@ -21,6 +21,7 @@ build() { # $1: directory, $2: image_name
 build rpc       travelagency/submittravel-rpc
 build resource  travelagency/cars-hotels-reservation-rest
 build document  travelagency/flightreservation-document
+build document2 travelagency/spends-document
 
 cd ../integration
 

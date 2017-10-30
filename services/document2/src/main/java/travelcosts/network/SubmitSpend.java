@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 
 
-@Path("/spend")
+@Path("/spends")
 @Produces(MediaType.APPLICATION_JSON)
 
 
@@ -25,7 +25,7 @@ public class SubmitSpend {
 
     @GET
     public Response availabilityChecking(){
-        return Response.ok().entity("Service is up, that's confirmed!").build();
+        return Response.ok().entity("Le Service tourne!").build();
     }
 
 
@@ -40,7 +40,7 @@ public class SubmitSpend {
             JSONObject answer = null;
             switch ((obj.getString("type"))) {
                 case "submit":
-                    answer = handler.submitSpends(obj.getJSONObject("booking"));
+                    answer = handler.submitSpends(obj.getJSONObject("spends"));
                     break;
                 case "validate":
                     answer = handler.approveSpends(obj.getInt("id"));
