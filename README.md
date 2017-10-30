@@ -141,3 +141,16 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
  Pour se service nous avons choisis "document" car le nombres informations qu'utilise se service n'est pas connu à l'avance.
   En effet, selon l'employé , le nombre de dépense varie et ne peut etre défini  : il faut donc servir un service très adaptable au niveau des données manipulées. 
   Les données transitant par JSON, le traitement côté back-end en est facilité.
+  
+  
+  Utilisation : http://localhost:8080/vtg-spends/spends
+  
+  Requète Post :  
+  
+  {"type":"submit", "spends": object}
+  
+  "spends" : {"id":"22","identity":{"firstName":"kaka","lastName":"susuususu","email":"popopo@etu.unice"},"spends": object }
+  
+  le "spends" numéro 2 je vais le changer pour le moment il contient :  {"id": string ,  "prix" : double , "reason":string "date":string}
+  
+  attention : ce service n'est pas tous à fait au point manque des détailles à régler
