@@ -1,5 +1,7 @@
 package esb.flows;
 
+import esb.flows.technical.data.Hotel;
+import esb.flows.technical.data.Car;
 import esb.flows.technical.data.CarRequest;
 import esb.flows.technical.data.Flight;
 import esb.flows.technical.data.FlightRequest;
@@ -172,15 +174,22 @@ public class CallExternalPartnersTest extends ActiveMQTest {
             exc.getIn().setBody(req);
         });
 
-        //TODO mettre le json retour attendu
         mock(HOTELSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
-            String req = "";
+            String req = "[{\n" +
+            "  \"date\": \"28/11/2017\",\n" +
+            "  \"price\": 30,\n" +
+            "  \"name\": \"Hotel4\",\n" +
+            "  \"destination\": \"Paris\"\n" +
+            "}]";
             exc.getIn().setBody(req);
         });
 
-        //TODO mettre le json retour attendu
         mock(HOTELSERVICE_ENDPOINTB).whenAnyExchangeReceived((Exchange exc) -> {
-            String req = "";
+            String req = "[{\n" +
+            "  \"city\": \"Ipaba\",\n" +
+            "  \"name\": \"Lockman and Sons\",\n" +
+            "  \"roomCost\": 51\n" +
+            "}]";
             exc.getIn().setBody(req);
         });
 
@@ -282,17 +291,17 @@ public class CallExternalPartnersTest extends ActiveMQTest {
 
         mock(CARSERVICE_ENDPOINTA).assertIsSatisfied();
 
-        //TODO Replacer par des voitures
-        /*Flight expectedFlightA = new Flight();
-        Flight responseFlightA = (Flight)  mock(AGGREG_CAR).getReceivedExchanges().get(0).getIn().getBody();
+//        TODO Replacer par des voitures
+//        Car expectedCarA = new Car();
+//        Car responseCarA = (Car)  mock(AGGREG_CAR).getReceivedExchanges().get(0).getIn().getBody();
 
-        expectedFlightA.setDestination("Paris");
-        expectedFlightA.setDate("2017-10-12");
-        expectedFlightA.setPrice("300");
-
-        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
-        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
-        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());*/
+//        expectedCarA.setDestination("Lyon");
+//        expectedCarA.setDate("28/11/2017");
+//        expectedCarA.setPrice("30");
+//
+//        assertEquals(expectedCarA.getDate(), responseCarA.getDate());
+//        assertEquals(expectedCarA.getDestination(), responseCarA.getDestination());
+//        assertEquals(expectedCarA.getPrice(), responseCarA.getPrice());
 
         template.sendBody(RETRIEVE_CAR_B, carReq);
 
@@ -314,8 +323,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         mock(DEATH_POOL).assertIsSatisfied();
     }
 
-    //@Test
-    //TODO Remplacer la ou il faut par les hotels
+    @Test
     public void testRetrive2Hotel() throws Exception {
 
         mock(AGGREG_HOTEL).expectedMessageCount(2);
@@ -329,32 +337,32 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         mock(HOTELSERVICE_ENDPOINTA).assertIsSatisfied();
 
         //TODO Replacer par des hotels
-        /*Flight expectedFlightA = new Flight();
-        Flight responseFlightA = (Flight)  mock(AGGREG_HOTEL).getReceivedExchanges().get(0).getIn().getBody();
+        Hotel expectedHotelA = new Hotel();
+        Hotel responseHotelA = (Hotel)  mock(AGGREG_HOTEL).getReceivedExchanges().get(0).getIn().getBody();
 
-        expectedFlightA.setDestination("Paris");
-        expectedFlightA.setDate("2017-10-12");
-        expectedFlightA.setPrice("300");
+        expectedHotelA.setDestination("Paris");
+//        expectedHotelA.setDate("28/11/2017");
+        expectedHotelA.setPrice("30");
 
-        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
-        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
-        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());*/
+//        assertEquals(expectedHotelA.getDate(), responseHotelA.getDate());
+        assertEquals(expectedHotelA.getDestination(), responseHotelA.getDestination());
+        assertEquals(expectedHotelA.getPrice(), responseHotelA.getPrice());
 
         template.sendBody(RETRIEVE_A_HOTELB, hotelReq);
 
         mock(HOTELSERVICE_ENDPOINTB).assertIsSatisfied();
 
         //TODO Replacer par des hotels
-        /*Flight expectedFlightB = new Flight();
-        Flight responseFlightB = (Flight)  mock(AGGREG_HOTEL).getReceivedExchanges().get(1).getIn().getBody();
+        Hotel expectedHotelB = new Hotel();
+        Hotel responseHotelB = (Hotel)  mock(AGGREG_HOTEL).getReceivedExchanges().get(1).getIn().getBody();
 
-        expectedFlightB.setDestination("Paris");
-        expectedFlightB.setDate("12-10-2017");
-        expectedFlightB.setPrice("450");
+        expectedHotelB.setDestination("Ipaba");
+//        expectedHotelB.setDate("12-10-2017");
+        expectedHotelB.setPrice("51");
 
-        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
-        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
-        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());*/
+//        assertEquals(expectedHotelB.getDate(), responseFlightB.getDate());
+        assertEquals(expectedHotelB.getDestination(), responseHotelB.getDestination());
+        assertEquals(expectedHotelB.getPrice(), responseHotelB.getPrice());
 
         mock(AGGREG_HOTEL).assertIsSatisfied();
         mock(DEATH_POOL).assertIsSatisfied();
