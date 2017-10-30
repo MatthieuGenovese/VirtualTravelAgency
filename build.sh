@@ -25,7 +25,7 @@ build document2 travelagency/spends-document
 
 cd ../integration
 
-build esb travelagency/esb
+build esb matthieugenovese/esb
 
 cd ..
 

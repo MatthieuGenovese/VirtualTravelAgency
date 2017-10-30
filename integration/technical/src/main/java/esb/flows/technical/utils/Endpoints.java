@@ -6,6 +6,7 @@ public class Endpoints {
     public static final String FILE_INPUT_HOTEL    = "file:..?fileName=test2Hotel.csv";
     public static final String FILE_INPUT_FLIGHT = "file:..?fileName=test2Flight.csv";
     public static final String FILE_INPUT_CAR    = "file:..?fileName=test2Car.csv";
+    public static final String FILE_INPUT_MANAGER = "file:..?fileName=test2Manager.csv";
     /*public static final String CAMEL_OUTPUT_TESTA    = "file:..?fileName=resFlight.txt";
     public static final String CAMEL_OUTPUT_TESTB    = "file:..?fileName=resFlight2.txt";
     public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:..?fileName=resHotel.txt";
@@ -24,6 +25,7 @@ public class Endpoints {
     public static final String RETRIEVE_A_FLIGHTA = "direct:retrieve-a-flighta";
     public static final String RETRIEVE_A_FLIGHTB = "direct:retrieve-a-flightb";
     public static final String RETRIEVE_A_HOTELA = "direct:retrieve-a-hotela";
+    public static final String ANSWER_MANAGER = "direct:answer-route-manager";
     public static final String RETRIEVE_A_HOTELB = "direct:retrieve-a-hotelb";
     public static final String AGGREG_FLIGHT = "direct:agg-flight";
     public static final String AGGREG_HOTEL = "direct:agg-hotel";
@@ -41,7 +43,7 @@ public class Endpoints {
     public static final String CARSERVICE_ENDPOINTB = "http:localhost:9060/cars";
     public static final String FLIGHTSERVICE_ENDPOINTB = "http:localhost:9030/vols/webapi/vols";
     public static final String MANAGER_REQUEST_ENDPOINT = "spring-ws:http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService";
-
+    public static final String MANAGER_ANSWER_ENDPOINT = "spring-ws:http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService";
     // Dead letters channel
     public static final String DEATH_POOL = "activemq:global:dead";
 

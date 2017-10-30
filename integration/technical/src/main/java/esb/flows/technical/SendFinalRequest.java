@@ -1,22 +1,28 @@
 package esb.flows.technical;
 
+import esb.flows.technical.data.ManagerAnswer;
 import esb.flows.technical.data.TravelAgencyRequest;
+import esb.flows.technical.utils.CsvFormat;
 import esb.flows.technical.utils.FinalReqAggregationStrategy;
 import esb.flows.technical.utils.ManagerRequestHelper;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.dataformat.JsonLibrary;
 import org.xml.sax.InputSource;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import java.io.StringReader;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static esb.flows.technical.utils.Endpoints.*;
 
 public class SendFinalRequest extends RouteBuilder {
+
+    private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
 
     @Override
     public void configure() throws Exception{
@@ -41,7 +47,32 @@ public class SendFinalRequest extends RouteBuilder {
             .process(response2String)
             .log("la reponse : " +body().toString())
         ;
+
+        from(FILE_INPUT_MANAGER)
+            .routeId("manager-file-answer")
+            .unmarshal(CsvFormat.buildCsvFormat())
+              .split(body())
+              .parallelProcessing().executorService(WORKERS)
+                 .process(csv2Manager)
+            .to(ANSWER_MANAGER)
+        ;
+
+        from(ANSWER_MANAGER)
+            .routeId("manager-envoi-reponse")
+            .routeDescription("envoit de la reponse du manager")
+            .bean(ManagerRequestHelper.class, "buildSimpleAnswer(${body})")
+            .inOut(MANAGER_ANSWER_ENDPOINT)
+            .process(response2String)
+            .log("la reponse : " +body().toString())
+        ;
     }
+
+    private static Processor csv2Manager = (Exchange exchange) -> {
+        Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
+        ManagerAnswer m =  new ManagerAnswer();
+        m.setReponse((String) data.get("answer"));
+        exchange.getIn().setBody(m);
+    };
 
     private static boolean finish(Exchange exc){
         TravelAgencyRequest tr = (TravelAgencyRequest) exc.getIn().getBody();
