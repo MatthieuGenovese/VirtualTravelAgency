@@ -29,7 +29,7 @@ public class Aggregation2ItemsRequestsTest extends ActiveMQTest {
                 ;
     }
 
-    @Test
+ //   @Test
     public void testExecutionContext() throws Exception {
         isAvailableAndMocked(AGGREG_TRAVELREQUEST);
         isAvailableAndMocked(AGGREG_CAR);

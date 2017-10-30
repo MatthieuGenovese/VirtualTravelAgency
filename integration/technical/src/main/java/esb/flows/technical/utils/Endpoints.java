@@ -40,7 +40,7 @@ public class Endpoints {
     public static final String CARSERVICE_ENDPOINTA  = "http:localhost:9090/cars-hotels-reservation-service-rest/cars";
     public static final String CARSERVICE_ENDPOINTB = "http:localhost:9060/cars";
     public static final String FLIGHTSERVICE_ENDPOINTB = "http:localhost:9030/vols/webapi/vols";
-    public static final String MANAGER_REQUEST_ENDPOINT = "http:localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService?wsdl";
+    public static final String MANAGER_REQUEST_ENDPOINT = "spring-ws:http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService";
 
     // Dead letters channel
     public static final String DEATH_POOL = "activemq:global:dead";
