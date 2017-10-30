@@ -154,3 +154,22 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   le "spends" numéro 2 je vais le changer pour le moment il contient :  {"id": string ,  "prix" : double , "reason":string "date":string}
   
   attention : ce service n'est pas tous à fait au point manque des détailles à régler
+  
+  {
+  	"type":"submit",
+  	"spends": {
+  		"id":22,
+  		"identity":{
+  			"firstName":"kaka",
+  			"lastName":"susuususu",
+  			"email":"popopo@etu.unice"
+  			},
+  		"spend": {
+  			"id":"strzing",
+  			"prix":23,
+  			"reason":"strinzg",
+  			"date":"staaring"
+  			}
+    
+  		} 
+  }

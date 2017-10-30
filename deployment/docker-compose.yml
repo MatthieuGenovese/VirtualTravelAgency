@@ -72,7 +72,7 @@ services:
     container_name: spends
     image: travelagency/spends-document
     depends_on:
-      - database
+      - databasetwo
     ports:
       - "8080:8080"
 
@@ -85,3 +85,10 @@ services:
       - "27017:27017"
 
 
+  databasetwo:                       # MongoDB database, on port 27017
+    container_name: tta-database
+    image: mongo:3.0
+    volumes:
+      - "./mongo_data:/data/dbtwo"
+    ports:
+      - "2701:2701"

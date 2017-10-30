@@ -28,7 +28,7 @@ public class MongoConnector {
     }
 
 
-    public MongoCollection getBookings() {
+    public MongoCollection getSpends() {
         if (this.mongoClient == null){
             this.initMongoClient();
         }

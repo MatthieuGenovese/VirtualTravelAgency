@@ -25,7 +25,7 @@ public class SubmitSpend {
 
     @GET
     public Response availabilityChecking(){
-        return Response.ok().entity("Le Service tourne!").build();
+        return Response.ok().entity("le service avec une db de merde!").build();
     }
 
 

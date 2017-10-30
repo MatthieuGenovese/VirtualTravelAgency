@@ -1,15 +1,14 @@
 package travelcosts.Purchase;
 
 import org.json.JSONObject;
-import travelcosts.date.Date;
 
 public class Spend {
     private String id;
     private double prix;
-    private Date date;
+    private String date;
     private String reason;
 
-    public Spend(String id,double prix,String reason,Date date){
+    public Spend(String id,double prix,String reason,String date){
         this.id = id;
         this.prix = prix;
         this.reason = reason;
@@ -21,7 +20,7 @@ public class Spend {
         this.id = data.getString("id");
         this.prix = data.getDouble("prix");
         this.reason = data.getString("reason");
-        this.date = new Date(data.getString("date"));
+        this.date = data.getString("date");
     }
 
 
@@ -52,7 +51,7 @@ public class Spend {
         return reason;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 }

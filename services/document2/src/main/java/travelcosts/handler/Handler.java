@@ -6,14 +6,17 @@ import org.json.JSONObject;
 import travelcosts.Purchase.PurchaseManagement;
 import travelcosts.network.SubmitSpend;
 
+import java.io.FileWriter;
+
 public class Handler {
 
     public JSONObject submitSpends(JSONObject spendsAsJson)
     {
         try {
-
-            MongoCollection Spends = SubmitSpend.mongoConnector.getBookings();
             PurchaseManagement spends = new PurchaseManagement(spendsAsJson);
+            //FileWriter file = new FileWriter("./../file.txt");
+            //file.write(spends.toString());
+            MongoCollection Spends = SubmitSpend.mongoConnector.getSpends();
             Spends.insert(spends);
             return new JSONObject()
                     .put("inserted", true)
@@ -33,7 +36,7 @@ public class Handler {
     public JSONObject approveSpends(int idToValidate)
     {
         try {
-            MongoCollection spends = SubmitSpend.mongoConnector.getBookings();
+            MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             spends.update("{id:#}", idToValidate).upsert().multi().with("{$set: {'status': 'APPROVED'}}");
             return new JSONObject()
                     .put("id", idToValidate)
@@ -54,7 +57,7 @@ public class Handler {
     public JSONObject rejectSpends(int idToReject)
     {
         try {
-            MongoCollection spends = SubmitSpend.mongoConnector.getBookings();
+            MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             spends.update("{id:#}", idToReject).with("{$set: {'status': 'REJECTED'}}");
             return new JSONObject()
                     .put("rejected", true)
@@ -74,7 +77,7 @@ public class Handler {
     public JSONObject retrieveSpends(int idToRetrieve)
     {
         try {
-            MongoCollection spends = SubmitSpend.mongoConnector.getBookings();
+            MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             PurchaseManagement Spends =spends.findOne("{id:#}", idToRetrieve).as(PurchaseManagement.class);
             return Spends.toJson().put("retrieved", true);
         }
