@@ -4,7 +4,7 @@
 PUSH=false
 
 
-mvn clean package
+mvn clean package -DskipTests
 
 cd services
 
@@ -25,7 +25,7 @@ build document2 travelagency/spends-document
 
 cd ../integration
 
-build esb matthieugenovese/esb
+build esb travelagency/esb
 
 cd ..
 

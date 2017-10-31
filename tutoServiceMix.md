@@ -27,3 +27,18 @@ bundle:stop id (pas besoin d'explications j'imagine)
 bundle:restart id (la m?me)
 
 
+serviceMix sous docker :
+pour acceder a notre apacheServiceMix sous docker il faut executer le script runServiceMixDocker.sh (avoir fait start.sh avant evidemment)
+une fois lancé, le terminal est maintenant dans le service mix du docker.
+
+on a accès a toutes les commandes servicemix classique mais il faut rajouter ./bin/client devant.
+Si après avoir rentrée une commande vous obtenez "Failed to login session" ou un truc du genre, c est que vous êtes allez trop vite.
+Attendez quelques secondes le temps que servicemix soit vraiment lancé
+
+Exemple :
+
+"log:display" deviendra "./bin/client log:display"
+Pour tester les routes, simplement lancer le script cp.sh (comme avant) il copiera les fichiers de test dans l'entrée de docker
+
+
+

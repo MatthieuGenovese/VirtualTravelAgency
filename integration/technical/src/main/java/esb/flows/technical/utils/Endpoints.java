@@ -3,17 +3,17 @@ package esb.flows.technical.utils;
 public class Endpoints {
 
     // file entrées / sorties de camel
-    public static final String FILE_INPUT_HOTEL    = "file:..?fileName=test2Hotel.csv";
-    public static final String FILE_INPUT_FLIGHT = "file:..?fileName=test2Flight.csv";
-    public static final String FILE_INPUT_CAR    = "file:..?fileName=test2Car.csv";
-    public static final String FILE_INPUT_MANAGER = "file:..?fileName=test2Manager.csv";
+    public static final String FILE_INPUT_HOTEL    = "file:/servicemix/camel/input?fileName=test2Hotel.csv";
+    public static final String FILE_INPUT_FLIGHT = "file:/servicemix/camel/input?fileName=test2Flight.csv";
+    public static final String FILE_INPUT_CAR    = "file:/servicemix/camel/input?fileName=test2Car.csv";
+    public static final String FILE_INPUT_MANAGER = "file:/servicemix/camel/input?fileName=test2Manager.csv";
     /*public static final String CAMEL_OUTPUT_TESTA    = "file:..?fileName=resFlight.txt";
     public static final String CAMEL_OUTPUT_TESTB    = "file:..?fileName=resFlight2.txt";
     public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:..?fileName=resHotel.txt";
     public static final String CAMEL_OUTPUT_CARFILE    = "file:..?fileName=resCar.txt";
     public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
     public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";*/
-    public static final String CAMEL_FINAL = "file:..?fileName=final.txt";
+    public static final String CAMEL_FINAL = "file:/servicemix/camel/input?fileName=final.txt";
 
     // Internal message queues
     public static final String FLIGHT_QUEUE = "activemq:flight-queue";
@@ -35,15 +35,15 @@ public class Endpoints {
     public static final String AGGREG_TRAVELREQUEST = "direct:aggreg-final-req";
 
     // External partners
-    public static final String FLIGHTSERVICE_ENDPOINTA  = "http:localhost:9080/flightreservation-service-document/registry";
+    public static final String FLIGHTSERVICE_ENDPOINTA  = "http:flightreservation:8080/flightreservation-service-document/registry";
     //public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
-    public static final String HOTELSERVICE_ENDPOINTA  = "http:localhost:9090/cars-hotels-reservation-service-rest/hotels";
-    public static final String HOTELSERVICE_ENDPOINTB  = "http:localhost:8003/tcs-hotel-service/hotels";
-    public static final String CARSERVICE_ENDPOINTA  = "http:localhost:9090/cars-hotels-reservation-service-rest/cars";
-    public static final String CARSERVICE_ENDPOINTB = "http:localhost:9060/cars";
-    public static final String FLIGHTSERVICE_ENDPOINTB = "http:localhost:9030/vols/webapi/vols";
-    public static final String MANAGER_REQUEST_ENDPOINT = "spring-ws:http://localhost:9070/submittravel-service-rpc/ExternalSubmitTravelService";
-    public static final String MANAGER_ANSWER_ENDPOINT = "spring-ws:http://localhost:9070/submittravel-service-rpc/ExternalApprobationTravelService";
+    public static final String HOTELSERVICE_ENDPOINTA  = "http:cars-hotels-reservation:8080/cars-hotels-reservation-service-rest/hotels";
+    public static final String HOTELSERVICE_ENDPOINTB  = "http:hotels-team1:8080/tcs-hotel-service/hotels";
+    public static final String CARSERVICE_ENDPOINTA  = "http:cars-hotels-reservation:8080/cars-hotels-reservation-service-rest/cars";
+    public static final String CARSERVICE_ENDPOINTB = "http:travel-cars:9060/cars";
+    public static final String FLIGHTSERVICE_ENDPOINTB = "http:vols-document:8080/vols/webapi/vols";
+    public static final String MANAGER_REQUEST_ENDPOINT = "spring-ws:http://submittravel:8080/submittravel-service-rpc/ExternalSubmitTravelService";
+    public static final String MANAGER_ANSWER_ENDPOINT = "spring-ws:http://submittravel:8080/submittravel-service-rpc/ExternalApprobationTravelService";
     // Dead letters channel
     public static final String DEATH_POOL = "activemq:global:dead";
 
