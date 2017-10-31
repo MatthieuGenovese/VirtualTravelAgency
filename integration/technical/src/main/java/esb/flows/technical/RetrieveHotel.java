@@ -97,6 +97,7 @@ public class RetrieveHotel extends RouteBuilder {
         p.setDate((String) data.get("date"));
         p.setDestination((String) data.get("destination"));
         exchange.getIn().setBody(p);
+        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
     };
 
     private static Processor hotelreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service b

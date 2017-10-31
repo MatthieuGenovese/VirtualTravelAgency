@@ -92,6 +92,7 @@ public class RetrieveFlight extends RouteBuilder {
         p.setIsDirect((String) data.get("direct"));
         p.setOrigine((String) data.get("origine"));
         exchange.getIn().setBody(p);
+        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
     };
 //aaaa-mm-jj
     /*{

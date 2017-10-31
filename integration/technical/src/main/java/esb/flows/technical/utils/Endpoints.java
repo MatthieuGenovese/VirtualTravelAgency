@@ -13,7 +13,8 @@ public class Endpoints {
     public static final String CAMEL_OUTPUT_CARFILE    = "file:..?fileName=resCar.txt";
     public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
     public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";*/
-    public static final String CAMEL_FINAL = "file:/servicemix/camel/input?fileName=final.txt";
+    public static final String EMAIL_EMPLOYE = "file:/servicemix/camel/output";
+    public static final String EMAIL_MANAGER = "file:/servicemix/camel/output";
 
     // Internal message queues
     public static final String FLIGHT_QUEUE = "activemq:flight-queue";

@@ -1,2 +1,3 @@
-event,origine,destination,date,direct
-One_Way_Price,Nice,Paris,12-10-2017,false
+id,event,origine,destination,date,direct
+01,One_Way_Price,Nice,Paris,12-10-2017,false
+02,One_Way_Price,Nice,Paris,12-10-2017,false

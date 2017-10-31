@@ -4,13 +4,6 @@ import esb.flows.technical.data.*;
 import org.apache.camel.Exchange;
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import java.io.StringReader;
 
 import static esb.flows.technical.utils.Endpoints.*;
 
@@ -19,7 +12,8 @@ public class SendRequestToManagerTest extends ActiveMQTest {
     private Car c;
     private Hotel h;
     private TravelAgencyRequest tr;
-    private String request;
+    private ManagerAnswer m;
+    private String request, request2;
     private String repEndpoint = "<ns2:answerResponse xmlns:ns2=\"http://informatique.polytech.unice.fr/soa1/cookbook/\"><result><answer>Submit : 0: \n" +
             "CarTicket{\n" +
             "  start date:2017-04-26T06:45:54Z  end date:2017-04-26T06:45:54Z  model:Peugeot  price:20}\n" +
@@ -28,6 +22,9 @@ public class SendRequestToManagerTest extends ActiveMQTest {
             "PlaneTicket{\n" +
             "  departure date:12-10-2017  departure place:0  destination place:Paris  seat:0  price:20}\n" +
             "</answer><identifier>Id : 0</identifier></result></ns2:answerResponse>";
+
+    private String repEndpoint2 = "<ns2:answerResponse xmlns:ns2=\"http://informatique.polytech.unice.fr/soa1/cookbook/\"><result><resultmessage>Your request is validate\n" +
+            "toto va à la plage</resultmessage></result></ns2:answerResponse>";
 
     private String repAttendue = "Submit : 0: \n" +
             "CarTicket{\n" +
@@ -38,17 +35,20 @@ public class SendRequestToManagerTest extends ActiveMQTest {
             "  departure date:12-10-2017  departure place:0  destination place:Paris  seat:0  price:20}\n" +
             "Id : 0";
 
+    private String repAttendue2 = "Your request is validate";
+
     //on definie ici les endpoint non testé (on mettra leurs réponses en durs)
+
     @Override
     public String isMockEndpointsAndSkip() {
-        return MANAGER_REQUEST_ENDPOINT
+        return MANAGER_REQUEST_ENDPOINT + "|" + EMAIL_MANAGER + "|" + EMAIL_EMPLOYE + "|" + MANAGER_ANSWER_ENDPOINT
                 ;
     }
 
     //on définie ici les endpoints à tester
     @Override
     public String isMockEndpoints() {
-        return REQUETE_QUEUE + "|" + DEATH_POOL
+        return REQUETE_QUEUE + "|" + DEATH_POOL +"|" + ANSWER_MANAGER
                 ;
     }
 
@@ -56,6 +56,10 @@ public class SendRequestToManagerTest extends ActiveMQTest {
     @Test
     public void testExecutionContext() throws Exception {
         isAvailableAndMocked(MANAGER_REQUEST_ENDPOINT);
+        isAvailableAndMocked(MANAGER_ANSWER_ENDPOINT);
+        isAvailableAndMocked(ANSWER_MANAGER);
+        //isAvailableAndMocked(EMAIL_EMPLOYE);
+        //isAvailableAndMocked(EMAIL_MANAGER);
         isAvailableAndMocked(REQUETE_QUEUE);
         isAvailableAndMocked(DEATH_POOL);
     }
@@ -85,6 +89,9 @@ public class SendRequestToManagerTest extends ActiveMQTest {
         tr.setFlightReq(f);
         tr.setCarReq(c);
 
+        m = new ManagerAnswer();
+        m.setReponse("1");
+
         StringBuilder builder = new StringBuilder();
         builder.append("<cook:answer xmlns:cook=\"http://informatique.polytech.unice.fr/soa1/cookbook/\">\n");
         builder.append("  <request>\n");
@@ -105,6 +112,15 @@ public class SendRequestToManagerTest extends ActiveMQTest {
         builder.append("  </request>\n");
         builder.append("</cook:answer>\n");
         request = builder.toString();
+
+        StringBuilder builder2 = new StringBuilder();
+        builder2.append("<cook:answer xmlns:cook=\"http://informatique.polytech.unice.fr/soa1/cookbook/\">\n");
+        builder2.append("  <request>\n");
+        builder2.append("    <choix>" +m.getReponse() + "</choix>\n");
+        builder2.append("    <messageTravel>" + "toto va à la plage" + "</messageTravel>\n");
+        builder2.append("  </request>\n");
+        builder2.append("</cook:answer>\n");
+        request2 = builder2.toString();
     }
 
     //on déifinie ici les reponses automatiques des services non testé
@@ -117,12 +133,10 @@ public class SendRequestToManagerTest extends ActiveMQTest {
             exc.getIn().setBody(repEndpoint);
         });
 
+        mock(MANAGER_ANSWER_ENDPOINT).whenAnyExchangeReceived((Exchange exc) -> {
+            exc.getIn().setBody(repEndpoint2);
+        });
 
-        //config car service B
-        mock(MANAGER_REQUEST_ENDPOINT).expectedMessageCount(1);
-        mock(MANAGER_REQUEST_ENDPOINT).expectedHeaderReceived("Content-Type", "application/json");
-        mock(MANAGER_REQUEST_ENDPOINT).expectedHeaderReceived("Accept", "application/json");
-        mock(MANAGER_REQUEST_ENDPOINT).expectedHeaderReceived("CamelHttpMethod", "POST");
     }
 
     @Test
@@ -130,6 +144,8 @@ public class SendRequestToManagerTest extends ActiveMQTest {
 
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(REQUETE_QUEUE).expectedMessageCount(2);
+        mock(MANAGER_REQUEST_ENDPOINT).expectedMessageCount(1);
+        //mock(EMAIL_MANAGER).expectedMessageCount(1);
         template.sendBody(REQUETE_QUEUE, tr);
 
         mock(MANAGER_REQUEST_ENDPOINT).assertIsSatisfied();
@@ -138,12 +154,30 @@ public class SendRequestToManagerTest extends ActiveMQTest {
 
         assertEquals(requeteSend, request);
 
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        InputSource input = new InputSource(new StringReader(repEndpoint));
-        String reponseStr = xpath.evaluate("//result", input);
-        assertEquals(repAttendue, reponseStr);
+       // mock(EMAIL_MANAGER).assertIsSatisfied();
+
+     //   String reponseStr = mock(EMAIL_MANAGER).getReceivedExchanges().get(0).getIn().getBody(String.class);
+       // assertEquals(repAttendue, reponseStr);
         
         mock(DEATH_POOL).assertIsSatisfied();
+    }
+
+    @Test
+    public void testSendAnswerToEmploye() throws Exception{
+        mock(DEATH_POOL).expectedMessageCount(0);
+        mock(MANAGER_ANSWER_ENDPOINT).expectedMessageCount(1);
+     //   mock(EMAIL_EMPLOYE).expectedMessageCount(1);
+        template.sendBody(ANSWER_MANAGER, m);
+
+        String requeteSend = mock(MANAGER_ANSWER_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+
+        assertEquals(requeteSend, request2);
+
+        //String reponseStr = mock(EMAIL_EMPLOYE).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        //assertEquals(repAttendue2, reponseStr);
+
+        mock(DEATH_POOL).assertIsSatisfied();
+
     }
 
 }

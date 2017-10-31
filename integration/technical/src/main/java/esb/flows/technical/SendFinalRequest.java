@@ -45,7 +45,7 @@ public class SendFinalRequest extends RouteBuilder {
             .bean(ManagerRequestHelper.class, "buildSimpleRequest(${body}")
             .inOut(MANAGER_REQUEST_ENDPOINT)
             .process(response2String)
-            .log("la reponse : " +body().toString())
+            .to(EMAIL_MANAGER + "?fileName=mailManager" + "${header[requete-id]}" + ".txt")
         ;
 
         from(FILE_INPUT_MANAGER)
@@ -63,7 +63,7 @@ public class SendFinalRequest extends RouteBuilder {
             .bean(ManagerRequestHelper.class, "buildSimpleAnswer(${body})")
             .inOut(MANAGER_ANSWER_ENDPOINT)
             .process(response2String)
-            .log("la reponse : " +body().toString())
+            .to(EMAIL_EMPLOYE + "?fileName=mailEmploye" + "${header[requete-id]}"+".txt")
         ;
     }
 
@@ -72,6 +72,7 @@ public class SendFinalRequest extends RouteBuilder {
         ManagerAnswer m =  new ManagerAnswer();
         m.setReponse((String) data.get("answer"));
         exchange.getIn().setBody(m);
+        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
     };
 
     private static boolean finish(Exchange exc){

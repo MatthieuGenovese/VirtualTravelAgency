@@ -107,6 +107,7 @@ public class RetrieveCar extends RouteBuilder {
         p.setEnd((String) data.get("end"));
         p.setSort((String) data.get("sort"));
         exchange.getIn().setBody(p);
+        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
     };
 
     private static Processor carreq2a = (Exchange exchange) -> {
