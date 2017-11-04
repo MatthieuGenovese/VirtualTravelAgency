@@ -4,13 +4,13 @@ import org.json.JSONObject;
 
 public class Spend {
     private String id;
-    private double prix;
     private String date;
     private String reason;
+    private Price price;
 
-    public Spend(String id,double prix,String reason,String date){
+    public Spend(String id,double prix,String reason,String date,String currency,Price price){
         this.id = id;
-        this.prix = prix;
+        this.price = price;
         this.reason = reason;
         this.date = date;
     }
@@ -18,16 +18,16 @@ public class Spend {
     public Spend(JSONObject data){
         System.out.println("Spend: "+data);
         this.id = data.getString("id");
-        this.prix = data.getDouble("prix");
         this.reason = data.getString("reason");
         this.date = data.getString("date");
+        this.price = new Price(data.getJSONObject("price"));
     }
 
 
     JSONObject toJson() {
         return new JSONObject()
                 .put("id", id)
-                .put("prix", prix)
+                .put("prix", this.price.toJson())
                 .put("reason",reason)
                 .put("date",date);
     }
@@ -35,7 +35,7 @@ public class Spend {
 
     @Override
     public String toString() {
-        return "Spend{" + "id='" + id + '\'' + ", reason=" + reason + '\'' + ", prix=" + prix + '\'' + ", date=" + date+ '}';
+        return "Spend{" + "id='" + id + '\'' + ", reason=" + reason + '\'' + ", Price=" + price.toString() + '\'' + ", date=" + date+ '\'' +'}';
     }
 
 
@@ -43,8 +43,8 @@ public class Spend {
         return id;
     }
 
-    public double getPrix() {
-        return prix;
+    public Price getPrice() {
+        return price;
     }
 
     public String getReason() {

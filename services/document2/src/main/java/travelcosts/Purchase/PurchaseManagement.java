@@ -11,6 +11,7 @@ public class PurchaseManagement {
     private int id;
     private Identity identity;
     private Spend spending;
+    private String country;
 
     @MongoObjectId
     String _id;
@@ -19,18 +20,11 @@ public class PurchaseManagement {
 
     public PurchaseManagement(JSONObject spend) throws Exception {
         //mettre la condition avec le seuil du prix des pays et en fonctions
-        this.status = Status.EN_ATTENTE;
         this.id = spend.getInt("id");
+        this.country = spend.getString("country");
         this.identity = new Identity(spend.getJSONObject("identity"));
-        try {
-            //JSONObject spends = spend.getJSONObject("spend");
-            /*for (Iterator iterator = spends.keySet().iterator(); iterator.hasNext(); ) {
-                String key = (String) iterator.next();
-                System.out.println(spend.get(key));*/
-            this.spending = new Spend(spend.getJSONObject("spend"));
-        } catch (NullPointerException e) {
-            this.spending = null;
-        }
+        this.status = Status.EN_ATTENTE;
+        this.spending = new Spend(spend.getJSONObject("spend"));
     }
 
 
@@ -41,6 +35,7 @@ public class PurchaseManagement {
             result.put("id", this.id);
             result.put("identity", this.identity.toJson());
             result.put("spend", this.spending.toJson());
+            result.put("country",this.country);
 
             /*if (this.spending != null) {
                 String z = "{";
@@ -55,12 +50,12 @@ public class PurchaseManagement {
 
 
 
-        public double getTotalSpendings(){
+        public void getTotalSpendings(){
             /*double price = 0;
             for (Spend spending : spending){
                 price += spending.getPrix();
             }*/
-            return spending.getPrix();
+            //return spending.getPrix();
         }
 
 
@@ -72,6 +67,7 @@ public class PurchaseManagement {
                     "status=" + status +
                     ", identity=" + identity +
                     ", spendings ='" + spending + '\'' +
+                    ", country ='" + country + '\'' +
                     '}';
         }
 

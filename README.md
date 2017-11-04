@@ -155,21 +155,27 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   
   attention : ce service n'est pas tous à fait au point manque des détailles à régler
   
-  {
-  	"type":"submit",
-  	"spends": {
-  		"id":22,
-  		"identity":{
-  			"firstName":"kaka",
-  			"lastName":"susuususu",
-  			"email":"popopo@etu.unice"
-  			},
-  		"spend": {
-  			"id":"strzing",
-  			"prix":23,
-  			"reason":"strinzg",
-  			"date":"staaring"
-  			}
-    
-  		} 
-  }
+{
+	"type":"submit",
+	"spends": {
+		"id":22,
+		"identity":{
+			"firstName":"kaka",
+			"lastName":"susuususu",
+			"email":"popopo@etu.unice"
+			},
+		"spend": {
+			"id":"strzing",
+			"reason":"strinzg",
+			"date":"staaring",
+			"price" :
+				{
+					"price":23,
+					"currency":"EUR"
+				}
+			},
+		"country": "France"
+	}
+}
+
+![Google logo](/images_planning/im1.tiff "google logo")
