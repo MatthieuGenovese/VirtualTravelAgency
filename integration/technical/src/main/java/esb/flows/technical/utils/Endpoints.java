@@ -7,12 +7,7 @@ public class Endpoints {
     public static final String FILE_INPUT_FLIGHT = "file:/servicemix/camel/input?fileName=test2Flight.csv";
     public static final String FILE_INPUT_CAR    = "file:/servicemix/camel/input?fileName=test2Car.csv";
     public static final String FILE_INPUT_MANAGER = "file:/servicemix/camel/input?fileName=test2Manager.csv";
-    /*public static final String CAMEL_OUTPUT_TESTA    = "file:..?fileName=resFlight.txt";
-    public static final String CAMEL_OUTPUT_TESTB    = "file:..?fileName=resFlight2.txt";
-    public static final String CAMEL_OUTPUT_TESTHOTEL    = "file:..?fileName=resHotel.txt";
-    public static final String CAMEL_OUTPUT_CARFILE    = "file:..?fileName=resCar.txt";
-    public static final String CAMEL_OUTPUT_FINALFLIGHT    = "file:..?fileName=resFinalFlight.txt";
-    public static final String CAMEL_OUTPUT_FINALHOTEL    = "file:..?fileName=resFinalHotel.txt";*/
+    public static final String FILE_INPUT_SPEND = "file:/servicemix/camel/input?fileName=test2Spend.csv";
     public static final String EMAIL_EMPLOYE = "file:/servicemix/camel/output";
     public static final String EMAIL_MANAGER = "file:/servicemix/camel/output";
 
@@ -21,6 +16,7 @@ public class Endpoints {
     public static final String HOTEL_QUEUE = "activemq:hotel-queue";
     public static final String CAR_QUEUE = "activemq:car-queue";
     public static final String REQUETE_QUEUE = "activemq:requete-manager-queue";
+    public static final String SPEND_QUEUE = "activemq:spend-queue";
 
     // Direct endpoints (flow modularity without a message queue overhead)
     public static final String RETRIEVE_A_FLIGHTA = "direct:retrieve-a-flighta";
@@ -37,7 +33,7 @@ public class Endpoints {
 
     // External partners
     public static final String FLIGHTSERVICE_ENDPOINTA  = "http:flightreservation:8080/flightreservation-service-document/registry";
-    //public static final String HOTELSERVICE_ENDPOINTA  = "http://localhost:9090/cars-hotels-reservation-service-rest/hotels";
+    public static final String SPENDSERVICE_ENDPOINT = "http:spends:8080/vtg-spends/spends";
     public static final String HOTELSERVICE_ENDPOINTA  = "http:cars-hotels-reservation:8080/cars-hotels-reservation-service-rest/hotels";
     public static final String HOTELSERVICE_ENDPOINTB  = "http:hotels-team1:8080/tcs-hotel-service/hotels";
     public static final String CARSERVICE_ENDPOINTA  = "http:cars-hotels-reservation:8080/cars-hotels-reservation-service-rest/cars";
