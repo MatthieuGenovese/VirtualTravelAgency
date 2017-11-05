@@ -148,7 +148,8 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   Requète Post :
 
 L'employé peut soumettre ces dépenses (exemple) :
-...json
+
+
 {
      	"type":"submit",
      	"spends": {
@@ -182,39 +183,40 @@ L'employé peut soumettre ces dépenses (exemple) :
      			]
      	}
      	}
-...
+
 
 L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple) :
-...json
+
+
     {
          "type":"validate",
          "id":22
     }
-...
+
 
  L'employeur peut refuser les dépenses si c'elle si dépasse le seuil (exemple) :
- ...json
+
      {
           "type":"reject",
           "id":22
      }
- ...
+
 
  L'employé peut avoir les détails des requetes qu'il a soumit :
- ...json
+
     {
               "type":"retrieve",
               "id":22
     }
- ...
+
 
 
  L'employé peut ajouter une justification des dépences  :
- ...json
+
     {
               "type":"addJustification",
               "id":22,
               "justification":"je suis le king , rend moi le mago !"
     }
- ...
+
 
