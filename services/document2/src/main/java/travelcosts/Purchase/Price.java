@@ -20,10 +20,12 @@ public class Price {
                 .put("currency",currency);
     }
 
+    public double getPrix() {
+        return prix;
+    }
 
-    @Override
-    public String toString() {
-        return "{ price=" + prix + '\'' + ", currency=" + currency+'}';
+    public String getCurrency() {
+        return currency;
     }
 
 }

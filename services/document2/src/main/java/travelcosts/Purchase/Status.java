@@ -4,11 +4,9 @@ public enum Status {
 
     EN_ATTENTE("EN_ATTENTE"),
     VALIDE("VALIDE"),
-    NON_VALIDE("NON_VALIDE");
+    REJECTED("REJECTED");
 
     String str;
-
-    Status(){}
 
     Status(String str){
         this.str = str;

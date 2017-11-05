@@ -10,9 +10,6 @@ public class Identity {
     private String email;
 
 
-    public Identity(){}
-
-
     public Identity(JSONObject data){
         System.out.println("Identity: " + data);
         this.firstName = data.getString("firstName");
@@ -28,10 +25,5 @@ public class Identity {
                 .put("email", email);
     }
 
-
-    @Override
-    public String toString() {
-        return "Identity{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", email='" + email + '\'' + '}';
-    }
 
 }

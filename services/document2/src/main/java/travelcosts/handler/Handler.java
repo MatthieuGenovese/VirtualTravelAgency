@@ -37,11 +37,11 @@ public class Handler {
     {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
-            spends.update("{id:#}", idToValidate).upsert().multi().with("{$set: {'status': 'APPROVED'}}");
+            spends.update("{id:#}", idToValidate).with("{$set: {'status': 'APPROVED'}}");
             return new JSONObject()
                     .put("id", idToValidate)
                     .put("approved", true);
-        }
+            }
         catch (Exception e)
         {
             e.printStackTrace();
@@ -91,6 +91,25 @@ public class Handler {
         }
     }
 
+
+    public JSONObject addJustificationSpends(int idToAddJustification,String justification)
+    {
+        try {
+            MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
+            spends.update("{id:#}", idToAddJustification).with("{$push: {'justification': 'justification' }}");
+            return new JSONObject()
+                    .put("justification", true)
+                    .put("id", idToAddJustification);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new JSONObject()
+                    .put("justification", false)
+                    .put("id", idToAddJustification)
+                    .put("message", "Error occured: " + e.getMessage());
+        }
+    }
 
 
 

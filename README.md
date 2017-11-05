@@ -145,37 +145,76 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   
   Utilisation : http://localhost:8080/vtg-spends/spends
   
-  Requète Post :  
-  
-  {"type":"submit", "spends": object}
-  
-  "spends" : {"id":"22","identity":{"firstName":"kaka","lastName":"susuususu","email":"popopo@etu.unice"},"spends": object }
-  
-  le "spends" numéro 2 je vais le changer pour le moment il contient :  {"id": string ,  "prix" : double , "reason":string "date":string}
-  
-  attention : ce service n'est pas tous à fait au point manque des détailles à régler
-  
-{
-	"type":"submit",
-	"spends": {
-		"id":22,
-		"identity":{
-			"firstName":"kaka",
-			"lastName":"susuususu",
-			"email":"popopo@etu.unice"
-			},
-		"spend": {
-			"id":"strzing",
-			"reason":"strinzg",
-			"date":"staaring",
-			"price" :
-				{
-					"price":23,
-					"currency":"EUR"
-				}
-			},
-		"country": "France"
-	}
-}
+  Requète Post :
 
-![Google logo](/images_planning/im1.tiff "google logo")
+L'employé peut soumettre ces dépenses (exemple) :
+...json
+{
+     	"type":"submit",
+     	"spends": {
+     		"id":22,
+     		"identity":{
+     			"firstName":"mohamed",
+     			"lastName":"chennouf",
+     			"email":"mohamed.chennouf@etu.unice"
+     			},
+     		"spends": [
+     			{
+     			"id":"0",
+     			"reason":"Restaurant",
+     			"date":"05/02/2018",
+     			"country": "AM" ,
+     			"price" : {
+     				"price":120,
+     				"currency":"EUR"
+     				}
+     			},
+     			{
+     			"id":"1",
+     			"reason":"Restaurant",
+     			"date":"01/02/2005",
+     			"country": "AM" ,
+     			"price" : {
+     				"price":90,
+     				"currency":"EUR"
+     				}
+     			}
+     			]
+     	}
+     	}
+...
+
+L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple) :
+...json
+    {
+         "type":"validate",
+         "id":22
+    }
+...
+
+ L'employeur peut refuser les dépenses si c'elle si dépasse le seuil (exemple) :
+ ...json
+     {
+          "type":"reject",
+          "id":22
+     }
+ ...
+
+ L'employé peut avoir les détails des requetes qu'il a soumit :
+ ...json
+    {
+              "type":"retrieve",
+              "id":22
+    }
+ ...
+
+
+ L'employé peut ajouter une justification des dépences  :
+ ...json
+    {
+              "type":"addJustification",
+              "id":22,
+              "justification":"je suis le king , rend moi le mago !"
+    }
+ ...
+
