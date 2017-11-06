@@ -64,7 +64,8 @@ public class RetrieveFlight extends RouteBuilder {
                 .process(flightreq2b) // on traite tous les objets flight reçus
                 .log("transformation de FlightRequest en requete Service B : " + body().toString())
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
-                .onException(Exception.class).process(makeFakeFlight)
+                //TODO : ne doit pas faire planter les tests
+                //.onException(Exception.class).process(makeFakeFlight)
                 .unmarshal().string()
                 .process(answerserviceb2flight)
                 .log("transformation de la réponse en objet Flight : " + body().toString())
