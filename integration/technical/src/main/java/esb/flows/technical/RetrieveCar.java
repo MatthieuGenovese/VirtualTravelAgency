@@ -64,7 +64,7 @@ public class RetrieveCar extends RouteBuilder {
                 .process(answerservicea2Car)
                 .log("transformation de la réponse en objet Car : " + body().toString())
                 .to(AGGREG_CAR)
-                ;
+        ;
 
         from(RETRIEVE_CAR_B)
                 .routeId("transfert de la activemq vers le serviceB en ressources")
@@ -78,18 +78,18 @@ public class RetrieveCar extends RouteBuilder {
                 .process(answerserviceb2Car)
                 .log("transformation de la réponse en objet Car : " + body().toString())
                 .to(AGGREG_CAR)
-                ;
+        ;
 
         from(AGGREG_CAR)
                 .routeId("aggreg-car")
                 .routeDescription("Aggregation des cars")
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
-                    .completionSize(2)
+                .completionSize(2)
                 .log("Requete la moins chère retenue : " + body().toString())
                 .setHeader("type", constant("car"))
                 .removeHeader(Exchange.HTTP_QUERY)
                 .to(AGGREG_TRAVELREQUEST)
-                ;
+        ;
 
 
 

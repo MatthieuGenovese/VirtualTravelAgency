@@ -47,7 +47,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
                 "|" + RETRIEVE_CAR_B +
                 "|" + RETRIEVE_A_HOTELA +
                 "|" + RETRIEVE_A_HOTELB
-        ;
+                ;
     }
 
     //On vérifie que le context d'execution est bien mocké
@@ -87,7 +87,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
 
         carReq.setDate("28/11/2017");
         carReq.setDestination("Lyon");
-        carReq.setEnd(" 60");
+        carReq.setEnd("30/11/2017");
         carReq.setSort("asc");
 
         hotelReq.setDate("28/11/2017");
@@ -99,7 +99,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
     public void initMocks() {
         resetMocks();
         //chaque fois que ce service recevra un echange,  il retournera cette réponse
-       mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange e) -> {
+        mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange e) -> {
             String res = "{\n" +
                     "  \"size\": 3,\n" +
                     "  \"vols\": [\n" +
@@ -164,32 +164,56 @@ public class CallExternalPartnersTest extends ActiveMQTest {
 
         //TODO mettre le json retour attendu
         mock(CARSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
-            String req = "";
+            String req = "[{\n" +
+                    "    \"date\": \"28/11/2017\",\n" +
+                    "    \"price\": 30,\n" +
+                    "    \"name\": \"Car1\",\n" +
+                    "    \"destination\": \"Lyon\"\n" +
+                    "  }]";
             exc.getIn().setBody(req);
         });
 
         //TODO mettre le json retour attendu
         mock(CARSERVICE_ENDPOINTB).whenAnyExchangeReceived((Exchange exc) -> {
-            String req = "";
+            String req = "[{\n" +
+                    "        \"id\": 64,\n" +
+                    "            \"make\": \"Hyundai\",\n" +
+                    "            \"model\": \"Elantra\",\n" +
+                    "            \"year\": 1998,\n" +
+                    "            \"agency\": {\n" +
+                    "        \"name\": \"Feedspan\",\n" +
+                    "                \"address\": \"34779 Harper Street\",\n" +
+                    "                \"city\": \"Fontenay-sous-Bois\",\n" +
+                    "                \"country\": \"Lyon\"\n" +
+                    "    },\n" +
+                    "        \"bookings\": [\n" +
+                    "        {\n" +
+                    "            \"id\": \"5295aa7d-1ec8-4f44-82b7-4f3284689169\",\n" +
+                    "                \"start\": \"28/11/2017\",\n" +
+                    "                \"end\": \"2017-07-30T01:49:14Z\"\n" +
+                    "        }\n" +
+                    "    ],\n" +
+                    "        priceperday: 32.8\n" +
+                    "    }]";
             exc.getIn().setBody(req);
         });
 
         mock(HOTELSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
             String req = "[{\n" +
-            "  \"date\": \"28/11/2017\",\n" +
-            "  \"price\": 30,\n" +
-            "  \"name\": \"Hotel4\",\n" +
-            "  \"destination\": \"Paris\"\n" +
-            "}]";
+                    "  \"date\": \"28/11/2017\",\n" +
+                    "  \"price\": 30,\n" +
+                    "  \"name\": \"Hotel4\",\n" +
+                    "  \"destination\": \"Paris\"\n" +
+                    "}]";
             exc.getIn().setBody(req);
         });
 
         mock(HOTELSERVICE_ENDPOINTB).whenAnyExchangeReceived((Exchange exc) -> {
             String req = "[{\n" +
-            "  \"city\": \"Ipaba\",\n" +
-            "  \"name\": \"Lockman and Sons\",\n" +
-            "  \"roomCost\": 51\n" +
-            "}]";
+                    "  \"city\": \"Ipaba\",\n" +
+                    "  \"name\": \"Lockman and Sons\",\n" +
+                    "  \"roomCost\": 51\n" +
+                    "}]";
             exc.getIn().setBody(req);
         });
 
@@ -277,7 +301,7 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         mock(DEATH_POOL).assertIsSatisfied();
     }
 
-    //@Test
+    @Test
     //TODO Remplacer la ou il faut par les voitures
     public void testRetrive2Car() throws Exception {
 
@@ -292,32 +316,31 @@ public class CallExternalPartnersTest extends ActiveMQTest {
         mock(CARSERVICE_ENDPOINTA).assertIsSatisfied();
 
 //        TODO Replacer par des voitures
-//        Car expectedCarA = new Car();
-//        Car responseCarA = (Car)  mock(AGGREG_CAR).getReceivedExchanges().get(0).getIn().getBody();
+        Car expectedCarA = new Car();
+        Car responseCarA = (Car)  mock(AGGREG_CAR).getReceivedExchanges().get(0).getIn().getBody();
 
-//        expectedCarA.setDestination("Lyon");
-//        expectedCarA.setDate("28/11/2017");
-//        expectedCarA.setPrice("30");
-//
-//        assertEquals(expectedCarA.getDate(), responseCarA.getDate());
-//        assertEquals(expectedCarA.getDestination(), responseCarA.getDestination());
-//        assertEquals(expectedCarA.getPrice(), responseCarA.getPrice());
+        expectedCarA.setDestination("Lyon");
+        expectedCarA.setDate("28/11/2017");
+        expectedCarA.setPrice("30");
+
+        assertEquals(expectedCarA.getDate(), responseCarA.getDate());
+        assertEquals(expectedCarA.getDestination(), responseCarA.getDestination());
+        assertEquals(expectedCarA.getPrice(), responseCarA.getPrice());
 
         template.sendBody(RETRIEVE_CAR_B, carReq);
 
         mock(CARSERVICE_ENDPOINTB).assertIsSatisfied();
 
-        //TODO Replacer par des voitures
-        /*Flight expectedFlightB = new Flight();
-        Flight responseFlightB = (Flight)  mock(AGGREG_CAR).getReceivedExchanges().get(1).getIn().getBody();
+        Car expectedCarB = new Car();
+        Car responseCarB = (Car)  mock(AGGREG_CAR).getReceivedExchanges().get(1).getIn().getBody();
 
-        expectedFlightB.setDestination("Paris");
-        expectedFlightB.setDate("12-10-2017");
-        expectedFlightB.setPrice("450");
+        expectedCarB.setDestination("Fontenay-sous-Bois");
+        expectedCarB.setDate("28/11/2017");
+        expectedCarB.setPrice("32");
 
-        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
-        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
-        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());*/
+        assertEquals(expectedCarB.getDate(), responseCarB.getDate());
+        assertEquals(expectedCarB.getDestination(), responseCarB.getDestination());
+        assertEquals(expectedCarB.getPrice(), responseCarB.getPrice());
 
         mock(AGGREG_CAR).assertIsSatisfied();
         mock(DEATH_POOL).assertIsSatisfied();
