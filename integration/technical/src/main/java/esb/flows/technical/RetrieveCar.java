@@ -15,6 +15,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -95,6 +96,15 @@ public class RetrieveCar extends RouteBuilder {
 
 
     }
+
+    private static Processor makeFakeCar = (Exchange exchange) -> {
+        Car c = new Car();
+        c.setName("null");
+        c.setDestination("null");
+        c.setDate("null");
+        c.setPrice(String.valueOf(Integer.MAX_VALUE));
+        exchange.getIn().setBody(c);
+    };
 
     private static Processor csv2Carreq = (Exchange exchange) -> {
         Map<String, Object> data = (Map <String, Object>) exchange.getIn().getBody();

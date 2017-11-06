@@ -64,6 +64,7 @@ public class RetrieveFlight extends RouteBuilder {
                 .process(flightreq2b) // on traite tous les objets flight reçus
                 .log("transformation de FlightRequest en requete Service B : " + body().toString())
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
+                .onException(Exception.class).process(makeFakeFlight)
                 .unmarshal().string()
                 .process(answerserviceb2flight)
                 .log("transformation de la réponse en objet Flight : " + body().toString())
@@ -156,6 +157,27 @@ public class RetrieveFlight extends RouteBuilder {
   "DATE": "12-10-2017",
   "Number_of_Results": 3
 }}}*/
+
+    private static Processor makeFakeFlight = (Exchange exchange) -> {
+        String rep = "{\"Flights\": {\"Outbound\": {\n" +
+                "  \"sorted_flights\": [\n" +
+                "    {\n" +
+                "      \"date\": \"12-10-2017\",\n" +
+                "      \"prix\": "+String.valueOf(Integer.MAX_VALUE) + ",\n" +
+                "      \"cmpny\": \"AirFrance\",\n" +
+                "      \"nb_escales\": 1,\n" +
+                "      \"destination\": \"Paris\",\n" +
+                "      \"rating\": 5,\n" +
+                "      \"duree\": 4,\n" +
+                "      \"id\": 2,\n" +
+                "      \"origine\": \"Nice\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"DATE\": \"12-10-2017\",\n" +
+                "  \"Number_of_Results\": 1\n" +
+                "}}}";
+        exchange.getIn().setBody(rep);
+    };
 
     private static Processor answerserviceb2flight = (Exchange exchange) -> { // transforme la liste de flight en un flight unique (le moins cher)
 
