@@ -24,7 +24,7 @@ public class SendRequestToManagerTest extends ActiveMQTest {
             "</answer><identifier>Id : 0</identifier></result></ns2:answerResponse>";
 
     private String repEndpoint2 = "<ns2:answerResponse xmlns:ns2=\"http://informatique.polytech.unice.fr/soa1/cookbook/\"><result><resultmessage>Your request is validate\n" +
-            "toto va à la plage</resultmessage></result></ns2:answerResponse>";
+            "</resultmessage></result></ns2:answerResponse>";
 
     private String repAttendue = "Submit : 0: \n" +
             "CarTicket{\n" +
@@ -55,13 +55,13 @@ public class SendRequestToManagerTest extends ActiveMQTest {
     //On vérifie que le context d'execution est bien mocké
     @Test
     public void testExecutionContext() throws Exception {
+        isAvailableAndMocked(DEATH_POOL);
         isAvailableAndMocked(MANAGER_REQUEST_ENDPOINT);
         isAvailableAndMocked(MANAGER_ANSWER_ENDPOINT);
         isAvailableAndMocked(ANSWER_MANAGER);
         //isAvailableAndMocked(EMAIL_EMPLOYE);
         //isAvailableAndMocked(EMAIL_MANAGER);
         isAvailableAndMocked(REQUETE_QUEUE);
-        isAvailableAndMocked(DEATH_POOL);
     }
 
 
@@ -117,7 +117,7 @@ public class SendRequestToManagerTest extends ActiveMQTest {
         builder2.append("<cook:answer xmlns:cook=\"http://informatique.polytech.unice.fr/soa1/cookbook/\">\n");
         builder2.append("  <request>\n");
         builder2.append("    <choix>" +m.getReponse() + "</choix>\n");
-        builder2.append("    <messageTravel>" + "toto va à la plage" + "</messageTravel>\n");
+        builder2.append("    <messageTravel>"+"</messageTravel>\n");
         builder2.append("  </request>\n");
         builder2.append("</cook:answer>\n");
         request2 = builder2.toString();

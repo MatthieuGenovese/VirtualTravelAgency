@@ -9,6 +9,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,8 +20,15 @@ public class RetrieveFlight extends RouteBuilder {
 
 
     private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
-    @Override
-    public void configure() throws Exception {
+
+    public void configure() {
+
+        /*onException(Exception.class).handled(true)
+                .process(makeFakeFlight)
+                .to(AGGREG_FLIGHT)
+        .end()
+        ;*/
+
         from(FILE_INPUT_FLIGHT)
                 .routeId("csv-to-retrieve-req")
                 .routeDescription("Recupérer un avion a partir de son id")
@@ -40,6 +48,11 @@ public class RetrieveFlight extends RouteBuilder {
         ;
 
         from(RETRIEVE_A_FLIGHTA) // transforme des FlightRequest
+                .onException(UnknownHostException.class).handled(true)
+                    .process(makeFakeFlight)
+                    .log("erreur capturée transformation en requete fictive : " + body().toString() )
+                    .to(AGGREG_FLIGHT)
+                .end()
                 .routeId("calling-flighta")
                 .routeDescription("transfert de l'activemq vers le service document")
                 .setHeader(Exchange.HTTP_METHOD, constant("POST")) // on choisis le type de requete (ici du POST en json)
@@ -55,6 +68,11 @@ public class RetrieveFlight extends RouteBuilder {
         ;
 
         from(RETRIEVE_A_FLIGHTB) // meme princique que RETRIEVE_A_FLIGHTA
+                .onException(UnknownHostException.class).handled(true)
+                    .process(makeFakeFlight)
+                    .log("erreur capturée transformation en requete fictive : " + body().toString() )
+                .to(AGGREG_FLIGHT)
+                .end()
                 .routeId("calling-flightb")
                 .routeDescription("transfert de l'activemq vers le service document")
                 .setHeader(Exchange.HTTP_METHOD, constant("POST"))
@@ -64,8 +82,6 @@ public class RetrieveFlight extends RouteBuilder {
                 .process(flightreq2b) // on traite tous les objets flight reçus
                 .log("transformation de FlightRequest en requete Service B : " + body().toString())
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
-                //TODO : ne doit pas faire planter les tests
-                //.onException(Exception.class).process(makeFakeFlight)
                 .unmarshal().string()
                 .process(answerserviceb2flight)
                 .log("transformation de la réponse en objet Flight : " + body().toString())
@@ -160,24 +176,11 @@ public class RetrieveFlight extends RouteBuilder {
 }}}*/
 
     private static Processor makeFakeFlight = (Exchange exchange) -> {
-        String rep = "{\"Flights\": {\"Outbound\": {\n" +
-                "  \"sorted_flights\": [\n" +
-                "    {\n" +
-                "      \"date\": \"12-10-2017\",\n" +
-                "      \"prix\": "+String.valueOf(Integer.MAX_VALUE) + ",\n" +
-                "      \"cmpny\": \"AirFrance\",\n" +
-                "      \"nb_escales\": 1,\n" +
-                "      \"destination\": \"Paris\",\n" +
-                "      \"rating\": 5,\n" +
-                "      \"duree\": 4,\n" +
-                "      \"id\": 2,\n" +
-                "      \"origine\": \"Nice\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"DATE\": \"12-10-2017\",\n" +
-                "  \"Number_of_Results\": 1\n" +
-                "}}}";
-        exchange.getIn().setBody(rep);
+        Flight f = new Flight();
+        f.setPrice(String.valueOf(Integer.MAX_VALUE));
+        f.setDate("none");
+        f.setDestination("none");
+        exchange.getIn().setBody(f);
     };
 
     private static Processor answerserviceb2flight = (Exchange exchange) -> { // transforme la liste de flight en un flight unique (le moins cher)

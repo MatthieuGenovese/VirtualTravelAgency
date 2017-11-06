@@ -1,8 +1,6 @@
 package esb.flows.technical.utils;
 
-import esb.flows.technical.data.Flight;
-import esb.flows.technical.data.FlightRequest;
-import esb.flows.technical.data.ItemInterface;
+import esb.flows.technical.data.*;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
@@ -25,8 +23,34 @@ public class FlightCarHotelAggregationStrategy implements AggregationStrategy {
             if(Integer.valueOf(newf.getPrice()) < Integer.valueOf(oldf.getPrice())){
                 oldEx.getIn().setBody(newf);
             }
-            else {
-                return oldEx;
+            else if(Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE){
+                try{
+                    Flight f = (Flight) newf;
+                    f.setPrice("0");
+                    oldEx.getIn().setBody(f);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
+                try{
+                    Car c = (Car) newf;
+                    c.setPrice("0");
+                    oldEx.getIn().setBody(c);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
+                try{
+                    Hotel h = (Hotel) newf;
+                    h.setPrice("0");
+                    oldEx.getIn().setBody(h);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
             }
         }
         return oldEx;

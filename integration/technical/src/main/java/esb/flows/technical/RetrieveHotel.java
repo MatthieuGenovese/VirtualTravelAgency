@@ -10,6 +10,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -43,6 +44,11 @@ public class RetrieveHotel extends RouteBuilder {
         ;
         
         from(RETRIEVE_A_HOTELA) // transforme des HotelReservation
+                .onException(UnknownHostException.class).handled(true)
+                    .process(makeFakeHotel)
+                    .log("erreur capturée transformation en requete fictive : " + body().toString() )
+                .to(AGGREG_HOTEL)
+                .end()
                 .routeId("calling-hotela")
                 .routeDescription("transfert de l'activemq vers le service rest")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET")) // on choisis le type de requete (ici du POST en json)
@@ -58,6 +64,11 @@ public class RetrieveHotel extends RouteBuilder {
         ;
         
         from(RETRIEVE_A_HOTELB) // transforme des HotelReservation
+                .onException(UnknownHostException.class).handled(true)
+                    .process(makeFakeHotel)
+                    .log("erreur capturée transformation en requete fictive : " + body().toString() )
+                .to(AGGREG_HOTEL)
+                .end()
                 .routeId("calling-hotelb")
                 .routeDescription("transfert de l'activemq vers le service rest")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET")) // on choisis le type de requete (ici du POST en json)
@@ -83,7 +94,16 @@ public class RetrieveHotel extends RouteBuilder {
                 .to(AGGREG_TRAVELREQUEST)
         ;
     }
-        
+
+    private static Processor makeFakeHotel = (Exchange exchange) -> {
+        Hotel h = new Hotel();
+        h.setDestination("none");
+        h.setName("none");
+        h.setPrice(String.valueOf(Integer.MAX_VALUE));
+        exchange.getIn().setBody(h);
+
+    };
+
     private static Processor csv2hotelreq = (Exchange exchange) -> { // fonction qui transforme la map issu du csv en objets de type FlightRequest
         Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
         HotelReservation p =  new HotelReservation();
