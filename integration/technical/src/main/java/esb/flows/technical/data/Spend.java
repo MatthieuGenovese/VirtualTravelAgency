@@ -3,13 +3,22 @@ package esb.flows.technical.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Spend implements Serializable{
+      /*{ "type":"submit", "spends":
+        { "id":22, "identity":
+            { "firstName":"mohamed", "lastName":"chennouf", "email":"mohamed.chennouf@etu.unice" },
+            "spends": [ { "id":"0", "reason":"Restaurant", "date":"05/02/2018", "country": "AM" , "price" :
+                            { "price":120, "currency":"EUR" } },
+                        { "id":"1", "reason":"Restaurant", "date":"01/02/2005", "country": "AM" , "price" :
+                            { "price":90, "currency":"EUR" } } ] } }*/
 
     @JsonProperty private String id;
-    @JsonProperty private String prix;
     @JsonProperty private String reason;
     @JsonProperty private String date;
+    @JsonProperty private String country;
+    @JsonProperty private Price price;
 
     public String getId() {
         return id;
@@ -19,12 +28,20 @@ public class Spend implements Serializable{
         this.id = id;
     }
 
-    public String getPrix() {
-        return prix;
+    public String getCountry() {
+        return country;
     }
 
-    public void setPrix(String prix) {
-        this.prix = prix;
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
     }
 
     public String getReason() {
@@ -42,11 +59,15 @@ public class Spend implements Serializable{
     public void setDate(String date) {
         this.date = date;
     }
-    /*{ "type":"submit", "spends":
-        { "id":22, "identity":
-            { "firstName":"kaka", "lastName":"susuususu", "email":"popopo@etu.unice" },
-            "spend": { "id":"strzing", "prix":23, "reason":"strinzg", "date":"staaring" }
 
-        }
-*/
+    @Override
+    public String toString() {
+        return "Spend{" +
+                "id='" + id + '\'' +
+                ", reason='" + reason + '\'' +
+                ", date='" + date + '\'' +
+                ", country='" + country + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

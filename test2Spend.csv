@@ -1,4 +1,5 @@
-idGlobale,firstName,lastName,email,id,prix,reason,date
-1,momo,chennouf,mc154254@etu.unice.fr,01,2545,cher le voyage,28/01/2017
+idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency
+1,momo,chennouf,mc154254@etu.unice.fr,01;02,2545;2758,resto;avion,28/01/2017;28/01/2017,France;France,EUR;EUR
+
 
 
