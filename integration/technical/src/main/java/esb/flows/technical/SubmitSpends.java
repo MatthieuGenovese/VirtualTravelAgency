@@ -33,10 +33,13 @@ public class SubmitSpends extends RouteBuilder{
                     .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                     .parallelProcessing().executorService(WORKERS)
                     .process(csv2spendreq)
+                    .log("transformation du csv en SpendRequest : " + body().toString())
                 .marshal().json(JsonLibrary.Gson)
                 .unmarshal().string()
                 .process(spendreq2jsonservice)
+                .log("transformation de la SpendRequest en json et envoi de la requête au service remboursement : " + body().toString())
                 .inOut(SPENDSERVICE_ENDPOINT)
+                .log("réponse du service : " + body().toString())
                 .log(body().toString())
         ;
 

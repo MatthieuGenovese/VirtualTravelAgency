@@ -28,7 +28,7 @@ public class RetrieveFlight extends RouteBuilder {
                 .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2flightreq)
-                .log("je suis passé par la")
+                .log("Transformation du csv en FlightRequest : " + body().toString())
                 .to(FLIGHT_QUEUE) // tous les objetc flight sont ensuite mis dans la queue
         ;
 
@@ -45,12 +45,12 @@ public class RetrieveFlight extends RouteBuilder {
                 .setHeader(Exchange.HTTP_METHOD, constant("POST")) // on choisis le type de requete (ici du POST en json)
                 .setHeader("Content-Type", constant("application/json"))
                 .setHeader("Accept", constant("application/json"))
-                .log("j'ai recu des trucs !")
                 .process(flightreq2a) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
+                .log("transformation de FlightRequest en requete Service A : " + body().toString())
                 .inOut(FLIGHTSERVICE_ENDPOINTA) // on envoit la requete au service et on récupère la réponse
                 .unmarshal().string()
                 .process(answerservicea2flight)
-                //.marshal().json(JsonLibrary.Jackson)
+                .log("transformation de la réponse en objet Flight : " + body().toString())
                 .to(AGGREG_FLIGHT) // on stocke la reponse (ici dans un fichier)
         ;
 
@@ -62,23 +62,21 @@ public class RetrieveFlight extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .log("j'ai recu des trucs !" + body().toString())
                 .process(flightreq2b) // on traite tous les objets flight reçus
+                .log("transformation de FlightRequest en requete Service B : " + body().toString())
                 .inOut(FLIGHTSERVICE_ENDPOINTB)
                 .unmarshal().string()
                 .process(answerserviceb2flight)
-                //.marshal().json(JsonLibrary.Jackson)
+                .log("transformation de la réponse en objet Flight : " + body().toString())
                 .to(AGGREG_FLIGHT)
         ;
 
         from(AGGREG_FLIGHT)
                 .routeId("aggreg-flight")
                 .routeDescription("l'aggregator des avions")
-                .log("before aggreg" + body())
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
-                .log("after aggreg" + body())
-
                 .setHeader("type", constant("flight"))
-                //.marshal().json(JsonLibrary.Jackson)
+                .log("Requete la moins chère retenue : " + body().toString())
                 .to(AGGREG_TRAVELREQUEST)
         ;
     }

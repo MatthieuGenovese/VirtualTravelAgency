@@ -12,17 +12,19 @@ import java.io.Serializable;
  *
  * @author lm203441
  */
-public class HotelReservation implements Serializable{
+public class HotelReservation implements Serializable {
 
-    @JsonProperty private String date;
-    @JsonProperty private String destination;
-    
+    @JsonProperty
+    private String date;
+    @JsonProperty
+    private String destination;
+
     public HotelReservation() {
     }
-    
+
     public HotelReservation(String date, String destination) {
-       this.date = date;
-       this.destination = destination;
+        this.date = date;
+        this.destination = destination;
     }
 
 
@@ -41,21 +43,13 @@ public class HotelReservation implements Serializable{
     public void setDestination(String destination) {
         this.destination = destination;
     }
-    
-    
-    
-//    JSONObject toJson() {
-//        return new JSONObject()
-//                .put("name", name)
-//                .put("date", date)
-//                .put("destination", destination)
-//                .put("price", price);
-//    }
 
     @Override
     public String toString() {
-        return "HotelReservation{" + "date=" + date + ", destination=" + destination + '}';
+        return "HotelReservation{" +
+                "date='" + date + '\'' +
+                ", destination='" + destination + '\'' +
+                '}';
     }
-    
-    
 }
+    

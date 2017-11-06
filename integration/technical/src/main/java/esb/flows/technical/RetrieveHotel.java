@@ -31,6 +31,7 @@ public class RetrieveHotel extends RouteBuilder {
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2hotelreq)
                 .log("hotel csv -> requete")
+                .log("Transformation du csv en HotelRequest : " + body().toString())
                 .to(HOTEL_QUEUE)
         ;
         
@@ -45,17 +46,14 @@ public class RetrieveHotel extends RouteBuilder {
                 .routeId("calling-hotela")
                 .routeDescription("transfert de l'activemq vers le service rest")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET")) // on choisis le type de requete (ici du POST en json)
-//                .setHeader("Content-Type", constant("application/json"))
                 .setHeader("Accept", constant("application/json"))
-                
-                .log("j'ai recu des trucs hotels !")
                 .process(hotelreq2a) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
+                .log("transformation de HotelRequest en requete Service A : " + body().toString())
                 .inOut(HOTELSERVICE_ENDPOINTA)
                 .log(HOTELSERVICE_ENDPOINTA)
                 .unmarshal().string()
-                .log("MARSHALL")
                 .process(answerservicea2hotel)
-//                .marshal().json(JsonLibrary.Jackson)
+                .log("transformation de la réponse en objet Hotel : " + body().toString())
                 .to(AGGREG_HOTEL) // on stocke la reponse (ici dans un fichier)
         ;
         
@@ -63,30 +61,25 @@ public class RetrieveHotel extends RouteBuilder {
                 .routeId("calling-hotelb")
                 .routeDescription("transfert de l'activemq vers le service rest")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET")) // on choisis le type de requete (ici du POST en json)
-//                .setHeader("Content-Type", constant("application/json"))
                 .setHeader("Accept", constant("application/json"))
-                
-                .log("j'ai recu des trucs hotels !")
                 .process(hotelreq2b) // on transforme tous les objets de type FlightRequest en JSON correspondant pour le service demandé
+                .log("transformation de HotelRequest en requete Service B : " + body().toString())
                 .inOut(HOTELSERVICE_ENDPOINTB)
                 .log(HOTELSERVICE_ENDPOINTB)
                 .unmarshal().string()
-                .log("MARSHALL")
                 .process(answerserviceb2hotel)
-//                .marshal().json(JsonLibrary.Jackson)
+                .log("transformation de la réponse en objet Hotel : " + body().toString())
                 .to(AGGREG_HOTEL) // on stocke la reponse (ici dans un fichier)
         ;
         
         from(AGGREG_HOTEL)
                 .routeId("aggreg-hotel")
                 .routeDescription("l'aggregator des hotels")
-                .log("before aggreg" + body())
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
-                .log("after aggreg" + body())
-                //.marshal().json(JsonLibrary.Jackson)
                 .setHeader("type", constant("hotel"))
                 .removeHeader(Exchange.HTTP_QUERY)
+                .log("Requete la moins chère retenue : " + body().toString())
                 .to(AGGREG_TRAVELREQUEST)
         ;
     }

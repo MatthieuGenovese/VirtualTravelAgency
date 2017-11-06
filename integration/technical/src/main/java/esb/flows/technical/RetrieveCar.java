@@ -40,7 +40,7 @@ public class RetrieveCar extends RouteBuilder {
                 .split(body())
                 .parallelProcessing().executorService(WORKERS)
                 .process(csv2Carreq)
-                .log("car csv -> requete")
+                .log("Transformation du csv en CarRequest : " + body().toString())
                 .to(CAR_QUEUE)
         ;
 
@@ -56,13 +56,12 @@ public class RetrieveCar extends RouteBuilder {
                 .routeDescription("trans")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET"))
                 .setHeader("Accept", constant("application/json"))
-                .log("Reception des cars du serviceA")
                 .process(carreq2a)
+                .log("transformation de CarRequest en requete Service A")
                 .inOut(CARSERVICE_ENDPOINTA)
-                .log(CARSERVICE_ENDPOINTA)
                 .unmarshal().string()
-                .log("MARSHAL")
                 .process(answerservicea2Car)
+                .log("transformation de la réponse en objet Car : " + body().toString())
                 .to(AGGREG_CAR)
                 ;
 
@@ -71,23 +70,21 @@ public class RetrieveCar extends RouteBuilder {
                 .routeDescription("trans")
                 .setHeader(Exchange.HTTP_METHOD, constant("GET"))
                 .setHeader("Accept",constant("application/json"))
-                .log("Reception des cars serviceB")
                 .process(carreq2b)
+                .log("transformation de CarRequest en requete Service B")
                 .inOut(CARSERVICE_ENDPOINTB)
-                .log(CARSERVICE_ENDPOINTB)
                 .unmarshal().string()
                 .process(answerserviceb2Car)
+                .log("transformation de la réponse en objet Car : " + body().toString())
                 .to(AGGREG_CAR)
                 ;
 
         from(AGGREG_CAR)
                 .routeId("aggreg-car")
                 .routeDescription("Aggregation des cars")
-                .log("Before agreg" + body())
                 .aggregate(constant(true), new FlightCarHotelAggregationStrategy())
                     .completionSize(2)
-                .log("After agreg" + body())
-                //.marshal().json(JsonLibrary.Jackson)
+                .log("Requete la moins chère retenue : " + body().toString())
                 .setHeader("type", constant("car"))
                 .removeHeader(Exchange.HTTP_QUERY)
                 .to(AGGREG_TRAVELREQUEST)
@@ -124,28 +121,6 @@ public class RetrieveCar extends RouteBuilder {
         exchange.getIn().setBody(null);
     };
 
-    /*
-    [
-  {
-    "date": "28/11/2017",
-    "price": 60,
-    "name": "Car1",
-    "destination": "Lyon"
-  },
-  {
-    "date": "28/11/2017",
-    "price": 70,
-    "name": "Car3",
-    "destination": "Paris"
-  },
-  {
-    "date": "28/12/2017",
-    "price": 80,
-    "name": "Car2",
-    "destination": "Paris"
-  }
-]
-     */
     private static Processor answerservicea2Car = (Exchange exchange) -> {
         Car resultat = new Car();
         resultat.setPrice(String.valueOf(Integer.MAX_VALUE));
@@ -173,27 +148,6 @@ public class RetrieveCar extends RouteBuilder {
         }
         exchange.getIn().setBody(resultat);
     };
-
-   /* {
-        "id": 64,
-            "make": "Hyundai",
-            "model": "Elantra",
-            "year": 1998,
-            "agency": {
-        "name": "Feedspan",
-                "address": "34779 Harper Street",
-                "city": "Fontenay-sous-Bois",
-                "country": "France"
-    },
-        "bookings": [
-        {
-            "id": "5295aa7d-1ec8-4f44-82b7-4f3284689169",
-                "start": "2017-05-20T17:25:35Z",
-                "end": "2017-07-30T01:49:14Z"
-        }
-    ],
-        priceperday: 32.8
-    }*/
 
     private static Processor answerserviceb2Car = (Exchange exchange) -> {
         Car resultat = new Car();

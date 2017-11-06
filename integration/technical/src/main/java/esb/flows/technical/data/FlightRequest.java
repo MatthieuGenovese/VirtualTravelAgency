@@ -54,4 +54,15 @@ public class FlightRequest implements Serializable {
     public void setIsDirect(String isDirect) {
         this.isDirect = isDirect;
     }
+
+    @Override
+    public String toString() {
+        return "FlightRequest{" +
+                "origine='" + origine + '\'' +
+                ", event='" + event + '\'' +
+                ", destination='" + destination + '\'' +
+                ", date='" + date + '\'' +
+                ", isDirect='" + isDirect + '\'' +
+                '}';
+    }
 }

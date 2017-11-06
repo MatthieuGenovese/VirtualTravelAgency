@@ -37,4 +37,13 @@ public class TravelAgencyRequest implements Serializable{
     public TravelAgencyRequest(){
 
     }
+
+    @Override
+    public String toString() {
+        return "TravelAgencyRequest{" +
+                "flight=" + flight +
+                ", car=" + car +
+                ", hotel=" + hotel +
+                '}';
+    }
 }

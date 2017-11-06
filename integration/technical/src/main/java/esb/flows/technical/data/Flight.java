@@ -42,9 +42,11 @@ public class Flight implements Serializable, ItemInterface {
     }
 
     @Override
-    public String toString(){
-        return "dest : " + getDestination() + " date : " + getDate() + " prix : " + getPrice() + "\n";
+    public String toString() {
+        return "Flight{" +
+                "destination='" + destination + '\'' +
+                ", date='" + date + '\'' +
+                ", price='" + price + '\'' +
+                '}';
     }
-
-
 }

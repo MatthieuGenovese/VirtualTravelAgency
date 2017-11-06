@@ -31,14 +31,14 @@ public class Hotel implements Serializable, ItemInterface {
         this.destination = destination;
     }
 
-//    public String getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(String date) {
-//        this.date = date;
-//    }
-
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "name='" + name + '\'' +
+                ", destination='" + destination + '\'' +
+                ", price='" + price + '\'' +
+                '}';
+    }
 
     public String getPrice() {
         return price;
@@ -48,10 +48,6 @@ public class Hotel implements Serializable, ItemInterface {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "Hotel{" + "name=" + name + ", destination=" + destination + ", price=" + price + '}';
-    }
 
 
 }

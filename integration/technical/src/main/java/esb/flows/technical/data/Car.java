@@ -46,4 +46,14 @@ public class Car implements Serializable, ItemInterface {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "destination='" + destination + '\'' +
+                ", date='" + date + '\'' +
+                ", price='" + price + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

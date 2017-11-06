@@ -42,7 +42,7 @@ public class ManagerRequestHelper {
         builder.append("<cook:answer xmlns:cook=\"http://informatique.polytech.unice.fr/soa1/cookbook/\">\n");
         builder.append("  <request>\n");
         builder.append("    <choix>" +m.getReponse() + "</choix>\n");
-        builder.append("    <messageTravel>" + "toto va à la plage" + "</messageTravel>\n");
+        builder.append("    <messageTravel>" + "" + "</messageTravel>\n");
         builder.append("  </request>\n");
         builder.append("</cook:answer>\n");
         return builder.toString();

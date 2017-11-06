@@ -25,4 +25,12 @@ public class ManagerAnswer {
     public void setReponseService(String reponseService) {
         this.reponseService = reponseService;
     }
+
+    @Override
+    public String toString() {
+        return "ManagerAnswer{" +
+                "reponse='" + reponse + '\'' +
+                ", reponseService='" + reponseService + '\'' +
+                '}';
+    }
 }

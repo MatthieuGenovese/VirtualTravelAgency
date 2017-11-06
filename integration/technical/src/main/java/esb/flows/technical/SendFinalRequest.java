@@ -31,7 +31,7 @@ public class SendFinalRequest extends RouteBuilder {
             .routeDescription("Concatenation des 3 demandes vol, car et hotel")
             .aggregate(constant(true), new FinalReqAggregationStrategy())
                 .completionPredicate(SendFinalRequest::finish)
-            //.marshal().json(JsonLibrary.Jackson
+            .log("Aggregation des 3 requêtes en une TravelAgencyRequest : " + body().toString())
             .to(REQUETE_QUEUE)
 
         ;
@@ -43,8 +43,10 @@ public class SendFinalRequest extends RouteBuilder {
             .setHeader("Content-Type", constant("application/json"))
             .setHeader("Accept", constant("application/json"))
             .bean(ManagerRequestHelper.class, "buildSimpleRequest(${body}")
+                .log("Transformation de la TravelAgencyRequest en .wsdl pour le service d'acceptation de voyage " + body().toString())
             .inOut(MANAGER_REQUEST_ENDPOINT)
             .process(response2String)
+            .log("Reception dans la boîte mail du manager : " + body().toString())
             .to(EMAIL_MANAGER + "?fileName=mailManager" + "${header[requete-id]}" + ".txt")
         ;
 
@@ -54,6 +56,7 @@ public class SendFinalRequest extends RouteBuilder {
               .split(body())
               .parallelProcessing().executorService(WORKERS)
                  .process(csv2Manager)
+                 .log("Transformation du csv en ManagerAnswer : " + body().toString())
             .to(ANSWER_MANAGER)
         ;
 
@@ -61,8 +64,10 @@ public class SendFinalRequest extends RouteBuilder {
             .routeId("manager-envoi-reponse")
             .routeDescription("envoit de la reponse du manager")
             .bean(ManagerRequestHelper.class, "buildSimpleAnswer(${body})")
+                .log("Transformation de la ManagerAnswer en .wsdl pour le service de réponse : " + body().toString())
             .inOut(MANAGER_ANSWER_ENDPOINT)
             .process(response2String)
+                .log("Reception dans la boîte mail de l'employé : " + body().toString())
             .to(EMAIL_EMPLOYE + "?fileName=mailEmploye" + "${header[requete-id]}"+".txt")
         ;
     }
@@ -78,24 +83,10 @@ public class SendFinalRequest extends RouteBuilder {
     private static boolean finish(Exchange exc){
         TravelAgencyRequest tr = (TravelAgencyRequest) exc.getIn().getBody();
         if(tr.getCarReq() != null && tr.getFlightReq() != null && tr.getHotelReq() != null){
-            System.out.println("fini !");
             return true;
         }
         return false;
     }
-    private static Processor test = (Exchange exchange) -> {
-        TravelAgencyRequest tr = (TravelAgencyRequest) exchange.getIn().getBody();
-        System.out.println("PRINTSAMERE : " + tr.getCarReq() + " " + tr.getFlightReq() + " " + tr.getCarReq());
-        exchange.getIn().setBody(exchange.getIn().getBody());
-
-    };
-
-    private static Processor test2 = (Exchange exchange) -> {
-        System.out.println("PRINT LES REQUETES : " + exchange.getIn().getBody());
-        System.out.println("PRINT LES HEADERS : " + exchange.getIn().getHeaders());
-        exchange.getIn().setBody(exchange.getIn().getBody());
-
-    };
 
     private static Processor response2String = (Exchange exchange) -> {
         XPath xpath = XPathFactory.newInstance().newXPath();
