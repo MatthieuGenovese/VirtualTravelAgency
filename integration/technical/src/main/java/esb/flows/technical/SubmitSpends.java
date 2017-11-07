@@ -10,6 +10,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -21,9 +22,13 @@ public class SubmitSpends extends RouteBuilder{
 
     private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
 
-    @Override
-    public void configure() throws Exception {
+    public void configure() {
         from(FILE_INPUT_SPEND)
+                .onException(UnknownHostException.class).handled(true)
+                .process(handleErr)
+                .log("erreur capturée dans le service d'envoie des preuves au manager")
+                .to(EMAIL_EMPLOYE + "?fileName=errorSendEvidence.txt")
+                .end()
                 .routeId("refund-request")
                 .routeDescription("demande de remboursement")
                 .setHeader(Exchange.HTTP_METHOD, constant("POST")) // on choisis le type de requete (ici du POST en json)
@@ -52,6 +57,11 @@ public class SubmitSpends extends RouteBuilder{
         String endofReq = "}";
         exchange.getIn().setBody(header+recv+endofReq);
 
+    };
+
+    private static Processor handleErr = (Exchange exchange) -> {
+        String rep = "The service is currently offline\n";
+        exchange.getIn().setBody(rep);
     };
 
 

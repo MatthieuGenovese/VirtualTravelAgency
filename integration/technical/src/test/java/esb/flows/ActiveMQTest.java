@@ -35,11 +35,13 @@ public abstract class ActiveMQTest  extends CamelTestSupport {
         return new RouteBuilder() {
             @Override public void configure() throws Exception {
                 this.includeRoutes(deathPool);
-                this.setErrorHandlerBuilder(deathPool.getErrorHandlerBuilder());
+//                this.setErrorHandlerBuilder(deathPool.getErrorHandlerBuilder());
                 this.includeRoutes(new RetrieveCar());
                 this.includeRoutes(new RetrieveFlight());
                 this.includeRoutes(new RetrieveHotel());
                 this.includeRoutes(new SendFinalRequest());
+                this.includeRoutes(new SubmitSpends());
+//                this.includeRoutes(new DeathPool());
             }
         };
     }
