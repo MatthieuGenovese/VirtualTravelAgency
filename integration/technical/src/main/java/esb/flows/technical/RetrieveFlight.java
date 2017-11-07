@@ -178,8 +178,8 @@ public class RetrieveFlight extends RouteBuilder {
     private static Processor makeFakeFlight = (Exchange exchange) -> {
         Flight f = new Flight();
         f.setPrice(String.valueOf(Integer.MAX_VALUE));
-        f.setDate("none");
-        f.setDestination("none");
+        f.setDate("err");
+        f.setDestination("err");
         exchange.getIn().setBody(f);
     };
 

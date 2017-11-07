@@ -14,6 +14,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import java.io.StringReader;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,12 +32,23 @@ public class SendFinalRequest extends RouteBuilder {
             .routeDescription("Concatenation des 3 demandes vol, car et hotel")
             .aggregate(constant(true), new FinalReqAggregationStrategy())
                 .completionPredicate(SendFinalRequest::finish)
-            .log("Aggregation des 3 requêtes en une TravelAgencyRequest : " + body().toString())
-            .to(REQUETE_QUEUE)
+            .choice()
+                .when(header("etat").isEqualTo("erreur"))
+                    .process(handleErr)
+                    .to(EMAIL_EMPLOYE + "?fileName=errorAskingReservations.txt")
+                .otherwise()
+                    .log("Aggregation des 3 requêtes en une TravelAgencyRequest : " + body().toString())
+                    .to(REQUETE_QUEUE)
+            .endChoice()
 
         ;
 
         from(REQUETE_QUEUE)
+                .onException(UnknownHostException.class).handled(true)
+                .process(handleErr)
+                .log("erreur capturée dans le service d'envoit au manager")
+                .to(EMAIL_EMPLOYE + "?fileName=errorAskManagerService.txt")
+                .end()
             .routeId("manager-final-request")
             .routeDescription("Envoi de la demand eau manager")
             .setHeader(Exchange.HTTP_METHOD, constant("POST"))
@@ -61,16 +73,26 @@ public class SendFinalRequest extends RouteBuilder {
         ;
 
         from(ANSWER_MANAGER)
-            .routeId("manager-envoi-reponse")
-            .routeDescription("envoit de la reponse du manager")
-            .bean(ManagerRequestHelper.class, "buildSimpleAnswer(${body})")
+             .onException(UnknownHostException.class).handled(true)
+                .process(handleErr)
+                .log("erreur capturée dans le service de réponse à l'employé")
+                .to(EMAIL_MANAGER + "?fileName=errorManagerService.txt")
+                .end()
+             .routeId("manager-envoi-reponse")
+             .routeDescription("envoit de la reponse du manager")
+             .bean(ManagerRequestHelper.class, "buildSimpleAnswer(${body})")
                 .log("Transformation de la ManagerAnswer en .wsdl pour le service de réponse : " + body().toString())
-            .inOut(MANAGER_ANSWER_ENDPOINT)
-            .process(response2String)
+             .inOut(MANAGER_ANSWER_ENDPOINT)
+             .process(response2String)
                 .log("Reception dans la boîte mail de l'employé : " + body().toString())
-            .to(EMAIL_EMPLOYE + "?fileName=mailEmploye" + "${header[requete-id]}"+".txt")
+             .to(EMAIL_EMPLOYE + "?fileName=mailEmploye" + "${header[requete-id]}"+".txt")
         ;
     }
+
+    private static Processor handleErr = (Exchange exchange) -> {
+        String rep = "The service is currently offline\n";
+        exchange.getIn().setBody(rep);
+    };
 
     private static Processor csv2Manager = (Exchange exchange) -> {
         Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();

@@ -97,8 +97,8 @@ public class RetrieveHotel extends RouteBuilder {
 
     private static Processor makeFakeHotel = (Exchange exchange) -> {
         Hotel h = new Hotel();
-        h.setDestination("none");
-        h.setName("none");
+        h.setDestination("err");
+        h.setName("err");
         h.setPrice(String.valueOf(Integer.MAX_VALUE));
         exchange.getIn().setBody(h);
 

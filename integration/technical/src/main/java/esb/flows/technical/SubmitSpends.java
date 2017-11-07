@@ -56,8 +56,7 @@ public class SubmitSpends extends RouteBuilder{
 
 
       /*idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency
-1,momo,chennouf,mc154254@etu.unice.fr,01;02,2545;2758,resto;avion,28/01/2017;28/01/2017,France;France,EUR;EUR
-*/
+1,momo,chennouf,mc154254@etu.unice.fr,01;02,2545;2758,resto;avion,28/01/2017;28/01/2017,France;France,EUR;EUR*/
 
     private static Processor csv2spendreq = (Exchange exchange) -> {
         Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();

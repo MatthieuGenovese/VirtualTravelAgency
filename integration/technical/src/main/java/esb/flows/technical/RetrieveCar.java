@@ -31,7 +31,6 @@ public class RetrieveCar extends RouteBuilder {
 
     private static final ExecutorService WORKERS = Executors.newFixedThreadPool(2);
 
-
     @Override
     public void configure() throws Exception {
         from(FILE_INPUT_CAR)
@@ -55,8 +54,8 @@ public class RetrieveCar extends RouteBuilder {
         from(RETRIEVE_CAR_A)
                 .onException(UnknownHostException.class).handled(true)
                     .process(makeFakeCar)
-                    .log("erreur capturée transformation en requete fictive : " + body().toString() )
-                .to(AGGREG_CAR)
+                    .log("erreur capturée transformation en requete fictive : " + body().toString())
+                    .to(AGGREG_CAR)
                 .end()
                 .routeId("transfert de la activemq vers le serviceA en ressources")
                 .routeDescription("trans")
@@ -109,9 +108,9 @@ public class RetrieveCar extends RouteBuilder {
 
     private static Processor makeFakeCar = (Exchange exchange) -> {
         Car c = new Car();
-        c.setName("none");
-        c.setDestination("none");
-        c.setDate("none");
+        c.setName("err");
+        c.setDestination("err");
+        c.setDate("err");
         c.setPrice(String.valueOf(Integer.MAX_VALUE));
         exchange.getIn().setBody(c);
     };
@@ -132,6 +131,10 @@ public class RetrieveCar extends RouteBuilder {
         exchange.getIn().setHeader(Exchange.HTTP_QUERY, "dest=" + cr.getDestination() + "&date=" + cr.getDate());
         exchange.getIn().setBody(null);
 
+
+    };
+
+    private static Processor backupCar = (Exchange exchange) -> {
 
     };
 
