@@ -21,14 +21,14 @@ public class DeathPoolTest extends ActiveMQTest {
 
     @Override
     public String isMockEndpointsAndSkip() {
-        return SPENDSERVICE_ENDPOINT + "|" + DEATH_POOL
+        return SPENDSERVICE_ENDPOINT
                 ;
     }
 
     //on définie ici les endpoints à tester
     @Override
     public String isMockEndpoints() {
-        return FILE_INPUT_SPEND
+        return FILE_INPUT_SPEND + "|" + DEATH_POOL
                 ;
     }
 

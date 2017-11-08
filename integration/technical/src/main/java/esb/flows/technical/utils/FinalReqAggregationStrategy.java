@@ -80,8 +80,8 @@ public class FinalReqAggregationStrategy  implements AggregationStrategy {
             String stateCar = (String) oldEx.getIn().getHeader("car");
             String stateHotel = (String) oldEx.getIn().getHeader("hotel");
             if(stateCar.equalsIgnoreCase("erreur")
-                    && stateFlight.equalsIgnoreCase("erreur")
-                    && stateHotel.equalsIgnoreCase("erreur")){
+                    || stateFlight.equalsIgnoreCase("erreur")
+                    || stateHotel.equalsIgnoreCase("erreur")){
                 oldEx.getIn().setHeader("etat", "erreur");
             }
             else{
