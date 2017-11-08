@@ -15,7 +15,7 @@ public class RegistryFlightDefinition {
 
 
     private String host = "host";
-    private int port = 8080;
+    private int port = 9080;
 
     private JSONObject flight;
     private JSONObject answer;

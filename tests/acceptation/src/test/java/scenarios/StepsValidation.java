@@ -20,6 +20,7 @@ public class StepsValidation {
     Hostelticket ht;
     Planeticket pt;
     TravelRequest tr;
+    TravelAnswer ta;
 
     @Given("^my validation service$")
     public void myValidationService() throws Throwable {
@@ -42,4 +43,10 @@ public class StepsValidation {
         tr.setPlaneticket(pt);
     }
 
+    @And("^i receive a mail response saying yes$")
+    public void iReceiveAResponse() throws Throwable {
+        ta = service.answer(tr, true);
+        assertEquals(ta.getAnswer(), "Your request has been accepted : \n" + tr.toString());
+        assertEquals(ta.getIdentifier(), "ID01");
+    }
 }
