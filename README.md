@@ -196,17 +196,17 @@ L'employé peut ajouter une dépense à ces dépenses déja existant et soumettr
  	"type":"addSpend",
  	"id":99,
  	"spends":
+ 		{
+ 		"id":"80",
+ 		"reason":"Taxi",
+ 		"date":"05/02/2018",
+ 		"country": "AM" ,
+ 		"prix" :
  			{
- 			"id":"80",
- 			"reason":"Taxi",
- 			"date":"05/02/2018",
- 			"country": "AM" ,
- 			"prix" :
- 			    {
- 				"price":44,
- 				"currency":"EUR"
- 				}
+ 			"price":44,
+ 			"currency":"EUR"
  			}
+ 		}
 }
     
     
