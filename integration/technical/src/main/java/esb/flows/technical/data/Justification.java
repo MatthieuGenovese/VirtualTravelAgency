@@ -3,19 +3,18 @@ package esb.flows.technical.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class AddSpendRequest implements Serializable {
+public class Justification implements Serializable {
     @JsonProperty private String type;
     @JsonProperty private String id;
-    @JsonProperty private Spend spends;
+    @JsonProperty private String justification;
 
     @Override
     public String toString() {
-        return "AddSpendRequest{" +
+        return "Justification{" +
                 "type='" + type + '\'' +
                 ", id='" + id + '\'' +
-                ", spends=" + spends +
+                ", justification='" + justification + '\'' +
                 '}';
     }
 
@@ -35,11 +34,11 @@ public class AddSpendRequest implements Serializable {
         this.id = id;
     }
 
-    public Spend getSpend() {
-        return spends;
+    public String getJustification() {
+        return justification;
     }
 
-    public void setSpend(Spend spends) {
-        this.spends = spends;
+    public void setJustification(String justification) {
+        this.justification = justification;
     }
 }

@@ -2,9 +2,10 @@ package esb.flows.technical.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Bills {
+public class Bills implements Serializable{
 
     @JsonProperty private String id;
     @JsonProperty private Identity identity;

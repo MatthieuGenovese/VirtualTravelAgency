@@ -2,7 +2,9 @@ package esb.flows.technical.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Price {
+import java.io.Serializable;
+
+public class Price implements Serializable {
      /*{ "type":"submit", "spends":
         { "id":22, "identity":
             { "firstName":"mohamed", "lastName":"chennouf", "email":"mohamed.chennouf@etu.unice" },

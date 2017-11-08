@@ -147,6 +147,13 @@ public class SubmitSpends extends RouteBuilder{
                 exchange.getIn().setHeader("typereq","retrieve");
                 exchange.getIn().setBody(res);
                 break;
+            case "addJustification":
+                Justification j = new Justification();
+                j.setId((String) data.get("idGlobale"));
+                j.setType(type);
+                j.setJustification((String) data.get("justification"));
+                exchange.getIn().setBody(j);
+                break;
         }
         //exchange.getIn().setHeader("requete-id", (String) data.get("id"));
     };
