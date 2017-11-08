@@ -9,9 +9,9 @@ public class Identity {
     private String lastName;
     private String email;
 
+    public Identity(){}
 
     public Identity(JSONObject data){
-        System.out.println("Identity: " + data);
         this.firstName = data.getString("firstName");
         this.lastName = data.getString("lastName");
         this.email = data.getString("email");
@@ -23,6 +23,15 @@ public class Identity {
                 .put("firstName", firstName)
                 .put("lastName", lastName)
                 .put("email", email);
+    }
+
+    @Override
+    public String toString() {
+        return "identify{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
 

@@ -25,7 +25,7 @@ public class SubmitSpend {
 
     @GET
     public Response availabilityChecking(){
-        return Response.ok().entity("le service de BG").build();
+        return Response.ok().entity("le service de POULOULOU").build();
     }
 
 
@@ -53,6 +53,9 @@ public class SubmitSpend {
                     break;
                 case "addJustification":
                     answer = handler.addJustificationSpends(obj.getInt("id"),obj.getString("justification"));
+                    break;
+                case "purge":
+                    answer = handler.purge();
                     break;
 
             }

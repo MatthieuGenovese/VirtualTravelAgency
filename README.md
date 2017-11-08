@@ -150,22 +150,26 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
 L'employé peut soumettre ces dépenses (exemple) :
 
 
-{
+    {
      	"type":"submit",
-     	"spends": {
+     	"spends":
+     	 {
      		"id":22,
-     		"identity":{
+     		"identity":
+     		{
      			"firstName":"mohamed",
      			"lastName":"chennouf",
      			"email":"mohamed.chennouf@etu.unice"
-     			},
-     		"spends": [
+     		},
+     		"spends":
+     		[
      			{
      			"id":"0",
      			"reason":"Restaurant",
      			"date":"05/02/2018",
      			"country": "AM" ,
-     			"price" : {
+     			"price" :
+     			    {
      				"price":120,
      				"currency":"EUR"
      				}
@@ -175,14 +179,15 @@ L'employé peut soumettre ces dépenses (exemple) :
      			"reason":"Restaurant",
      			"date":"01/02/2005",
      			"country": "AM" ,
-     			"price" : {
+     			"price" :
+     			    {
      				"price":90,
      				"currency":"EUR"
      				}
      			}
-     			]
+     		]
      	}
-     	}
+    }
 
 
 L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple) :

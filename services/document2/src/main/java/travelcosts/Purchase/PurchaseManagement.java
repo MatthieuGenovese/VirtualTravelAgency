@@ -13,8 +13,9 @@ public class PurchaseManagement {
     private int id;
     private Identity identity;
     private Spend[] spends;
-    private double mySeuil = 0;
+    private double totalSeuil= 0;
     private double totalSpends = 0;
+    private String justification;
 
     @MongoObjectId
     String _id;
@@ -28,34 +29,49 @@ public class PurchaseManagement {
         for (int i = 0; i < values.length(); i++) {
             Spend s = new Spend(values.getJSONObject(i));
             spends[i] = s;
-            this.mySeuil += seuil.calculateSeuil(s.getCountry(),s.getDate(),s.getPrice().getCurrency());
+            this.totalSeuil += seuil.calculateSeuil(s.getCountry(),s.getDate(),s.getPrice().getCurrency());
         }
-        if(getTotalSpends()<mySeuil){
+        if(getTotalSpends()<totalSeuil){
             this.status = Status.VALIDE;
         }else{
             this.status = Status.EN_ATTENTE;
         }
         this.totalSpends = getTotalSpends();
+        this.justification = "";
+    }
+
+    public PurchaseManagement() {}
+
+    public PurchaseManagement(int id,Status status,Identity identity,Spend[] spends,double totalSeuil, double totalSpends,String justification){
+        this.id = id;
+        this.status = status;
+        this.identity = identity;
+        this.spends = spends;
+        this.totalSeuil = totalSeuil;
+        this.totalSpends = totalSpends;
+        this.justification = justification;
     }
 
 
 
         public JSONObject toJson(){
-            return  new JSONObject()
-                .put("status", status.getStr())
-                .put("id", id)
-                .put("identity", identity.toJson())
-                .put("spends", spends)
-                .put("totalSeuil",mySeuil)
-                .put("totalSpends",totalSpends);
+        JSONObject myJson = new JSONObject();
+        myJson.put("status", status.getStr())
+                    .put("id", id)
+                    .put("identity", identity.toJson())
+                    .put("spends", spends)
+                    .put("totalSeuil",totalSeuil)
+                    .put("totalSpends",totalSpends)
+                    .put("justification",justification);
+            return  myJson;
         }
 
 
 
-        public double getTotalSpends(){
+       public double getTotalSpends(){
             double price = 0;
             for (int i = 0; i < spends.length;i++){
-                price += spends[i].getPrice().getPrix();
+                price += spends[i].getPrice().getPrice();
             }
             return price;
         }

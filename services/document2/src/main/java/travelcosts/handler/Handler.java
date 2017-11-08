@@ -14,8 +14,6 @@ public class Handler {
     {
         try {
             PurchaseManagement spends = new PurchaseManagement(spendsAsJson);
-            //FileWriter file = new FileWriter("./../file.txt");
-            //file.write(spends.toString());
             MongoCollection Spends = SubmitSpend.mongoConnector.getSpends();
             Spends.insert(spends);
             return new JSONObject()
@@ -79,7 +77,7 @@ public class Handler {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             PurchaseManagement Spends =spends.findOne("{id:#}", idToRetrieve).as(PurchaseManagement.class);
-            return Spends.toJson().put("retrieved", true);
+            return Spends.toJson();//.put("retrieved", true);
         }
         catch (Exception e)
         {
@@ -96,7 +94,8 @@ public class Handler {
     {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
-            spends.update("{id:#}", idToAddJustification).with("{$push: {'justification': 'justification' }}");
+            String set = "{$set: {'justification': '"+justification+"'}}";
+            spends.update("{id:#}", idToAddJustification).with(set);
             return new JSONObject()
                     .put("justification", true)
                     .put("id", idToAddJustification);
@@ -112,6 +111,12 @@ public class Handler {
     }
 
 
+
+    public JSONObject purge() {
+        MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
+            spends.drop();
+            return new JSONObject().put("purge", "done");
+    }
 
 
 
