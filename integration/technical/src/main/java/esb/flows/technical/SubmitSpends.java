@@ -27,7 +27,10 @@ public class SubmitSpends extends RouteBuilder{
                 .onException(UnknownHostException.class).handled(true)
                 .process(handleErr)
                 .log("erreur capturée dans le service d'envoie des preuves au manager")
-                .to(EMAIL_EMPLOYE + "?fileName=errorSendEvidence.txt")
+                .to(DEATH_POOL)
+                // TODO: Pouvoir multicast le résultat dans la deathpool et ailleurs
+                //.multicast()
+                //.to(EMAIL_EMPLOYE + "?fileName=errorSendEvidence.txt", DEATH_POOL)
                 .end()
                 .routeId("refund-request")
                 .routeDescription("demande de remboursement")
