@@ -24,7 +24,7 @@ public class Spend {
         this.country = data.getString("country");
         this.date = data.getString("date");
         this.reason = data.getString("reason");
-        this.price = new Price(data.getJSONObject("price"));
+        this.price = new Price(data.getJSONObject("prix"));
     }
 
 
@@ -41,6 +41,10 @@ public class Spend {
 
     public Price getPrice() {
         return price;
+    }
+
+    public void setPrice(double price) {
+        this.price.setPrice(price);
     }
 
     public String getDate() {

@@ -25,7 +25,7 @@ public class SubmitSpend {
 
     @GET
     public Response availabilityChecking(){
-        return Response.ok().entity("le service de POULOULOU").build();
+        return Response.ok().entity("le service de gestions de factures").build();
     }
 
 
@@ -40,7 +40,7 @@ public class SubmitSpend {
             JSONObject answer = null;
             switch ((obj.getString("type"))) {
                 case "submit":
-                    answer = handler.submitSpends(obj.getJSONObject("spends"));
+                    answer = handler.submitSpends(obj.getJSONObject("bills"));
                     break;
                 case "validate":
                     answer = handler.approveSpends(obj.getInt("id"));
@@ -57,7 +57,9 @@ public class SubmitSpend {
                 case "purge":
                     answer = handler.purge();
                     break;
-
+                case "addSpend":
+                    answer = handler.addSpend(obj.getInt("id"),obj.getJSONObject("spends"));
+                    break;
             }
 
             if (answer != null)

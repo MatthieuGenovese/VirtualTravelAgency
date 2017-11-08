@@ -1,24 +1,25 @@
 package travelcosts.handler;
 
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
 import org.json.JSONObject;
-import travelcosts.Purchase.PurchaseManagement;
+import travelcosts.Purchase.BillManagement;
+import travelcosts.Purchase.Spend;
+import travelcosts.Purchase.Status;
 import travelcosts.network.SubmitSpend;
-
-import java.io.FileWriter;
 
 public class Handler {
 
     public JSONObject submitSpends(JSONObject spendsAsJson)
     {
         try {
-            PurchaseManagement spends = new PurchaseManagement(spendsAsJson);
+            BillManagement spends = new BillManagement(spendsAsJson);
             MongoCollection Spends = SubmitSpend.mongoConnector.getSpends();
             Spends.insert(spends);
             return new JSONObject()
                     .put("inserted", true)
-                    .put("spends", spends.toJson());
+                    .put("bills", spends.toJson());
         }
         catch (Exception e)
         {
@@ -76,8 +77,8 @@ public class Handler {
     {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
-            PurchaseManagement Spends =spends.findOne("{id:#}", idToRetrieve).as(PurchaseManagement.class);
-            return Spends.toJson();//.put("retrieved", true);
+            BillManagement Spends =spends.findOne("{id:#}", idToRetrieve).as(BillManagement.class);
+            return Spends.toJson();
         }
         catch (Exception e)
         {
@@ -118,6 +119,42 @@ public class Handler {
             return new JSONObject().put("purge", "done");
     }
 
+    public JSONObject addSpend(int idToAddSpends,JSONObject spendAsJson)
+    {
+        try {
+            MongoCollection mangospends = SubmitSpend.mongoConnector.getSpends();
+            BillManagement Spends =mangospends.findOne("{id:#}", idToAddSpends).as(BillManagement.class);
+            Spend[] myOldSpends = Spends.getSpends();
+            Spend[] myNewSpends = new Spend[myOldSpends.length + 1];
+            double newtotalSeuil = Spends.getTotalSeuil();
+            double newtotalSpend = Spends.getTotalSpends();
+            Status newStatus;
+            for (int i = 0; i < myOldSpends.length + 1; i++) {
+                if(i<myOldSpends.length){
+                    myNewSpends[i] = myOldSpends[i];
+                }else{
+                    myNewSpends[i] = new Spend(spendAsJson);
+                    newtotalSpend += myNewSpends[i].getPrice().getPrice();
+                }
+            }
+            //this.totalSeuil += seuil.calculateSeuil(s.getCountry(),s.getDate(),s.getPrice().getCurrency());
+            //Spend = spendAsJson.getDouble("prix");
+            //double totalspends = Spends.getTotalSpends() + spendAsJson.getDouble("prix");
+            Spends.setTotalSpends(newtotalSpend);
+            Spends.setSpends(myNewSpends);
+            mangospends.remove(new ObjectId(Spends._id));
+            mangospends.insert(Spends);
+            return Spends.toJson();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new JSONObject()
+                    .put("addSpends", false)
+                    .put("id", idToAddSpends)
+                    .put("message", "Error occured: " + e.getMessage());
+        }
+    }
 
 
 

@@ -92,5 +92,7 @@ public class Seuil {
         }
     }
 
-
+    public List<String[]> getMonSeuil() {
+        return monSeuil;
+    }
 }

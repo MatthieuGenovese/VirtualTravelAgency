@@ -8,7 +8,7 @@ import travelcosts.seuil.Seuil;
 import java.util.Iterator;
 import java.util.List;
 
-public class PurchaseManagement {
+public class BillManagement {
     private Status status;
     private int id;
     private Identity identity;
@@ -16,15 +16,16 @@ public class PurchaseManagement {
     private double totalSeuil= 0;
     private double totalSpends = 0;
     private String justification;
+    private Seuil seuil;
 
     @MongoObjectId
-    String _id;
+    public String _id;
 
-    public PurchaseManagement(JSONObject spend) throws Exception {
+    public BillManagement(JSONObject spend) throws Exception {
         this.id = spend.getInt("id");
         this.identity = new Identity(spend.getJSONObject("identity"));
         Seuil seuil = new Seuil();
-        JSONArray values = spend.getJSONArray("spends");//new Spend[]{new Spend(spend.getJSONObject("spends")), "toto"};
+        JSONArray values = spend.getJSONArray("spends");
         spends = new Spend[values.length()];
         for (int i = 0; i < values.length(); i++) {
             Spend s = new Spend(values.getJSONObject(i));
@@ -40,9 +41,9 @@ public class PurchaseManagement {
         this.justification = "";
     }
 
-    public PurchaseManagement() {}
+    public BillManagement() {}
 
-    public PurchaseManagement(int id,Status status,Identity identity,Spend[] spends,double totalSeuil, double totalSpends,String justification){
+    public BillManagement(int id, Status status, Identity identity, Spend[] spends, double totalSeuil, double totalSpends, String justification){
         this.id = id;
         this.status = status;
         this.identity = identity;
@@ -77,4 +78,31 @@ public class PurchaseManagement {
         }
 
 
+    public Spend[] getSpends() {
+        return spends;
+    }
+
+    public void setSpends(Spend[] spends) {
+        this.spends = spends;
+    }
+
+    public Seuil getSeuil() {
+        return seuil;
+    }
+
+    public void setSeuil(Seuil seuil) {
+        this.seuil = seuil;
+    }
+
+    public double getTotalSeuil() {
+        return totalSeuil;
+    }
+
+    public void setTotalSeuil(double totalSeuil) {
+        this.totalSeuil = totalSeuil;
+    }
+
+    public void setTotalSpends(double totalSpends) {
+        this.totalSpends = totalSpends;
+    }
 }
