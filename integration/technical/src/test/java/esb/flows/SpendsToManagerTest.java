@@ -10,14 +10,18 @@ import static esb.flows.technical.utils.Endpoints.*;
 
 public class SpendsToManagerTest extends ActiveMQTest {
     SpendRequest sr;
-    private String request;
+    private String requestSubmit;
+    private String requestAddSpends;
+    private String requestAddJustification;
     private String repEndpoint;
-    private String spendsCsv;
+    private String submitCsv;
+    private String addSpendsCsv;
+    private String addJustificationCsv;
     
     //on initialise les requetes de tests
     @Before
     public void initRequests(){
-        request = 
+        requestSubmit = 
             "{" +
             "\"type\":\"submit\"," +
                 "\"bills\":" +
@@ -56,6 +60,30 @@ public class SpendsToManagerTest extends ActiveMQTest {
                         "]" +
                     "}" +
                 "}";
+        
+        requestAddSpends = 
+            "{"
+                + "\"type\":"
+                + "\"addSpend\","
+                + "\"id\":\"1\","
+                + "\"spends\":{"
+                +       "\"id\":\"80\","
+                +       "\"reason\":\"Taxi\","
+                +       "\"date\":\"05/02/2018\","
+                +       "\"country\":\"AM\","
+                +       "\"prix\":{"
+                +           "\"price\":\"44\","
+                +           "\"currency\":\"EUR\""
+                +       "}"
+                + "}"
+            + "}";
+        
+        requestAddJustification =
+                "{" +
+                    "\"type\":\"addJustification\"," +
+                    "\"id\":\"1\"," +
+                    "\"justification\":\"Avion en retard\"" +
+                "}";
 
         repEndpoint = "{\n" +
                 "  \"spends\": {\n" +
@@ -91,8 +119,14 @@ public class SpendsToManagerTest extends ActiveMQTest {
                 "}";
 
 
-        spendsCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
+        submitCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
         "submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
+        
+        addSpendsCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
+        "addSpend,1,momo,chennouf,mc154254@etu.unice.fr,80,44,Taxi,05/02/2018,AM,EUR";
+        
+        addJustificationCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
+        "addJustification,1,momo,chennouf,mc154254@etu.unice.fr,80,44,Taxi,05/02/2018,AM,EUR,Avion en retard";
     }
 
     @Override
@@ -131,27 +165,56 @@ public class SpendsToManagerTest extends ActiveMQTest {
     }
     
     @Test
-    public void testSendRequestToManager() throws Exception {
+    public void testSendRequestSubmitToManager() throws Exception {
 
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(FILE_INPUT_SPEND).expectedMessageCount(1);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-        //mock(EMAIL_MANAGER).expectedMessageCount(1);
-        template.sendBody(FILE_INPUT_SPEND, spendsCsv);
+        template.sendBody(FILE_INPUT_SPEND, submitCsv);
 
         mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
 
         String requeteSend =  mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
 
-        assertEquals(request, requeteSend);
+        assertEquals(requestSubmit, requeteSend);
             
-       // mock(EMAIL_MANAGER).assertIsSatisfied();
-
-     //   String reponseStr = mock(EMAIL_MANAGER).getReceivedExchanges().get(0).getIn().getBody(String.class);
-       // assertEquals(repAttendue, reponseStr);
         
         mock(DEATH_POOL).assertIsSatisfied();
     }
     
+    @Test
+    public void testSendRequestAddSpendToManager() throws Exception {
+
+        mock(DEATH_POOL).expectedMessageCount(0);
+        mock(FILE_INPUT_SPEND).expectedMessageCount(1);
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+        template.sendBody(FILE_INPUT_SPEND, addSpendsCsv);
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String requeteSend =  mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+
+        assertEquals(requestAddSpends, requeteSend);
+            
+        
+        mock(DEATH_POOL).assertIsSatisfied();
+    }
     
+    @Test
+    public void testSendRequestAddJustificationToManager() throws Exception {
+
+        mock(DEATH_POOL).expectedMessageCount(0);
+        mock(FILE_INPUT_SPEND).expectedMessageCount(1);
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+        template.sendBody(FILE_INPUT_SPEND, addJustificationCsv);
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String requeteSend =  mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+
+        assertEquals(requestAddJustification, requeteSend);
+            
+        
+        mock(DEATH_POOL).assertIsSatisfied();
+    }
 }
