@@ -17,8 +17,45 @@ public class SpendsToManagerTest extends ActiveMQTest {
     //on initialise les requetes de tests
     @Before
     public void initRequests(){
-        request =
-                "{\"type\":\"submit\",\"spends\":{\"id\":\"1\",\"identity\":{\"firstName\":\"momo\",\"lastName\":\"chennouf\",\"email\":\"mc154254@etu.unice.fr\"},\"spends\":[{\"id\":\"01\",\"reason\":\"resto\",\"date\":\"28/06/2006\",\"country\":\"AT\",\"price\":{\"price\":\"45\",\"currency\":\"EUR\"}},{\"id\":\"02\",\"reason\":\"avion\",\"date\":\"28/01/2017\",\"country\":\"AT\",\"price\":{\"price\":\"98\",\"currency\":\"EUR\"}}]}}";
+        request = 
+            "{" +
+            "\"type\":\"submit\"," +
+                "\"bills\":" +
+                "{" +
+                    "\"id\":\"1\"," +
+                    "\"identity\":" +
+                        "{" +
+                            "\"firstName\":\"momo\"," +
+                            "\"lastName\":\"chennouf\"," +
+                            "\"email\":\"mc154254@etu.unice.fr\"" +
+                        "}," +
+                    "\"spends\":" +
+                        "[" +
+                            "{" +
+                                "\"id\":\"01\"," +
+                                "\"reason\":\"resto\"," +
+                                "\"date\":\"28/06/2006\"," +
+                                "\"country\":\"AT\"," +
+                                "\"prix\":" +
+                                    "{" +
+                                        "\"price\":\"45\"," +
+                                        "\"currency\":\"EUR\"" +
+                                    "}" +
+                                "}," +
+                                "{" +
+                                "\"id\":\"02\"," +
+                                "\"reason\":\"avion\"," +
+                                "\"date\":\"28/01/2017\"," +
+                                "\"country\":\"AT\"," +
+                                "\"prix\":" +
+                                "{" +
+                                    "\"price\":\"98\"," +
+                                    "\"currency\":\"EUR\"" +
+                                "}" +
+                            "}" +
+                        "]" +
+                    "}" +
+                "}";
 
         repEndpoint = "{\n" +
                 "  \"spends\": {\n" +
@@ -54,8 +91,8 @@ public class SpendsToManagerTest extends ActiveMQTest {
                 "}";
 
 
-        spendsCsv = "idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
-                "1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
+        spendsCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
+        "submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
     }
 
     @Override
@@ -106,8 +143,8 @@ public class SpendsToManagerTest extends ActiveMQTest {
 
         String requeteSend =  mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
 
-        assertEquals(requeteSend, request);
-
+        assertEquals(request, requeteSend);
+            
        // mock(EMAIL_MANAGER).assertIsSatisfied();
 
      //   String reponseStr = mock(EMAIL_MANAGER).getReceivedExchanges().get(0).getIn().getBody(String.class);
