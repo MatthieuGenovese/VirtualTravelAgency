@@ -16,8 +16,8 @@ public class DeathPoolTest extends ActiveMQTest {
     //on initialise les requetes de tests
     @Before
     public void initRequests(){
-        spendsCsv = "idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
-                "1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";;
+        spendsCsv = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency\n" +
+        "submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
     }
 
     @Override
