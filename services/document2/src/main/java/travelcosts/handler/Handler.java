@@ -8,6 +8,7 @@ import travelcosts.Purchase.BillManagement;
 import travelcosts.Purchase.Spend;
 import travelcosts.Purchase.Status;
 import travelcosts.network.SubmitSpend;
+import travelcosts.seuil.Seuil;
 
 public class Handler {
 
@@ -135,13 +136,17 @@ public class Handler {
                 }else{
                     myNewSpends[i] = new Spend(spendAsJson);
                     newtotalSpend += myNewSpends[i].getPrice().getPrice();
+                    newtotalSeuil +=  new Seuil().calculateSeuil(myNewSpends[i].getCountry(),myNewSpends[i].getDate(),myNewSpends[i].getPrice().getCurrency());
                 }
             }
-            //this.totalSeuil += seuil.calculateSeuil(s.getCountry(),s.getDate(),s.getPrice().getCurrency());
-            //Spend = spendAsJson.getDouble("prix");
-            //double totalspends = Spends.getTotalSpends() + spendAsJson.getDouble("prix");
             Spends.setTotalSpends(newtotalSpend);
+            Spends.setTotalSeuil(newtotalSeuil);
             Spends.setSpends(myNewSpends);
+            if(Spends.getTotalSpends()<= Spends.getTotalSeuil()){
+                Spends.setStatus(Status.VALIDE);
+            }else{
+                Spends.setStatus(Status.EN_ATTENTE);
+            }
             mangospends.remove(new ObjectId(Spends._id));
             mangospends.insert(Spends);
             return Spends.toJson();

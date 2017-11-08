@@ -147,14 +147,14 @@ de se détacher des procédures utilisées pour se concentrer sur les paramètre
   
   Requète Post :
 
-L'employé peut soumettre ces dépenses (exemple) :
+L'employé peut soumettre ces dépenses :
 
 
     {
      	"type":"submit",
-     	"spends":
+     	"bills":
      	 {
-     		"id":22,
+     		"id":99,
      		"identity":
      		{
      			"firstName":"mohamed",
@@ -168,7 +168,7 @@ L'employé peut soumettre ces dépenses (exemple) :
      			"reason":"Restaurant",
      			"date":"05/02/2018",
      			"country": "AM" ,
-     			"price" :
+     			"prix" :
      			    {
      				"price":120,
      				"currency":"EUR"
@@ -179,7 +179,7 @@ L'employé peut soumettre ces dépenses (exemple) :
      			"reason":"Restaurant",
      			"date":"01/02/2005",
      			"country": "AM" ,
-     			"price" :
+     			"prix" :
      			    {
      				"price":90,
      				"currency":"EUR"
@@ -188,14 +188,35 @@ L'employé peut soumettre ces dépenses (exemple) :
      		]
      	}
     }
+    
+L'employé peut ajouter une dépense à ces dépenses déja existant et soumettre sa requete :
 
+    
+{
+ 	"type":"addSpend",
+ 	"id":99,
+ 	"spends":
+ 		{
+ 		"id":"80",
+ 		"reason":"Taxi",
+ 		"date":"05/02/2018",
+ 		"country": "AM" ,
+ 		"prix" :
+ 			{
+ 			"price":44,
+ 			"currency":"EUR"
+ 			}
+ 		}
+}
+    
+    
 
 L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple) :
 
 
     {
          "type":"validate",
-         "id":22
+         "id":99
     }
 
 
@@ -203,15 +224,15 @@ L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple)
 
      {
           "type":"reject",
-          "id":22
+          "id":99
      }
 
 
- L'employé peut avoir les détails des requetes qu'il a soumit :
+ L'employé peut avoir les détails des dépences qu'il a soumit :
 
     {
-              "type":"retrieve",
-              "id":22
+          "type":"retrieve",
+          "id":99
     }
 
 
@@ -219,9 +240,14 @@ L'employeur peut accepter les dépenses si c'elle si dépasse le seuil (exemple)
  L'employé peut ajouter une justification des dépences  :
 
     {
-              "type":"addJustification",
-              "id":22,
-              "justification":"je suis le king , rend moi le mago !"
+         "type":"addJustification",
+         "id":22,
+         "justification":"je suis le king , rend moi le mago !"
     }
-
+    
+ Pour vider la BD :
+    
+    {
+         "type":"purge"
+    }
 
