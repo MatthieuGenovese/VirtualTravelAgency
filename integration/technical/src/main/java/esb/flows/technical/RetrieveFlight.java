@@ -9,6 +9,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -48,7 +49,7 @@ public class RetrieveFlight extends RouteBuilder {
         ;
 
         from(RETRIEVE_A_FLIGHTA) // transforme des FlightRequest
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeFlight)
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
                     .to(AGGREG_FLIGHT)
@@ -68,7 +69,7 @@ public class RetrieveFlight extends RouteBuilder {
         ;
 
         from(RETRIEVE_A_FLIGHTB) // meme princique que RETRIEVE_A_FLIGHTA
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeFlight)
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
                 .to(AGGREG_FLIGHT)

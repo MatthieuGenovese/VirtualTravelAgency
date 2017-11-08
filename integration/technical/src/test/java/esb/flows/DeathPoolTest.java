@@ -5,6 +5,7 @@ package esb.flows;
         import org.junit.Before;
         import org.junit.Test;
 
+        import java.io.IOException;
         import java.net.UnknownHostException;
 
         import static esb.flows.technical.utils.Endpoints.*;
@@ -38,7 +39,7 @@ public class DeathPoolTest extends ActiveMQTest {
         resetMocks();
 
         mock(SPENDSERVICE_ENDPOINT).whenAnyExchangeReceived((Exchange exc) -> {
-            exc.setException(new UnknownHostException());
+            exc.setException(new IOException());
         });
 
 

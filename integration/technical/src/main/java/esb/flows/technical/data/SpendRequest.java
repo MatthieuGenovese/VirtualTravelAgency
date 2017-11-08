@@ -8,42 +8,34 @@ import java.util.List;
 
 public class SpendRequest implements Serializable {
 
-    @JsonProperty private String id;
-    @JsonProperty private Identity identity;
-    @JsonProperty private List<Spend> spends;
+    @JsonProperty private String type;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
-    public List<Spend> getSpend() {
-        return spends;
-    }
-
-    public void setSpend(List<Spend> spends) {
-        this.spends = spends;
-    }
+    @JsonProperty private Bills bills;
 
     @Override
     public String toString() {
         return "SpendRequest{" +
-                "id='" + id + '\'' +
-                ", identity=" + identity +
-                ", spends=" + spends +
+                "type='" + type + '\'' +
+                ", bills=" + bills +
                 '}';
     }
 
-    public Identity getIdentity() {
-        return identity;
+    public String getType() {
+        return type;
     }
 
-    public void setIdentity(Identity identity) {
-        this.identity = identity;
+    public void setType(String type) {
+        this.type = type;
     }
+
+    public Bills getBills() {
+        return bills;
+    }
+
+    public void setBills(Bills bills) {
+        this.bills = bills;
+    }
+
+
 
 }

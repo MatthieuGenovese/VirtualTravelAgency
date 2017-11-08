@@ -13,6 +13,7 @@ import org.xml.sax.InputSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class SendFinalRequest extends RouteBuilder {
         ;
 
         from(REQUETE_QUEUE)
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                 .process(handleErr)
                 .setHeader("err", constant("requete"))
                 .log("erreur capturée dans le service d'envoit au manager")
@@ -75,7 +76,7 @@ public class SendFinalRequest extends RouteBuilder {
         ;
 
         from(ANSWER_MANAGER)
-             .onException(UnknownHostException.class).handled(true)
+             .onException(IOException.class).handled(true)
                 .process(handleErr)
                 .log("erreur capturée dans le service de réponse à l'employé")
                 .to(EMAIL_MANAGER + "?fileName=errorManagerService.txt")

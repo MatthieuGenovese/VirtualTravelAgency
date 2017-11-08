@@ -10,6 +10,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class RetrieveHotel extends RouteBuilder {
         ;
         
         from(RETRIEVE_A_HOTELA) // transforme des HotelReservation
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeHotel)
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
                 .to(AGGREG_HOTEL)
@@ -64,7 +65,7 @@ public class RetrieveHotel extends RouteBuilder {
         ;
         
         from(RETRIEVE_A_HOTELB) // transforme des HotelReservation
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeHotel)
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
                 .to(AGGREG_HOTEL)

@@ -15,6 +15,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +53,7 @@ public class RetrieveCar extends RouteBuilder {
         ;
 
         from(RETRIEVE_CAR_A)
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeCar)
                     .log("erreur capturée transformation en requete fictive : " + body().toString())
                     .to(AGGREG_CAR)
@@ -71,7 +72,7 @@ public class RetrieveCar extends RouteBuilder {
         ;
 
         from(RETRIEVE_CAR_B)
-                .onException(UnknownHostException.class).handled(true)
+                .onException(IOException.class).handled(true)
                     .process(makeFakeCar)
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
                 .to(AGGREG_CAR)

@@ -18,7 +18,7 @@ public class Spend implements Serializable{
     @JsonProperty private String reason;
     @JsonProperty private String date;
     @JsonProperty private String country;
-    @JsonProperty private Price price;
+    @JsonProperty private Price prix;
 
     public String getId() {
         return id;
@@ -37,11 +37,11 @@ public class Spend implements Serializable{
     }
 
     public Price getPrice() {
-        return price;
+        return prix;
     }
 
-    public void setPrice(Price price) {
-        this.price = price;
+    public void setPrice(Price prix) {
+        this.prix = prix;
     }
 
     public String getReason() {
@@ -67,7 +67,7 @@ public class Spend implements Serializable{
                 ", reason='" + reason + '\'' +
                 ", date='" + date + '\'' +
                 ", country='" + country + '\'' +
-                ", price=" + price +
+                ", price=" + prix +
                 '}';
     }
 }
