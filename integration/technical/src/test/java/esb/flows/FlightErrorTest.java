@@ -47,7 +47,8 @@ public class FlightErrorTest extends ActiveMQTest {
     public String isMockEndpoints() {
         return AGGREG_FLIGHT +
                 "|" + RETRIEVE_A_FLIGHTA +
-                "|" + RETRIEVE_A_FLIGHTB
+                "|" + RETRIEVE_A_FLIGHTB +
+                "|" + FLIGHT_QUEUE
                 ;
     }
 
@@ -74,6 +75,7 @@ public class FlightErrorTest extends ActiveMQTest {
     @Test
     public void testFakeFlightResponseFromBothServices()throws Exception{
         mock(AGGREG_FLIGHT).expectedMessageCount(2);
+        mock(RETRIEVE_A_FLIGHTA).expectedMessageCount(2);
 
         //on envoit la requete au service A
         template.sendBody(RETRIEVE_A_FLIGHTA,flightReq);
@@ -112,7 +114,65 @@ public class FlightErrorTest extends ActiveMQTest {
         assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
         assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
         assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
+    }
+
+    @Test
+    public void TestFakePlaneFromA() throws Exception{
+        //Dire au service A de planter
+        mock(RETRIEVE_A_FLIGHTA).whenAnyExchangeReceived((Exchange exc) -> {
+            exc.setException(new IOException());
+        });
+
+        //Declencher le service A pour qu'il envoi une réponse planté
+        template.sendBody(RETRIEVE_A_FLIGHTA,flightReq);
+
+        //Construction d'une requête fakeAvion
+        Flight expectedFlightA = new Flight();
+        Flight responseFlightA = (Flight)  mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
+        expectedFlightA.setDestination("err");
+        expectedFlightA.setDate("err");
+        expectedFlightA.setPrice(String.valueOf(Integer.MAX_VALUE));
+
+        //on compare les champs de la requete reçu avec ceux de la requete attendu
+        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
+        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
+        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());
+
+        //Le service B n'est pas down et on lui envoi une requete
+        template.sendBody(RETRIEVE_A_FLIGHTB,flightReq);
+
+        //On attend une réponse normale
+        Flight expectedFlightB = new Flight();
+        Flight responseFlightB = (Flight)  mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
+        expectedFlightB.setDestination("Paris");
+        expectedFlightB.setDate("12-10-2017");
+        expectedFlightB.setPrice(String.valueOf(0));
+
+        //on compare les champs de la requete reçu avec ceux de la requete attendu
+        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
+        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
+        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
 
 
+    }
+
+    @Test
+    public void TestFakePlaneB()throws Exception{
+        //ON fait planter le service B
+        mock(RETRIEVE_A_FLIGHTB).whenAnyExchangeReceived((Exchange exc) -> {
+            exc.setException(new IOException());
+        });
+        template.sendBody(FLIGHT_QUEUE,flightReq);
+
+        Flight expectedFlightB = new Flight();
+        Flight responseFlightB = (Flight)  mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
+        expectedFlightB.setDestination("err");
+        expectedFlightB.setDate("err");
+        expectedFlightB.setPrice(String.valueOf(0));
+
+        //on compare les champs de la requete reçu avec ceux de la requete attendu
+        assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
+        assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
+        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
     }
 }
