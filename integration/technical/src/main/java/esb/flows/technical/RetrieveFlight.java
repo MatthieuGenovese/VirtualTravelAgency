@@ -71,8 +71,9 @@ public class RetrieveFlight extends RouteBuilder {
         from(RETRIEVE_A_FLIGHTB) // meme princique que RETRIEVE_A_FLIGHTA
                 .onException(IOException.class).handled(true)
                     .process(makeFakeFlight)
+                    .setHeader("err",constant("flightbError"))
                     .log("erreur capturée transformation en requete fictive : " + body().toString() )
-                .to(AGGREG_FLIGHT)
+                    .to(AGGREG_FLIGHT)
                 .end()
                 .routeId("calling-flightb")
                 .routeDescription("transfert de l'activemq vers le service document")

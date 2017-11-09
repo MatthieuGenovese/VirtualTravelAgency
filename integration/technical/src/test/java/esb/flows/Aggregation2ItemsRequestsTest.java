@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static esb.flows.technical.utils.Endpoints.*;
 
-public class Aggregation2ItemsRequestsTest extends ActiveMQTest {
+public class    Aggregation2ItemsRequestsTest extends ActiveMQTest {
     Flight flightReq1, flightReq2;
     Hotel hotelReq1, hotelReq2;
     Car carReq1, carReq2;
@@ -29,7 +29,7 @@ public class Aggregation2ItemsRequestsTest extends ActiveMQTest {
                 ;
     }
 
- //   @Test
+    @Test
     public void testExecutionContext() throws Exception {
         isAvailableAndMocked(AGGREG_TRAVELREQUEST);
         isAvailableAndMocked(AGGREG_CAR);
