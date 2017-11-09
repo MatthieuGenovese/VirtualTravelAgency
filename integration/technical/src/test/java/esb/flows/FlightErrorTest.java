@@ -39,7 +39,7 @@ public class FlightErrorTest extends ActiveMQTest {
     @Override
     public String isMockEndpointsAndSkip() {
         return FLIGHTSERVICE_ENDPOINTA +
-                " | " + FLIGHTSERVICE_ENDPOINTB
+                "|" + FLIGHTSERVICE_ENDPOINTB
                 ;
     }
 
@@ -49,8 +49,7 @@ public class FlightErrorTest extends ActiveMQTest {
         return AGGREG_FLIGHT +
                 "|" + RETRIEVE_A_FLIGHTA +
                 "|" + RETRIEVE_A_FLIGHTB +
-                "|" + FLIGHT_QUEUE +
-                "|" + FLIGHT_QUEUE
+                "|" + DEATH_POOL
                 ;
     }
 
@@ -59,11 +58,23 @@ public class FlightErrorTest extends ActiveMQTest {
     public void initMocks() {
         resetMocks();
 
+        mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("Content-Type", "application/json");
+        mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("Accept", "application/json");
+        mock(FLIGHTSERVICE_ENDPOINTA).expectedHeaderReceived("CamelHttpMethod", "POST");
+
+        //config flight service B
+        mock(FLIGHTSERVICE_ENDPOINTB).expectedHeaderReceived("Content-Type", "application/json");
+        mock(FLIGHTSERVICE_ENDPOINTB).expectedHeaderReceived("Accept", "application/json");
+        mock(FLIGHTSERVICE_ENDPOINTB).expectedHeaderReceived("CamelHttpMethod", "POST");
+
+
     }
 
     //On vérifie que le context d'execution est bien mocké
     @Test
     public void testExecutionContext() throws Exception {
+        isAvailableAndMocked(FLIGHTSERVICE_ENDPOINTA);
+        isAvailableAndMocked(FLIGHTSERVICE_ENDPOINTB);
         isAvailableAndMocked(RETRIEVE_A_FLIGHTB);
         isAvailableAndMocked(RETRIEVE_A_FLIGHTA);
         isAvailableAndMocked(AGGREG_FLIGHT);
@@ -117,7 +128,6 @@ public class FlightErrorTest extends ActiveMQTest {
 
     @Test
     public void TestFakePlaneFromA() throws Exception {
-        resetMocks();
         //Dire au service A de planter
         mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
             exc.setException(new IOException());
@@ -171,23 +181,80 @@ public class FlightErrorTest extends ActiveMQTest {
         assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
     }
 
-    //@Test
+    @Test
     public void TestFakePlaneB() throws Exception {
-        //ON fait planter le service B
-        mock(RETRIEVE_A_FLIGHTB).whenAnyExchangeReceived((Exchange exc) -> {
+        //Dire au service B de planter
+        mock(FLIGHTSERVICE_ENDPOINTB).whenAnyExchangeReceived((Exchange exc) -> {
             exc.setException(new IOException());
         });
-        template.sendBody(FLIGHT_QUEUE, flightReq);
 
+        mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
+            String req = "{\n" +
+                    "  \"size\": 3,\n" +
+                    "  \"vols\": [\n" +
+                    "    {\n" +
+                    "      \"date\": \"12-10-2017\",\n" +
+                    "      \"price\": \"300\",\n" +
+                    "      \"destination\": \"Paris\",\n" +
+                    "      \"id\": \"3\",\n" +
+                    "      \"stops\": [\n" +
+                    "        \"Marseille\",\n" +
+                    "        \"Toulouse\"\n" +
+                    "      ],\n" +
+                    "      \"isDirect\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"date\": \"12-10-2017\",\n" +
+                    "      \"price\": \"350\",\n" +
+                    "      \"destination\": \"Paris\",\n" +
+                    "      \"id\": \"4\",\n" +
+                    "      \"stops\": [\n" +
+                    "        \"Marseille\",\n" +
+                    "        \"Toulouse\"\n" +
+                    "      ],\n" +
+                    "      \"isDirect\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"date\": \"12-10-2017\",\n" +
+                    "      \"price\": \"350\",\n" +
+                    "      \"destination\": \"Paris\",\n" +
+                    "      \"id\": \"4\",\n" +
+                    "      \"stops\": [\n" +
+                    "        \"Marseille\",\n" +
+                    "        \"Toulouse\"\n" +
+                    "      ],\n" +
+                    "      \"isDirect\": false\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+            exc.getIn().setBody(req);
+        });
+        //Declencher le service A pour qu'il envoi une réponse
+        template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
+
+        template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
+
+        //Construction d'une requête fakeAvion
+        Flight expectedFlightA = new Flight();
+        Flight responseFlightA = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(1).getIn().getBody();
+        expectedFlightA.setDestination("Paris");
+        expectedFlightA.setDate("12-10-2017");
+
+        //on compare les champs de la requete reçu avec ceux de la requete attendu
+        assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
+        assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
+
+        //Le service B n'est pas down et on lui envoi une requete
+
+        //On attend une réponse normale
         Flight expectedFlightB = new Flight();
         Flight responseFlightB = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
         expectedFlightB.setDestination("err");
         expectedFlightB.setDate("err");
-        expectedFlightB.setPrice(String.valueOf(0));
+
 
         //on compare les champs de la requete reçu avec ceux de la requete attendu
         assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
         assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
-        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
     }
 }
