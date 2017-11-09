@@ -117,6 +117,7 @@ public class FlightErrorTest extends ActiveMQTest {
 
     @Test
     public void TestFakePlaneFromA() throws Exception {
+        resetMocks();
         //Dire au service A de planter
         mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
             exc.setException(new IOException());
@@ -142,37 +143,32 @@ public class FlightErrorTest extends ActiveMQTest {
                     "}}}";
             exc.getIn().setBody(req);
         });
-        //Declencher le service A pour qu'il envoi une réponse planté
+        //Declencher le service A pour qu'il envoi une réponse
+        template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
+
         template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
 
         //Construction d'une requête fakeAvion
         Flight expectedFlightA = new Flight();
-        Flight responseFlightA = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
+        Flight responseFlightA = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(1).getIn().getBody();
         expectedFlightA.setDestination("err");
         expectedFlightA.setDate("err");
-        expectedFlightA.setPrice(String.valueOf(Integer.MAX_VALUE));
 
         //on compare les champs de la requete reçu avec ceux de la requete attendu
         assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
         assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
-        assertEquals(expectedFlightA.getPrice(), responseFlightA.getPrice());
 
         //Le service B n'est pas down et on lui envoi une requete
-        template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
 
         //On attend une réponse normale
         Flight expectedFlightB = new Flight();
-        Flight responseFlightB = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(1).getIn().getBody();
+        Flight responseFlightB = (Flight) mock(AGGREG_FLIGHT).getReceivedExchanges().get(0).getIn().getBody();
         expectedFlightB.setDestination("Paris");
         expectedFlightB.setDate("12-10-2017");
-        expectedFlightB.setPrice(String.valueOf(450));
 
         //on compare les champs de la requete reçu avec ceux de la requete attendu
         assertEquals(expectedFlightB.getDate(), responseFlightB.getDate());
         assertEquals(expectedFlightB.getDestination(), responseFlightB.getDestination());
-        assertEquals(expectedFlightB.getPrice(), responseFlightB.getPrice());
-
-
     }
 
     //@Test
