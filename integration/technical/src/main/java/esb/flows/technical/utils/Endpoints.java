@@ -8,6 +8,7 @@ public class Endpoints {
     public static final String FILE_INPUT_CAR    = "file:/servicemix/camel/input?fileName=test2Car.csv";
     public static final String FILE_INPUT_MANAGER = "file:/servicemix/camel/input?fileName=test2Manager.csv";
     public static final String FILE_INPUT_SPEND = "file:/servicemix/camel/input?fileName=test2Spend.csv";
+    public static final String FILE_INPUT_SPEND_MANAGER = "file:/servicemix/camel/input?fileName=test2SpendManager.csv";
     public static final String EMAIL_EMPLOYE = "file:/servicemix/camel/output";
     public static final String EMAIL_MANAGER = "file:/servicemix/camel/output";
 

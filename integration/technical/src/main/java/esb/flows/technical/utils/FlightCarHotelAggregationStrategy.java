@@ -15,7 +15,37 @@ public class FlightCarHotelAggregationStrategy implements AggregationStrategy {
     public Exchange aggregate(Exchange oldEx, Exchange newEx) {
         if(oldEx == null){
             oldEx = newEx;
-            return newEx;
+            ItemInterface newf = (ItemInterface) oldEx.getIn().getBody();
+            if(Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE){
+                try{
+                    Flight f = (Flight) newf;
+                    f.setPrice("0");
+                    oldEx.getIn().setBody(f);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
+                try{
+                    Car c = (Car) newf;
+                    c.setPrice("0");
+                    oldEx.getIn().setBody(c);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
+                try{
+                    Hotel h = (Hotel) newf;
+                    h.setPrice("0");
+                    oldEx.getIn().setBody(h);
+                    return oldEx;
+                }
+                catch(ClassCastException e){
+
+                }
+            }
+            return oldEx;
         }
         else if (newEx != null){
             ItemInterface oldf = (ItemInterface) oldEx.getIn().getBody();
