@@ -280,8 +280,6 @@ public class RetrieveFlight extends RouteBuilder {
             }
         }
         catch(Exception e){
-            System.out.println(exchange.getIn().getBody().toString() + " \n" + exchange.getIn().getHeaders());
-            e.printStackTrace();
             exchange.getIn().setBody(resultat);
         }
         exchange.getIn().setBody(resultat);

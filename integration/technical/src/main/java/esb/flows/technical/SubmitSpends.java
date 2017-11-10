@@ -52,12 +52,26 @@ public class SubmitSpends extends RouteBuilder{
                         .log(body().toString())
                 .endChoice()
 
-
-                //.unmarshal().string()
-                //.process(spendreq2jsonservice)
-
         ;
 
+        from(FILE_INPUT_SPEND_MANAGER)
+                .onException(IOException.class).handled(true)
+                    .process(handleErr)
+                    .setHeader("err", constant("spendmanager"))
+                    .log("erreur capturée dans le service d'envoie des preuves au manager")
+                    .to(DEATH_POOL)
+                .end()
+                .routeId("refund-answer")
+                .routeDescription("Validate ou invalidation de la demande de remboursement")
+                .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
+                .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
+                .parallelProcessing().executorService(WORKERS)
+                .process(csv2spendanswer)
+                .log("transformation du csv en SpendAnswer : " + body().toString())
+                .inOut(SPENDSERVICE_ENDPOINT)
+                .log("réponse du service : " + body().toString())
+                .log(body().toString())
+        ;
 
     }
 
@@ -70,6 +84,14 @@ public class SubmitSpends extends RouteBuilder{
       /*idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency
 1,momo,chennouf,mc154254@etu.unice.fr,01;02,2545;2758,resto;avion,28/01/2017;28/01/2017,France;France,EUR;EUR*/
       //addSpend,1,momo,chennouf,mc154254@etu.unice.fr,03,98,resto,28/01/2017,AT,EUR
+
+    private static Processor csv2spendanswer = (Exchange exchange) -> {
+        Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
+        String type = (String) data.get("type");
+        String id = (String) data.get("id");
+        String rep = "{\"type\":\"" + type + "\"" + ",\"id\":\"" + id + "\"}";
+        exchange.getIn().setBody(rep);
+    };
 
     private static Processor csv2spendreq = (Exchange exchange) -> {
         Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();

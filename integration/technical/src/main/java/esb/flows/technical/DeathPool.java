@@ -29,6 +29,8 @@ public class DeathPool extends RouteBuilder{
                 .to(EMAIL_EMPLOYE + "?fileName=errorAskManagerService.txt")
                 .when(header("err").isEqualTo("spend"))
                 .to(EMAIL_EMPLOYE + "?fileName=errorSendEvidences.txt")
+                .when(header("err").isNotEqualTo("spendmanager"))
+                .to(EMAIL_EMPLOYE + "?fileName=errorAcceptRefuseRefund.txt")
                 .endChoice()
         ;
     }

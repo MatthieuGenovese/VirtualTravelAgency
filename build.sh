@@ -30,3 +30,9 @@ build esb travelagency/esb
 cd ..
 
 build integration travelagency/travelagency-bus
+
+#cd deployment mkdir camel_input
+#mkdir camel_output
+
+#chmod 777 camel_input
+#chmod 777 camel_output
