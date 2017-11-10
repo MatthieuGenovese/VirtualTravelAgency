@@ -3,7 +3,7 @@
 tableau=[submittravel travelagency-bus cars-hotels-reservation flightreservation travel-cars hotels-team1 vols-document spends]
 size=${#tableau[@]}
 
-while(true)
+while true
 do
     num=$(($RANDOM % $size))
     echo "Stopping container ${tableau[$num]}"
