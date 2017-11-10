@@ -225,4 +225,6 @@ public class CarErrorTest extends ActiveMQTest {
         assertEquals(expectedCarB.getDate(), responseCarB.getDate());
         assertEquals(expectedCarB.getDestination(), responseCarB.getDestination());
     }
+
+
 }
