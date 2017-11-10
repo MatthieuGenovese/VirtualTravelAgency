@@ -9,10 +9,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static esb.flows.technical.utils.Endpoints.*;
-import static esb.flows.technical.utils.Endpoints.AGGREG_FLIGHT;
 
 public class CarErrorTest extends ActiveMQTest {
-    private String spendsCsv;
     CarRequest carReq, carReq2;
 
 
