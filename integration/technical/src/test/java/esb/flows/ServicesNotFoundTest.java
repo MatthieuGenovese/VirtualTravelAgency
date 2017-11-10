@@ -205,6 +205,58 @@ public class ServicesNotFoundTest extends ActiveMQTest{
 
     }
 
+    @Test
+    public void testNotFoundFromBothHotelServices() throws Exception{
+        mock(HOTELSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange exc) -> {
+            String req = "toto";
+            exc.getIn().setBody(req);
+        });
+        mock(HOTELSERVICE_ENDPOINTB).whenAnyExchangeReceived((Exchange exc) -> {
+            String req = "toto";
+            exc.getIn().setBody(req);
+        });
+        mockCarA();
+        mockCarB();
+        mockFlyA();
+        mockFlyB();
+
+        mock(DEATH_POOL).expectedMessageCount(1);
+
+        template.sendBody(RETRIEVE_A_HOTELA,hotelReq);
+        template.sendBody(RETRIEVE_A_HOTELB,hotelReq);
+
+        Hotel expectedHotelA = new Hotel();
+        Hotel responseFromA = (Hotel) mock(AGGREG_HOTEL).getReceivedExchanges().get(0).getIn().getBody();
+        expectedHotelA.setDestination("not found");
+        expectedHotelA.setName("not found");
+
+        Hotel expectedHotelB = new Hotel();
+        Hotel responseFromB = (Hotel) mock(AGGREG_HOTEL).getReceivedExchanges().get(1).getIn().getBody();
+        expectedHotelB.setDestination("not found");
+        expectedHotelB.setName("not found");
+
+        assertEquals(expectedHotelA.getDestination(), responseFromA.getDestination());
+        assertEquals(expectedHotelA.getName(), responseFromA.getName());
+
+        assertEquals(expectedHotelB.getDestination(), responseFromB.getDestination());
+        assertEquals(expectedHotelB.getName(), responseFromB.getName());
+
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("type","flight");
+        template.sendBodyAndHeaders(AGGREG_TRAVELREQUEST, flight,headers);
+        headers.clear();
+        headers.put("type","car");
+        template.sendBodyAndHeaders(AGGREG_TRAVELREQUEST, car, headers);
+
+        headers.clear();
+        headers.put("type","hotel");
+        template.sendBodyAndHeaders(AGGREG_TRAVELREQUEST, responseFromA, headers);
+
+        mock(DEATH_POOL).assertIsSatisfied();
+        assertEquals(mock(DEATH_POOL).getReceivedExchanges().get(0).getIn().getHeader("err"),"hotelnotfound");
+
+    }
+
     public void mockFlyA(){
         mock(FLIGHTSERVICE_ENDPOINTA).whenAnyExchangeReceived((Exchange e) -> {
             String res = "{\n" +
