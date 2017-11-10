@@ -122,4 +122,5 @@ class AccessSimulationSubmitSpends extends Simulation {
   }
 
   setUp(stressSample.inject(rampUsers(20) over (10 seconds)).protocols(httpConf))
+  
 }
