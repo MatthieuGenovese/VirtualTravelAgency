@@ -87,37 +87,8 @@ class AccessSimulationSubmitSpends extends Simulation {
 
   def buildRetrieve(session: Session): String = {
     raw"""{
-              "inserted": true,
-              "bills": {
-                  "spends": [
-                      {
-                          "date": "05/02/2018",
-                          "country": "AM",
-                          "price": {
-                              "price": 120,
-                              "currency": "EUR"
-                          }
-                      },
-                      {
-                          "date": "01/02/2005",
-                          "country": "AM",
-                          "price": {
-                              "price": 90,
-                              "currency": "EUR"
-                          }
-                      }
-                  ],
-                  "totalSpends": 210,
-                  "identity": {
-                      "firstName": "mohamed",
-                      "lastName": "chennouf",
-                      "email": "mohamed.chennouf@etu.unice"
-                  },
-                  "totalSeuil": 432,
-                  "id": 99,
-                  "justification": "",
-                  "status": "VALIDE"
-              }
+              "type":"validate",
+              "id": 99
           }""""
   }
 
