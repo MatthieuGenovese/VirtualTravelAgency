@@ -23,15 +23,38 @@ public class DeathPool extends RouteBuilder{
 
         from(DEATH_POOL)
                 .choice()
-                .when(header("err").isEqualTo("aggreg3"))
-                .to(EMAIL_EMPLOYE + "?fileName=errorAskingReservations.txt")
-                .when(header("err").isEqualTo("requete"))
-                .to(EMAIL_EMPLOYE + "?fileName=errorAskManagerService.txt")
-                .when(header("err").isEqualTo("spend"))
-                .to(EMAIL_EMPLOYE + "?fileName=errorSendEvidences.txt")
-                .when(header("err").isNotEqualTo("spendmanager"))
-                .to(EMAIL_EMPLOYE + "?fileName=errorAcceptRefuseRefund.txt")
+                    .when(header("err").isEqualTo("aggreg3"))
+                        .to(EMAIL_EMPLOYE + "?fileName=errorAskingReservations.txt")
+                    .when(header("err").isEqualTo("requete"))
+                        .to(EMAIL_EMPLOYE + "?fileName=errorAskManagerService.txt")
+                    .when(header("err").isEqualTo("spend"))
+                        .to(EMAIL_EMPLOYE + "?fileName=errorSendEvidences.txt")
+                    .when(header("err").isEqualTo("spendmanager"))
+                        .to(EMAIL_EMPLOYE + "?fileName=errorAcceptRefuseRefund.txt")
+                    .when(header("err").isEqualTo("voiturenotfound"))
+                        .process(voiture)
+                        .to(EMAIL_EMPLOYE + "?fileName=voiturenotfound.txt")
+                    .when(header("err").isEqualTo("hotelnotfound"))
+                        .process(hotel)
+                        .to(EMAIL_EMPLOYE + "?fileName=hotelnotfound.txt")
+                    .when(header("err").isEqualTo("flightnotfound"))
+                        .process(avion)
+                        .to(EMAIL_EMPLOYE + "?fileName=flightnotfound.txt")
                 .endChoice()
         ;
+
+
     }
+    private static Processor avion = (Exchange exchange) -> {
+        exchange.getIn().setBody("Aucun avion n'a été trouvé !\n");
+
+    };
+
+    private static Processor voiture = (Exchange exchange) -> {
+        exchange.getIn().setBody("Aucune voiture n'a été trouvé !\n");
+    };
+
+    private static Processor hotel = (Exchange exchange) -> {
+        exchange.getIn().setBody("Aucun hotel n'a été trouvé !\n");
+    };
 }

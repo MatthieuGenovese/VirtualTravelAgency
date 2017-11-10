@@ -63,6 +63,9 @@ public class SubmitSpends extends RouteBuilder{
                 .end()
                 .routeId("refund-answer")
                 .routeDescription("Validate ou invalidation de la demande de remboursement")
+                .setHeader(Exchange.HTTP_METHOD, constant("POST")) // on choisis le type de requete (ici du POST en json)
+                .setHeader("Content-Type", constant("application/json"))
+                .setHeader("Accept", constant("application/json"))
                 .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
                 .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                 .parallelProcessing().executorService(WORKERS)

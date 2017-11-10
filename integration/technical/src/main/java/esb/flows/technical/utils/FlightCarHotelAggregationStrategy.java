@@ -16,7 +16,7 @@ public class FlightCarHotelAggregationStrategy implements AggregationStrategy {
         if(oldEx == null){
             oldEx = newEx;
             ItemInterface newf = (ItemInterface) oldEx.getIn().getBody();
-            if(Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE){
+            if((Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE) && newf.getDestination().equalsIgnoreCase("err")){
                 try{
                     Flight f = (Flight) newf;
                     f.setPrice("0");
@@ -53,7 +53,7 @@ public class FlightCarHotelAggregationStrategy implements AggregationStrategy {
             if(Integer.valueOf(newf.getPrice()) < Integer.valueOf(oldf.getPrice())){
                 oldEx.getIn().setBody(newf);
             }
-            else if(Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE){
+            else if((Integer.valueOf(newf.getPrice()) == Integer.MAX_VALUE) && newf.getDestination().equalsIgnoreCase("err")){
                 try{
                     Flight f = (Flight) newf;
                     f.setPrice("0");

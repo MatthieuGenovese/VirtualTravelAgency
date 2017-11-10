@@ -84,6 +84,15 @@ public class FinalReqAggregationStrategy  implements AggregationStrategy {
                     || stateHotel.equalsIgnoreCase("erreur")){
                 oldEx.getIn().setHeader("etat", "erreur");
             }
+            else if (state.getCarReq().getDestination().equalsIgnoreCase("not found")){
+                oldEx.getIn().setHeader("etat", "voiturenotfound");
+            }
+            else if (state.getHotelReq().getDestination().equalsIgnoreCase("not found")){
+                oldEx.getIn().setHeader("etat", "hotelnotfound");
+            }
+            else if (state.getFlightReq().getDestination().equalsIgnoreCase("not found")){
+                oldEx.getIn().setHeader("etat", "flightnotfound");
+            }
             else{
                 oldEx.getIn().setHeader("etat", "valid");
             }
