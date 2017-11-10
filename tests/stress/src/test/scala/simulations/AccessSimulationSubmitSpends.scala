@@ -16,7 +16,7 @@ class AccessSimulationSubmitSpends extends Simulation {
 
   val httpConf =
     http
-      .baseURL("http://localhost:8080/vtg-spends/spends")
+      .baseURL("http://localhost:8080/vtg-spends/")
       .acceptHeader("application/json")
       .header("Content-Type", "application/json")
 
@@ -29,14 +29,14 @@ class AccessSimulationSubmitSpends extends Simulation {
           )
             .exec(
               http("registering a bills")
-                .post("submit")
+                .post("spends")
                 .body(StringBody(session => buildRegister(session)))
                 .check(status.is(200))
             )
             .pause(1 seconds)
             .exec(
               http("retrieving a bilss")
-                .post("submit")
+                .post("spends")
                 .body(StringBody(session => buildRetrieve(session)))
                 .check(status.is(200))
             )
