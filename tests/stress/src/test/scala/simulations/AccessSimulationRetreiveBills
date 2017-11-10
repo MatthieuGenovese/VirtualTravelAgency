@@ -12,7 +12,7 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class AccessSimulationSubmitSpends extends Simulation {
+class AccessSimulationRetreiveBills extends Simulation {
 
   val httpConf =
     http
@@ -22,25 +22,26 @@ class AccessSimulationSubmitSpends extends Simulation {
 
   val stressSample =
     scenario("Submit Spends")
-        .repeat(10)
-        {
-          exec(session =>
-            session.set("id", UUID.randomUUID().toString)
+      .repeat(10)
+      {
+        exec(session =>
+          session.set("id", UUID.randomUUID().toString)
+        )
+          .exec(
+            http("registering a bills")
+              .post("spends")
+              .body(StringBody(session => buildRegister(session)))
+              .check(status.is(200))
           )
-            .exec(
-              http("registering a bills")
-                .post("spends")
-                .body(StringBody(session => buildRegister(session)))
-                .check(status.is(200))
-            )
-            .pause(1 seconds)
-            .exec(
-              http("retrieving a bilss")
-                .post("spends")
-                .body(StringBody(session => buildRetrieve(session)))
-                .check(status.is(200))
-            )
-        }
+          .pause(1 seconds)
+          .exec(
+            http("retrieving a bills")
+              .post("spends")
+              .body(StringBody(session => buildRetrieve(session)))
+              .check(status.is(200))
+          )
+
+      }
 
   def buildRegister(session: Session): String = {
     val id = session("id").as[String]
@@ -48,7 +49,7 @@ class AccessSimulationSubmitSpends extends Simulation {
            	"type":"submit",
            	"bills":
            	 {
-           		"id":99,
+           		"id":9,
            		"identity":
            		{
            			"firstName":"mohamed",
@@ -75,7 +76,7 @@ class AccessSimulationSubmitSpends extends Simulation {
            			"country": "AM" ,
            			"prix" :
            			    {
-           				"price":90,
+           				"price":980,
            				"currency":"EUR"
            				}
            			}
@@ -84,14 +85,15 @@ class AccessSimulationSubmitSpends extends Simulation {
           }""""
   }
 
-
   def buildRetrieve(session: Session): String = {
+    val id = session("id").as[String]
     raw"""{
-              "type":"validate",
-              "id": 99
-          }""""
+      "type": "retrieve",
+      "id": 9
+    }""""
   }
 
+
   setUp(stressSample.inject(rampUsers(20) over (10 seconds)).protocols(httpConf))
-  
+
 }
