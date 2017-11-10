@@ -153,9 +153,9 @@ public class FlightErrorTest extends ActiveMQTest {
                     "}}}";
             exc.getIn().setBody(req);
         });
-        //Declencher le service A pour qu'il envoi une réponse
+        //Le service B n'est pas down et on lui envoi une requete
         template.sendBody(RETRIEVE_A_FLIGHTB, flightReq);
-
+        //Declencher le service A pour qu'il envoi une réponse
         template.sendBody(RETRIEVE_A_FLIGHTA, flightReq);
 
         //Construction d'une requête fakeAvion
@@ -168,7 +168,6 @@ public class FlightErrorTest extends ActiveMQTest {
         assertEquals(expectedFlightA.getDate(), responseFlightA.getDate());
         assertEquals(expectedFlightA.getDestination(), responseFlightA.getDestination());
 
-        //Le service B n'est pas down et on lui envoi une requete
 
         //On attend une réponse normale
         Flight expectedFlightB = new Flight();

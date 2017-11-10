@@ -34,8 +34,6 @@ services:
       - "1099:1099"
       - "61616:61616"
       - "44444:44444"
-    depends_on:
-      - flightreservation-registry
 
   cars-hotels-reservation:
     container_name: cars-hotels-reservation
