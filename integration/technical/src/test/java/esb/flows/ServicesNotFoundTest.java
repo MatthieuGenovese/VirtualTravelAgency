@@ -11,9 +11,9 @@ import java.util.Map;
 import static esb.flows.technical.utils.Endpoints.*;
 
 public class ServicesNotFoundTest extends ActiveMQTest{
-    HotelReservation hotelReq, hotelReq2, fakeReqHotel;
-    CarRequest carReq, carReq2, fakeReqCar;
-    FlightRequest flightReq, flightReq2, fakeReqFlight;
+    HotelReservation hotelReq, fakeReqHotel;
+    CarRequest carReq,  fakeReqCar;
+    FlightRequest flightReq,  fakeReqFlight;
     Flight flight;
     Hotel hotel;
     Car car;
@@ -21,11 +21,9 @@ public class ServicesNotFoundTest extends ActiveMQTest{
     @Before
     public void initRequests(){
         hotelReq = new HotelReservation();
-        hotelReq2 = new HotelReservation();
         carReq = new CarRequest();
-        carReq2 = new CarRequest();
         flightReq = new FlightRequest();
-        flightReq2 = new FlightRequest();
+
 
         fakeReqHotel = new HotelReservation();
         fakeReqCar = new CarRequest();
@@ -33,26 +31,17 @@ public class ServicesNotFoundTest extends ActiveMQTest{
 
         hotelReq.setDate("28/11/2017");
         hotelReq.setDestination("Lyon");
-        hotelReq2.setDate("28/11/2017");
-        hotelReq2.setDestination("Lyon");
+
         carReq.setDate("28/11/2017");
         carReq.setDestination("Lyon");
         carReq.setEnd("30/11/2017");
         carReq.setSort("asc");
-        carReq2.setDate("28/11/2017");
-        carReq2.setDestination("Lyon");
-        carReq2.setEnd("30/11/2017");
-        carReq2.setSort("asc");
+
         flightReq.setEvent("One_Way_Price");
         flightReq.setIsDirect("false");
         flightReq.setDestination("Paris");
         flightReq.setOrigine("Nice");
         flightReq.setDate("12-10-2017");
-        flightReq2.setEvent("One_Way_Price");
-        flightReq2.setIsDirect("false");
-        flightReq2.setDestination("Paris");
-        flightReq2.setOrigine("Nice");
-        flightReq2.setDate("12-10-2017");
 
         fakeReqHotel.setDate("toto");
         fakeReqCar.setDate("tata");
