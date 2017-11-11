@@ -51,7 +51,6 @@ public class SendFinalRequest extends RouteBuilder {
                     .log("Aggregation des 3 requêtes en une TravelAgencyRequest : " + body().toString())
                     .to(REQUETE_QUEUE)
             .endChoice()
-
         ;
 
         from(REQUETE_QUEUE)
