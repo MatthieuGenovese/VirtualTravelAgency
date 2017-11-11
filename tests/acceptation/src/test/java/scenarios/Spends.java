@@ -171,7 +171,6 @@ public class Spends {
     @Then("^the spend is registered$")
     public void the_spend_is_registered() {
         assertEquals(true,answer.getBoolean("inserted"));
-//        assertEquals(id,answer.get("inserted"));
     }
     
     @Then("^the request is approved$")
