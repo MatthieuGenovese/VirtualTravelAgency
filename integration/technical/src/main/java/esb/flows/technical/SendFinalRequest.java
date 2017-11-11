@@ -75,13 +75,24 @@ public class SendFinalRequest extends RouteBuilder {
         ;
 
         from(FILE_INPUT_MANAGER)
+                .onException(IOException.class).handled(true)
+                .log("erreur capturée dans la lecture utilisateur : " + body().toString())
+                .setHeader("err", constant("failinput"))
+                .to(DEATH_POOL)
+                .end()
             .routeId("manager-file-answer")
             .unmarshal(CsvFormat.buildCsvFormat())
               .split(body())
               .parallelProcessing().executorService(WORKERS)
                  .process(csv2Manager)
                  .log("Transformation du csv en ManagerAnswer : " + body().toString())
-            .to(ANSWER_MANAGER)
+            .choice()
+                .when(header("err").isEqualTo("failinput"))
+                    .log("erreur dans la requete utilisateur")
+                    .to(DEATH_POOL)
+                .otherwise()
+                    .to(ANSWER_MANAGER)
+            .endChoice()
         ;
 
         from(ANSWER_MANAGER)
@@ -107,11 +118,21 @@ public class SendFinalRequest extends RouteBuilder {
     };
 
     private static Processor csv2Manager = (Exchange exchange) -> {
-        Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
-        ManagerAnswer m =  new ManagerAnswer();
-        m.setReponse((String) data.get("answer"));
-        exchange.getIn().setBody(m);
-        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+        try {
+            Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
+            ManagerAnswer m = new ManagerAnswer();
+            m.setReponse((String) data.get("answer"));
+            if(m.getReponse() == null){
+                exchange.getIn().setHeader("err", "failinput");
+            }
+            else {
+                exchange.getIn().setBody(m);
+                exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+            }
+        }
+        catch(NullPointerException e){
+            exchange.getIn().setHeader("err", "failinput");
+        }
     };
 
     private static boolean finish(Exchange exc){

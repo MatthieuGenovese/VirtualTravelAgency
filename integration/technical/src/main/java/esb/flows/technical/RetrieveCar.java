@@ -35,14 +35,26 @@ public class RetrieveCar extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from(FILE_INPUT_CAR)
+                .onException(IOException.class).handled(true)
+                    .log("erreur capturée dans la lecture utilisateur : " + body().toString())
+                    .setHeader("err", constant("failinput"))
+                .to(DEATH_POOL)
+                .end()
                 .routeId("csv-to-retrieve-car")
                 .routeDescription("Récuperer une voiture a partir de sa destination et de sa date")
                 .unmarshal(CsvFormat.buildCsvFormat())
                 .split(body())
                 .parallelProcessing().executorService(WORKERS)
                 .process(csv2Carreq)
-                .log("Transformation du csv en CarRequest : " + body().toString())
-                .to(CAR_QUEUE)
+                .choice()
+                    .when(header("err").isEqualTo("failinput"))
+                        .log("erreur dans la requete utilisateur")
+                        .to(DEATH_POOL)
+                    .otherwise()
+                        .log("Transformation du csv en CarRequest : " + body().toString())
+                        .to(CAR_QUEUE)
+
+                .endChoice()
         ;
 
         from(CAR_QUEUE)
@@ -101,10 +113,6 @@ public class RetrieveCar extends RouteBuilder {
                 .to(AGGREG_TRAVELREQUEST)
         ;
 
-
-
-
-
     }
 
     private static Processor makeFakeCar = (Exchange exchange) -> {
@@ -117,14 +125,25 @@ public class RetrieveCar extends RouteBuilder {
     };
 
     private static Processor csv2Carreq = (Exchange exchange) -> {
-        Map<String, Object> data = (Map <String, Object>) exchange.getIn().getBody();
-        CarRequest p = new CarRequest();
-        p.setDate((String) data.get("date"));
-        p.setDestination((String) data.get("destination"));
-        p.setEnd((String) data.get("end"));
-        p.setSort((String) data.get("sort"));
-        exchange.getIn().setBody(p);
-        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+        try{
+            Map<String, Object> data = (Map <String, Object>) exchange.getIn().getBody();
+            CarRequest p = new CarRequest();
+            p.setDate((String) data.get("date"));
+            p.setDestination((String) data.get("destination"));
+            p.setEnd((String) data.get("end"));
+            p.setSort((String) data.get("sort"));
+            if(p.getDate() == null || p.getDestination() == null || p.getEnd() == null || p.getSort() == null){
+
+                exchange.getIn().setHeader("err", "failinput");
+            }
+            else {
+                exchange.getIn().setBody(p);
+                exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+            }
+        }
+        catch(NullPointerException e){
+            exchange.getIn().setHeader("err", "failinput");
+        }
     };
 
     private static Processor carreq2a = (Exchange exchange) -> {

@@ -26,15 +26,26 @@ public class RetrieveHotel extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from(FILE_INPUT_HOTEL)
+                .onException(IOException.class).handled(true)
+                .log("erreur capturée dans la lecture utilisateur : " + body().toString())
+                .setHeader("err", constant("failinput"))
+                .to(DEATH_POOL)
+                .end()
                 .routeId("csv-to-retrieve-hotel")
                 .routeDescription("Recupérer un hotel a partir de son endroit et sa date")
                 .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
                 .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2hotelreq)
-                .log("hotel csv -> requete")
-                .log("Transformation du csv en HotelRequest : " + body().toString())
-                .to(HOTEL_QUEUE)
+                .choice()
+                    .when(header("err").isEqualTo("failinput"))
+                        .log("erreur dans la requete utilisateur")
+                        .to(DEATH_POOL)
+                    .otherwise()
+                        .log("hotel csv -> requete")
+                        .log("Transformation du csv en HotelRequest : " + body().toString())
+                        .to(HOTEL_QUEUE)
+                .endChoice()
         ;
         
         from(HOTEL_QUEUE)
@@ -106,12 +117,22 @@ public class RetrieveHotel extends RouteBuilder {
     };
 
     private static Processor csv2hotelreq = (Exchange exchange) -> { // fonction qui transforme la map issu du csv en objets de type FlightRequest
-        Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
-        HotelReservation p =  new HotelReservation();
-        p.setDate((String) data.get("date"));
-        p.setDestination((String) data.get("destination"));
-        exchange.getIn().setBody(p);
-        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+        try {
+            Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
+            HotelReservation p = new HotelReservation();
+            p.setDate((String) data.get("date"));
+            p.setDestination((String) data.get("destination"));
+            if(p.getDate() == null || p.getDestination() == null) {
+                exchange.getIn().setHeader("err", "failinput");
+            }
+            else{
+                exchange.getIn().setBody(p);
+                exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+            }
+        }
+        catch(NullPointerException e){
+            exchange.getIn().setHeader("err", "failinput");
+        }
     };
 
     private static Processor hotelreq2a = (Exchange exchange) -> { // fonction qui transforme un objet FlightRequest en json service b

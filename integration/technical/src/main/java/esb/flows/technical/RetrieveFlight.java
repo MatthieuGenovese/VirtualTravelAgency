@@ -31,14 +31,25 @@ public class RetrieveFlight extends RouteBuilder {
         ;*/
 
         from(FILE_INPUT_FLIGHT)
+                .onException(IOException.class).handled(true)
+                .log("erreur capturée dans la lecture utilisateur : " + body().toString())
+                .setHeader("err", constant("failinput"))
+                .to(DEATH_POOL)
+                .end()
                 .routeId("csv-to-retrieve-req")
                 .routeDescription("Recupérer un avion a partir de son id")
                 .unmarshal(CsvFormat.buildCsvFormat())  // Body is now a List of Map<String -> Object>
                 .split(body()) // on effectue un travaille en parralele sur la map >> on transforme tout ca en objet de type Flight
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2flightreq)
-                .log("Transformation du csv en FlightRequest : " + body().toString())
-                .to(FLIGHT_QUEUE) // tous les objetc flight sont ensuite mis dans la queue
+                .choice()
+                    .when(header("err").isEqualTo("failinput"))
+                        .log("erreur dans la requete utilisateur")
+                        .to(DEATH_POOL)
+                    .otherwise()
+                        .log("Transformation du csv en FlightRequest : " + body().toString())
+                        .to(FLIGHT_QUEUE) // tous les objetc flight sont ensuite mis dans la queue
+                .endChoice()
         ;
 
         from(FLIGHT_QUEUE)
@@ -101,15 +112,25 @@ public class RetrieveFlight extends RouteBuilder {
     }
 
     private static Processor csv2flightreq = (Exchange exchange) -> { // fonction qui transforme la map issu du csv en objets de type FlightRequest
-        Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
-        FlightRequest p =  new FlightRequest();
-        p.setDate((String) data.get("date"));
-        p.setEvent((String) data.get("event"));
-        p.setDestination((String) data.get("destination"));
-        p.setIsDirect((String) data.get("direct"));
-        p.setOrigine((String) data.get("origine"));
-        exchange.getIn().setBody(p);
-        exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+        try {
+            Map<String, Object> data = (Map<String, Object>) exchange.getIn().getBody();
+            FlightRequest p = new FlightRequest();
+            p.setDate((String) data.get("date"));
+            p.setEvent((String) data.get("event"));
+            p.setDestination((String) data.get("destination"));
+            p.setIsDirect((String) data.get("direct"));
+            p.setOrigine((String) data.get("origine"));
+            if(p.getDestination() == null || p.getOrigine() == null || p.getDate() == null || p.getEvent() == null || p.getIsDirect() == null){
+                exchange.getIn().setHeader("err", "failinput");
+            }
+            else {
+                exchange.getIn().setBody(p);
+                exchange.getIn().setHeader("requete-id", (String) data.get("id"));
+            }
+        }
+        catch(NullPointerException e){
+            exchange.getIn().setHeader("err", "failinput");
+        }
     };
 //aaaa-mm-jj
     /*{

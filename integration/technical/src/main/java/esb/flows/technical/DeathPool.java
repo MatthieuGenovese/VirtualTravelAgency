@@ -37,6 +37,9 @@ public class DeathPool extends RouteBuilder{
                     .when(header("err").isEqualTo("hotelnotfound"))
                         .process(hotel)
                         .to(EMAIL_EMPLOYE + "?fileName=hotelnotfound.txt")
+                    .when(header("err").isEqualTo("failinput"))
+                        .process(input)
+                        .to(EMAIL_EMPLOYE + "?fileName=failinput.txt")
                     .when(header("err").isEqualTo("flightnotfound"))
                         .process(avion)
                         .to(EMAIL_EMPLOYE + "?fileName=flightnotfound.txt")
@@ -45,6 +48,9 @@ public class DeathPool extends RouteBuilder{
 
 
     }
+    private static Processor input  = (Exchange exchange) -> {
+        exchange.getIn().setBody("Erreur dans l'entrée utilisateur\n");
+    };
     private static Processor avion = (Exchange exchange) -> {
         exchange.getIn().setBody("Aucun avion n'a été trouvé !\n");
 

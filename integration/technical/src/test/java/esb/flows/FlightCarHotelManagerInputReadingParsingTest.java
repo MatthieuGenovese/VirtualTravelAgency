@@ -18,9 +18,10 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
                   FILE_INPUT_SPEND + "|" + FILE_INPUT_SPEND_MANAGER;
     }
 
-    private String flightReq, carReq, hotelReq, managerReq, spendSubmitRequest;
-    private String answerSpendSubmitExpected, spendAddspendRequest, spendRetrieveRequest;
-    private String answerSpendRetrieveExpected, answerSpendAddspendExpected;
+    private String flightReq, carReq, hotelReq, managerReq, managerSpendValidateRequest, managerSpendRejectRequest;
+    private String spendRetrieveRequest;
+    private String answerManagerSpendValidateRequest;
+    private String answerSpendRetrieveExpected, answerManagerSpendRejectRequest;
 
 
     @Before
@@ -37,24 +38,24 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
         managerReq = "answer\n" +
                 "1\n";
 
-        spendSubmitRequest = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
-                "submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
-
-        spendAddspendRequest ="type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
-                "addSpend,1,momo,chennouf,mc154254@etu.unice.fr,03,98,resto,28/01/2017,AT,EUR";
-
         spendRetrieveRequest = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
                 "retrieve,1";
 
+        managerSpendValidateRequest = "type,id\n" +
+                "validate,1";
+
+        managerSpendRejectRequest = "type,id\n" +
+                "reject,1";
 
         answerSpendRetrieveExpected = "{\n" +
                 "      \"type\":\"retrieve\",\n" +
                 "      \"id\":\"1\"\n" +
                 "}";
 
-        answerSpendAddspendExpected = "{\"type\":\"addSpend\",\"id\":\"1\",\"spends\":{\"id\":\"03\",\"reason\":\"resto\",\"date\":\"28/01/2017\",\"country\":\"AT\",\"prix\":{\"price\":\"98\",\"currency\":\"EUR\"}}}";
+        answerManagerSpendRejectRequest = "{\"type\":\"reject\",\"id\":\"1\"}";
 
-        answerSpendSubmitExpected = "{\"type\":\"submit\",\"bills\":{\"id\":\"1\",\"identity\":{\"firstName\":\"momo\",\"lastName\":\"chennouf\",\"email\":\"mc154254@etu.unice.fr\"},\"spends\":[{\"id\":\"01\",\"reason\":\"resto\",\"date\":\"28/06/2006\",\"country\":\"AT\",\"prix\":{\"price\":\"45\",\"currency\":\"EUR\"}},{\"id\":\"02\",\"reason\":\"avion\",\"date\":\"28/01/2017\",\"country\":\"AT\",\"prix\":{\"price\":\"98\",\"currency\":\"EUR\"}}]}}";
+        answerManagerSpendValidateRequest = "{\"type\":\"validate\",\"id\":\"1\"}";
+
     }
 
     @Test
@@ -143,34 +144,6 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
     }
 
     @Test
-    public void spendSubmitMessageInputTest() throws Exception{
-
-        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-
-        template.sendBodyAndHeader("file:/servicemix/camel/input", spendSubmitRequest, Exchange.FILE_NAME, "test2Spend.csv");
-
-        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
-
-        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
-        assertEquals(answerSpendSubmitExpected, answerSpend);
-
-    }
-
-    @Test
-    public void spendAddspendMessageInputTest() throws Exception{
-
-        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-
-        template.sendBodyAndHeader("file:/servicemix/camel/input", spendAddspendRequest, Exchange.FILE_NAME, "test2Spend.csv");
-
-        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
-
-        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
-        assertEquals(answerSpendAddspendExpected, answerSpend);
-
-    }
-
-    @Test
     public void spendRetrieveMessageInputTest() throws Exception{
 
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
@@ -183,4 +156,35 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
         assertEquals(answerSpendRetrieveExpected, answerSpend);
 
     }
+
+    @Test
+    public void spendValidateManagerMessageInputTest() throws Exception{
+        //resetMocks();
+
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+
+        template.sendBodyAndHeader("file:/servicemix/camel/input", managerSpendValidateRequest, Exchange.FILE_NAME, "test2MSpend.csv");
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        assertEquals(answerManagerSpendValidateRequest, answerSpend);
+
+    }
+
+    @Test
+    public void spendRejectManagerMessageInputTest() throws Exception{
+        //resetMocks();
+
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+
+        template.sendBodyAndHeader("file:/servicemix/camel/input", managerSpendRejectRequest, Exchange.FILE_NAME, "test2MSpend.csv");
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        assertEquals(answerManagerSpendRejectRequest, answerSpend);
+
+    }
+
 }
