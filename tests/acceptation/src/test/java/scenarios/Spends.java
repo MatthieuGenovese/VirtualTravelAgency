@@ -125,6 +125,8 @@ public class Spends {
         answer = bills;
     }
     
+
+    
     @When("^the (.*) message spends service is sent")
     public void call_registry(String message) {
         JSONObject request = new JSONObject();
@@ -147,7 +149,16 @@ public class Spends {
                         .put("prix", prix);
                 request.put("type", message).put("id", id).put("spends",spends); 
                 break;
+            case "addJustification":
+                request.put("type", message).put("id", id).put("justification","avion en retard"); 
+                break;
             case "retrieve":
+                request.put("type", message).put("id", id); 
+                break;
+            case "validate":
+                request.put("type", message).put("id", id); 
+                break;
+            case "reject":
                 request.put("type", message).put("id", id); 
                 break;
             default:
@@ -160,6 +171,30 @@ public class Spends {
     @Then("^the spend is registered$")
     public void the_spend_is_registered() {
         assertEquals(true,answer.getBoolean("inserted"));
+    }
+    
+    @Then("^the request is approved$")
+    public void the_request_is_approved() {
+        assertEquals(true,answer.getBoolean("approved"));
+        assertEquals(id,answer.getInt("id"));
+    }
+    
+    @Then("^the request is not approved$")
+    public void the_request_is_not_approved() {
+        assertEquals(false,answer.getBoolean("approved"));
+        assertEquals(id,answer.getInt("id"));
+    }
+    
+    @Then("^the request is rejected$")
+    public void the_request_is_rejected() {
+        assertEquals(true,answer.getBoolean("rejected"));
+        assertEquals(id,answer.getInt("id"));
+    }
+    
+    @Given("^check justification of request")
+    public void check_justificaiton_result(){
+        assertEquals(answer.get("justification"), true);
+        assertEquals(id,answer.getInt("id"));
     }
     
     @Given("^an id spend identified as (.*)$")

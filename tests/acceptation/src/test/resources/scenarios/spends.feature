@@ -7,7 +7,6 @@ Feature: Spends to manager
 
       
     Scenario: Registering a spend request
-
         Given A mock spend is created
         When the submit message spends service is sent
         Then the spend is registered
@@ -21,3 +20,18 @@ Feature: Spends to manager
         Given an id spend identified as 1
         When the addSpend message spends service is sent
         Then check totalSpend and add of request
+
+    Scenario: Add Justification
+        Given an id spend identified as 1
+        When the addJustification message spends service is sent
+        Then check justification of request
+
+    Scenario: Accept request
+        Given an id spend identified as 1
+        When the validate message spends service is sent
+        Then the request is approved
+
+    Scenario: Refuse request
+        Given an id spend identified as 2
+        When the reject message spends service is sent
+        Then the request is rejected
