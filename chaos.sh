@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-tableau=[submittravel travelagency-bus cars-hotels-reservation flightreservation travel-cars hotels-team1 vols-document spends]
+declare -a tableau=("submittravel" "travelagency-bus" "cars-hotels-reservation" "flightreservation" "travel-cars" "hotels-team1" "vols-document" "spends")
 size=${#tableau[@]}
 
 while true

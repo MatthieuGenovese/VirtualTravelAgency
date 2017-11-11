@@ -1,5 +1,0 @@
-type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification
-submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR
-addSpend,1,momo,chennouf,mc154254@etu.unice.fr,03,98,resto,28/01/2017,AT,EUR
-retrieve,1
-addJustification,1, , , , , , , , , ,cocolasticot

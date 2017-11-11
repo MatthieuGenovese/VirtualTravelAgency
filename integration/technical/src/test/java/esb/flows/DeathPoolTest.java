@@ -63,7 +63,7 @@ public class DeathPoolTest extends ActiveMQTest {
         mock(DEATH_POOL).expectedMessageCount(1);
         mock(FILE_INPUT_SPEND).expectedMessageCount(1);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-        template.sendBody(FILE_INPUT_SPEND, spendsCsv);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", spendsCsv, Exchange.FILE_NAME, "test2Spend.csv");
         mock(DEATH_POOL).assertIsSatisfied();
     }
 

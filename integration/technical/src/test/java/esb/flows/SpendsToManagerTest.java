@@ -170,7 +170,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(FILE_INPUT_SPEND).expectedMessageCount(1);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-        template.sendBody(FILE_INPUT_SPEND, submitCsv);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", submitCsv, Exchange.FILE_NAME, "test2Spend.csv");
 
         mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
 
@@ -188,7 +188,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(FILE_INPUT_SPEND).expectedMessageCount(1);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-        template.sendBody(FILE_INPUT_SPEND, addSpendsCsv);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", addSpendsCsv, Exchange.FILE_NAME, "test2Spend.csv");
 
         mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
 
@@ -206,7 +206,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         mock(DEATH_POOL).expectedMessageCount(0);
         mock(FILE_INPUT_SPEND).expectedMessageCount(1);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
-        template.sendBody(FILE_INPUT_SPEND, addJustificationCsv);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", addJustificationCsv, Exchange.FILE_NAME, "test2Spend.csv");
 
         mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
 

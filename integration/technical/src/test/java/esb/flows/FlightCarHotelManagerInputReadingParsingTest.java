@@ -4,19 +4,23 @@ import esb.flows.technical.data.CarRequest;
 import esb.flows.technical.data.FlightRequest;
 import esb.flows.technical.data.HotelReservation;
 import esb.flows.technical.data.ManagerAnswer;
+import org.apache.camel.Exchange;
 import org.junit.*;
 
 import static esb.flows.technical.utils.Endpoints.*;
 
 public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
 
-    @Override public String isMockEndpointsAndSkip() { return ANSWER_MANAGER + "|" + FLIGHT_QUEUE + "|" + HOTEL_QUEUE + "|" + CAR_QUEUE; }
+    @Override public String isMockEndpointsAndSkip() { return ANSWER_MANAGER + "|" + FLIGHT_QUEUE + "|" + HOTEL_QUEUE + "|" + CAR_QUEUE + "|" + SPENDSERVICE_ENDPOINT; }
 
     @Override public String isMockEndpoints() {
-        return FILE_INPUT_MANAGER + "|" + FILE_INPUT_FLIGHT + "|" + FILE_INPUT_CAR + "|" + FILE_INPUT_HOTEL;
+        return FILE_INPUT_MANAGER + "|" + FILE_INPUT_FLIGHT + "|" + FILE_INPUT_CAR + "|" + FILE_INPUT_HOTEL + "|" +
+                  FILE_INPUT_SPEND + "|" + FILE_INPUT_SPEND_MANAGER;
     }
 
-    private String flightReq, carReq, hotelReq, managerReq;
+    private String flightReq, carReq, hotelReq, managerReq, spendSubmitRequest;
+    private String answerSpendSubmitExpected, spendAddspendRequest, spendRetrieveRequest;
+    private String answerSpendRetrieveExpected, answerSpendAddspendExpected;
 
 
     @Before
@@ -32,11 +36,33 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
 
         managerReq = "answer\n" +
                 "1\n";
+
+        spendSubmitRequest = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
+                "submit,1,momo,chennouf,mc154254@etu.unice.fr,01;02,45;98,resto;avion,28/06/2006;28/01/2017,AT;AT,EUR;EUR";
+
+        spendAddspendRequest ="type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
+                "addSpend,1,momo,chennouf,mc154254@etu.unice.fr,03,98,resto,28/01/2017,AT,EUR";
+
+        spendRetrieveRequest = "type,idGlobale,firstName,lastName,email,id,prix,reason,date,country,currency,justification\n" +
+                "retrieve,1";
+
+
+        answerSpendRetrieveExpected = "{\n" +
+                "      \"type\":\"retrieve\",\n" +
+                "      \"id\":\"1\"\n" +
+                "}";
+
+        answerSpendAddspendExpected = "{\"type\":\"addSpend\",\"id\":\"1\",\"spends\":{\"id\":\"03\",\"reason\":\"resto\",\"date\":\"28/01/2017\",\"country\":\"AT\",\"prix\":{\"price\":\"98\",\"currency\":\"EUR\"}}}";
+
+        answerSpendSubmitExpected = "{\"type\":\"submit\",\"bills\":{\"id\":\"1\",\"identity\":{\"firstName\":\"momo\",\"lastName\":\"chennouf\",\"email\":\"mc154254@etu.unice.fr\"},\"spends\":[{\"id\":\"01\",\"reason\":\"resto\",\"date\":\"28/06/2006\",\"country\":\"AT\",\"prix\":{\"price\":\"45\",\"currency\":\"EUR\"}},{\"id\":\"02\",\"reason\":\"avion\",\"date\":\"28/01/2017\",\"country\":\"AT\",\"prix\":{\"price\":\"98\",\"currency\":\"EUR\"}}]}}";
     }
 
     @Test
     public void execContext() throws Exception{
         // Asserting endpoints existence
+        assertNotNull(context.hasEndpoint(FILE_INPUT_SPEND));
+        assertNotNull(context.hasEndpoint(FILE_INPUT_SPEND_MANAGER));
+        assertNotNull(context.hasEndpoint(SPENDSERVICE_ENDPOINT));
         assertNotNull(context.hasEndpoint(FILE_INPUT_FLIGHT));
         assertNotNull(context.hasEndpoint(FLIGHT_QUEUE));
         assertNotNull(context.hasEndpoint(FILE_INPUT_HOTEL));
@@ -55,11 +81,12 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
         mock(HOTEL_QUEUE).expectedMessageCount(1);
         mock(ANSWER_MANAGER).expectedMessageCount(1);
 
-
-        template.sendBody(FILE_INPUT_FLIGHT, flightReq);
-        template.sendBody(FILE_INPUT_CAR, carReq);
-        template.sendBody(FILE_INPUT_HOTEL, hotelReq);
-        template.sendBody(FILE_INPUT_MANAGER, managerReq);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", flightReq, Exchange.FILE_NAME, "test2Flight.csv");
+        template.sendBodyAndHeader("file:/servicemix/camel/input", carReq, Exchange.FILE_NAME, "test2Car.csv");
+        //template.sendBody(FILE_INPUT_HOTEL, hotelReq);
+        template.sendBodyAndHeader("file:/servicemix/camel/input", hotelReq, Exchange.FILE_NAME, "test2Hotel.csv");
+        template.sendBodyAndHeader("file:/servicemix/camel/input", managerReq, Exchange.FILE_NAME, "test2Manager.csv");
+        //template.sendBodyAndHeader("file:/servicemix/camel/input", managerSpendRequest, Exchange.FILE_NAME, "test2SpendManager.csv");
 
         mock(FLIGHT_QUEUE).assertIsSatisfied();
         mock(HOTEL_QUEUE).assertIsSatisfied();
@@ -111,6 +138,49 @@ public class FlightCarHotelManagerInputReadingParsingTest extends ActiveMQTest {
         assertEquals(expectedManagerAns.getReponse(), reponseManager.getReponse());
 
 
+
+
     }
 
+    @Test
+    public void spendSubmitMessageInputTest() throws Exception{
+
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+
+        template.sendBodyAndHeader("file:/servicemix/camel/input", spendSubmitRequest, Exchange.FILE_NAME, "test2Spend.csv");
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        assertEquals(answerSpendSubmitExpected, answerSpend);
+
+    }
+
+    @Test
+    public void spendAddspendMessageInputTest() throws Exception{
+
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+
+        template.sendBodyAndHeader("file:/servicemix/camel/input", spendAddspendRequest, Exchange.FILE_NAME, "test2Spend.csv");
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        assertEquals(answerSpendAddspendExpected, answerSpend);
+
+    }
+
+    @Test
+    public void spendRetrieveMessageInputTest() throws Exception{
+
+        mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(1);
+
+        template.sendBodyAndHeader("file:/servicemix/camel/input", spendRetrieveRequest, Exchange.FILE_NAME, "test2Spend.csv");
+
+        mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
+
+        String answerSpend = mock(SPENDSERVICE_ENDPOINT).getReceivedExchanges().get(0).getIn().getBody(String.class);
+        assertEquals(answerSpendRetrieveExpected, answerSpend);
+
+    }
 }
