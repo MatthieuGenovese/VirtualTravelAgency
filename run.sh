@@ -23,7 +23,7 @@ curl -i \
     http://localhost:9080/flightreservation-service-document/registry
 
 i=0
-while [[ $i -lt 30 ]]
+while [[ $i -lt 20 ]]
 do
     echo "Copie de fichiers utilisateurs"
     ./sendTests.sh test2Car.csv
@@ -42,6 +42,16 @@ do
     ./sendTests.sh test2ManagerFail.csv
     ./sendTests.sh test2SpendFail.csv
     ./sendTests.sh test2MSpendFail.csv
+
+    sleep 5
+
+    echo "Copie de fichiers mal formatés et bien formatés"
+    ./sendTests.sh test2CarFail.csv
+    ./sendTests.sh test2FlightFail.csv
+    ./sendTests.sh test2Hotel.csv
+    ./sendTests.sh test2Manager.csv
+    ./sendTests.sh test2Spend.csv
+    ./sendTests.sh test2MSpend.csv
 
     sleep 5
 
