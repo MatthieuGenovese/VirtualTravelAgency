@@ -56,8 +56,6 @@ public class RetrieveCar extends RouteBuilder {
                         .setHeader("type", constant("car"))
                         .multicast()
                             .to(DEATH_POOL, AGGREG_TRAVELREQUEST)
-                        .log("Transformation du csv en CarRequest : " + body().toString())
-                        .to(CAR_QUEUE)
                 .endChoice()
         ;
 
