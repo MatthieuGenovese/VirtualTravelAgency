@@ -31,8 +31,7 @@ cd ..
 
 build integration travelagency/travelagency-bus
 
-#cd deployment mkdir camel_input
-#mkdir camel_output
+cd deployment
 
-#chmod 777 camel_input
-#chmod 777 camel_output
+mkdir camel_input
+mkdir camel_output
