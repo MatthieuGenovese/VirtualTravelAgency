@@ -16,7 +16,6 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
     private String fakeRequete;
 
 
-
     //on initialise les requetes de tests
     @Before
     public void initRequests(){

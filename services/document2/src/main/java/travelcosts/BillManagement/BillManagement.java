@@ -1,12 +1,9 @@
-package travelcosts.Purchase;
+package travelcosts.BillManagement;
 
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import travelcosts.seuil.Seuil;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class BillManagement {
     private Status status;
@@ -57,7 +54,7 @@ public class BillManagement {
 
         public JSONObject toJson(){
         JSONObject myJson = new JSONObject();
-        myJson.put("status", status.getStr())
+        myJson.put("status", status.getString())
                     .put("id", id)
                     .put("identity", identity.toJson())
                     .put("spends", spends)
@@ -113,4 +110,22 @@ public class BillManagement {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+
+
+    @Override
+    public String toString() {
+           String myspends = "Bill{" +
+                   "id='" + id + '\'' +
+                   identity.toString() + '\''+
+                   "Status='" + status.getString() + '\'' +
+                   "total dépences='" + totalSpends + '\'' +
+                   "seuil='" + totalSeuil + '\'';
+
+                    for (int i = 0; i < spends.length;i++){
+                        myspends += spends[i].toString() + '\'';
+                     }
+                    return myspends;
+    }
+
 }

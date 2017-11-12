@@ -24,7 +24,6 @@ public class MongoConnector {
 
     public void closeClientConnection(){
         this.mongoClient.close();
-        this.mongoClient = null;
     }
 
 

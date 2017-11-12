@@ -1,4 +1,4 @@
-package travelcosts.Purchase;
+package travelcosts.BillManagement;
 
 public enum Status {
 
@@ -6,14 +6,14 @@ public enum Status {
     VALIDE("VALIDE"),
     REJECTED("REJECTED");
 
-    String str;
+    String string;
 
     Status(String str){
-        this.str = str;
+        this.string = str;
     }
 
-    public String getStr(){
-        return str;
+    public String getString(){
+        return string;
     }
 
 }

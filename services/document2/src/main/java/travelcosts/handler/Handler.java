@@ -4,11 +4,14 @@ package travelcosts.handler;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
 import org.json.JSONObject;
-import travelcosts.Purchase.BillManagement;
-import travelcosts.Purchase.Spend;
-import travelcosts.Purchase.Status;
+import travelcosts.BillManagement.BillManagement;
+import travelcosts.BillManagement.Spend;
+import travelcosts.BillManagement.Status;
 import travelcosts.network.SubmitSpend;
 import travelcosts.seuil.Seuil;
+
+import java.io.*;
+
 
 public class Handler {
 
@@ -37,10 +40,16 @@ public class Handler {
     {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
-            spends.update("{id:#}", idToValidate).with("{$set: {'status': 'APPROVED'}}");
+            spends.update("{id:#}", idToValidate).with("{$set: {'status': 'VALIDE'}}");
+
+            String filename = "depences_"+idToValidate;
+            BillManagement Spends = spends.findOne("{id:#}", idToValidate).as(BillManagement.class);
+            String mySpends = Spends.toString();
+            archiver("depences_"+idToValidate,mySpends);
+
             return new JSONObject()
-                    .put("id", idToValidate)
-                    .put("approved", true);
+                    .put("approved", true)
+                    .put("id", idToValidate);
             }
         catch (Exception e)
         {
@@ -59,6 +68,12 @@ public class Handler {
         try {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             spends.update("{id:#}", idToReject).with("{$set: {'status': 'REJECTED'}}");
+
+            String filename = "depences_"+idToReject;
+            BillManagement Spends = spends.findOne("{id:#}", idToReject).as(BillManagement.class);
+            String mySpends = Spends.toString();
+            archiver("depences_"+idToReject,mySpends);
+
             return new JSONObject()
                     .put("rejected", true)
                     .put("id", idToReject);
@@ -158,6 +173,19 @@ public class Handler {
                     .put("addSpends", false)
                     .put("id", idToAddSpends)
                     .put("message", "Error occured: " + e.getMessage());
+        }
+    }
+
+    private void archiver(String archiveName,String mySpens){
+        File file = new File(archiveName);
+        try {
+            file.createNewFile();
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(mySpens);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
