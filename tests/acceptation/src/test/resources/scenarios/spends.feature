@@ -31,7 +31,17 @@ Feature: Spends to manager
         When the validate message spends service is sent
         Then the request is approved
 
+    Scenario: Accept request bad id
+        Given an id spend identified as 3
+        When the validate message spends service is sent
+        Then the request is not approved
+
     Scenario: Refuse request
         Given an id spend identified as 2
         When the reject message spends service is sent
         Then the request is rejected
+
+    Scenario: Refuse request bad id
+        Given an id spend identified as 3
+        When the reject message spends service is sent
+        Then the request is not rejected

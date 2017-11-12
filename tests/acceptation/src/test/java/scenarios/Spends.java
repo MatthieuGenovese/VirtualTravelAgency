@@ -191,6 +191,12 @@ public class Spends {
         assertEquals(id,answer.getInt("id"));
     }
     
+    @Then("^the request is not rejected$")
+    public void the_request_is_not_rejected() {
+        assertEquals(false,answer.getBoolean("rejected"));
+        assertEquals(id,answer.getInt("id"));
+    }
+    
     @Given("^check justification of request")
     public void check_justificaiton_result(){
         assertEquals(answer.get("justification"), true);
