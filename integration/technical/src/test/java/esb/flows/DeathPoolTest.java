@@ -57,7 +57,7 @@ public class DeathPoolTest extends ActiveMQTest {
 
     }
 
-    @Test
+    //@Test
     public void testSpendsRouteError() throws Exception {
 
         mock(DEATH_POOL).expectedMessageCount(1);

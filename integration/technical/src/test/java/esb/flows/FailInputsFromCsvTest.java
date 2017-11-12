@@ -1,6 +1,7 @@
 package esb.flows;
 
 import esb.flows.technical.data.*;
+import esb.flows.technical.utils.Endpoints;
 import org.apache.camel.Exchange;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
     }
 
 
-    @Test
+    //@Test
     public void execContext() throws Exception{
         // Asserting endpoints existence
         assertNotNull(context.hasEndpoint(FILE_INPUT_SPEND));
@@ -68,7 +69,7 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
         assertNotNull(context.hasEndpoint(DEATH_POOL));
     }
 
-    @Test
+    //@Test
     public void testsMultiplesInputTransformations() throws Exception {
 
         mock(FLIGHT_QUEUE).expectedMessageCount(0);

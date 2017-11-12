@@ -164,7 +164,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         isAvailableAndMocked(SPENDSERVICE_ENDPOINT);
     }
     
-    @Test
+    //@Test
     public void testSendRequestSubmitToManager() throws Exception {
 
         mock(DEATH_POOL).expectedMessageCount(0);
@@ -182,7 +182,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         mock(DEATH_POOL).assertIsSatisfied();
     }
     
-    @Test
+    //@Test
     public void testSendRequestAddSpendToManager() throws Exception {
 
         mock(DEATH_POOL).expectedMessageCount(0);
@@ -200,7 +200,7 @@ public class SpendsToManagerTest extends ActiveMQTest {
         mock(DEATH_POOL).assertIsSatisfied();
     }
     
-    @Test
+    //@Test
     public void testSendRequestAddJustificationToManager() throws Exception {
 
         mock(DEATH_POOL).expectedMessageCount(0);
