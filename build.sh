@@ -17,7 +17,15 @@ build() { # $1: directory, $2: image_name
 
 # Compile services code
 
+echo "Pulling externals services"
+
+docker pull matthieugenovese/hotels-team1
+docker pull matthieugenovese/travel-cars
+docker pull matthieugenovese/document-vol
+
 # Build docker images
+echo "Building locals resources"
+
 build rpc       travelagency/submittravel-rpc
 build resource  travelagency/cars-hotels-reservation-rest
 build document  travelagency/flightreservation-document
