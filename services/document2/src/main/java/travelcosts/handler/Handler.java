@@ -42,7 +42,6 @@ public class Handler {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             spends.update("{id:#}", idToValidate).with("{$set: {'status': 'VALIDE'}}");
 
-            String filename = "depences_"+idToValidate;
             BillManagement Spends = spends.findOne("{id:#}", idToValidate).as(BillManagement.class);
             String mySpends = Spends.toString();
             archiver("depences_"+idToValidate,mySpends);
@@ -69,7 +68,6 @@ public class Handler {
             MongoCollection spends = SubmitSpend.mongoConnector.getSpends();
             spends.update("{id:#}", idToReject).with("{$set: {'status': 'REJECTED'}}");
 
-            String filename = "depences_"+idToReject;
             BillManagement Spends = spends.findOne("{id:#}", idToReject).as(BillManagement.class);
             String mySpends = Spends.toString();
             archiver("depences_"+idToReject,mySpends);
