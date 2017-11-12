@@ -47,13 +47,16 @@ public class RetrieveCar extends RouteBuilder {
                 .parallelProcessing().executorService(WORKERS)
                 .process(csv2Carreq)
                 .choice()
-                    .when(header("err").isEqualTo("failinput"))
-                        .log("erreur dans la requete utilisateur")
-                        .to(DEATH_POOL)
-                    .otherwise()
+                    .when(header("err").isNotEqualTo("failinput"))
                         .log("Transformation du csv en CarRequest : " + body().toString())
                         .to(CAR_QUEUE)
-
+                    .otherwise()
+                        .log("erreur dans la requete utilisateur")
+                        .process(makeFakeCar)
+                        .multicast()
+                            .to(DEATH_POOL, AGGREG_TRAVELREQUEST)
+                        .log("Transformation du csv en CarRequest : " + body().toString())
+                        .to(CAR_QUEUE)
                 .endChoice()
         ;
 

@@ -1,8 +1,6 @@
 package esb.flows;
 
-import esb.flows.technical.data.CarRequest;
-import esb.flows.technical.data.FlightRequest;
-import esb.flows.technical.data.HotelReservation;
+import esb.flows.technical.data.*;
 import org.apache.camel.Exchange;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +28,8 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
                 "|" + FLIGHT_QUEUE +
                 "|" + CAR_QUEUE +
                 "|" + ANSWER_MANAGER +
-                "|" + SPENDSERVICE_ENDPOINT;
+                "|" + SPENDSERVICE_ENDPOINT +
+                "|" + AGGREG_TRAVELREQUEST;
     }
 
     //on définie ici les endpoints à tester
@@ -78,6 +77,7 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
         mock(ANSWER_MANAGER).expectedMessageCount(0);
         mock(SPENDSERVICE_ENDPOINT).expectedMessageCount(0);
         mock(DEATH_POOL).expectedMessageCount(6);
+        mock(AGGREG_TRAVELREQUEST).expectedMessageCount(3);
 
         template.sendBodyAndHeader("file:/servicemix/camel/input", fakeRequete, Exchange.FILE_NAME, "test2Flight.csv");
         template.sendBodyAndHeader("file:/servicemix/camel/input", fakeRequete, Exchange.FILE_NAME, "test2Car.csv");
@@ -93,6 +93,7 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
         mock(ANSWER_MANAGER).assertIsSatisfied();
         mock(SPENDSERVICE_ENDPOINT).assertIsSatisfied();
         mock(DEATH_POOL).assertIsSatisfied();
+        mock(AGGREG_TRAVELREQUEST).assertIsSatisfied();
 
 
         String answerSpend = mock(DEATH_POOL).getReceivedExchanges().get(0).getIn().getHeader("err").toString();
@@ -101,6 +102,14 @@ public class FailInputsFromCsvTest extends ActiveMQTest{
         String answerFlight = mock(DEATH_POOL).getReceivedExchanges().get(3).getIn().getHeader("err").toString();
         String answerSpendManager = mock(DEATH_POOL).getReceivedExchanges().get(4).getIn().getHeader("err").toString();
         String answerApprobation = mock(DEATH_POOL).getReceivedExchanges().get(5).getIn().getHeader("err").toString();
+
+        ItemInterface fl = (ItemInterface) mock(AGGREG_TRAVELREQUEST).getReceivedExchanges().get(0).getIn().getBody();
+        ItemInterface cr = (ItemInterface)  mock(AGGREG_TRAVELREQUEST).getReceivedExchanges().get(1).getIn().getBody();
+        ItemInterface hl = (ItemInterface) mock(AGGREG_TRAVELREQUEST).getReceivedExchanges().get(2).getIn().getBody();
+
+        assertEquals(fl.getDestination(), "err");
+        assertEquals(cr.getDestination(), "err");
+        assertEquals(hl.getDestination(), "err");
         assertEquals("failinput", answerSpend);
         assertEquals("failinput", answerCar);
         assertEquals("failinput", answerHostel);

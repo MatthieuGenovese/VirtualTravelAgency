@@ -43,12 +43,14 @@ public class RetrieveFlight extends RouteBuilder {
                     .parallelProcessing().executorService(WORKERS)
                         .process(csv2flightreq)
                 .choice()
-                    .when(header("err").isEqualTo("failinput"))
-                        .log("erreur dans la requete utilisateur")
-                        .to(DEATH_POOL)
-                    .otherwise()
+                    .when(header("err").isNotEqualTo("failinput"))
                         .log("Transformation du csv en FlightRequest : " + body().toString())
-                        .to(FLIGHT_QUEUE) // tous les objetc flight sont ensuite mis dans la queue
+                        .to(FLIGHT_QUEUE)
+                    .otherwise()
+                        .log("erreur dans la requete utilisateur")
+                        .process(makeFakeFlight)
+                            .multicast()
+                            .to(DEATH_POOL, AGGREG_TRAVELREQUEST)// tous les objetc flight sont ensuite mis dans la queue
                 .endChoice()
         ;
 
