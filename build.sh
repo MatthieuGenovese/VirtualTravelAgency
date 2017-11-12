@@ -4,7 +4,7 @@
 PUSH=false
 
 
-mvn clean package -DskipTests
+mvn clean package
 
 cd services
 
