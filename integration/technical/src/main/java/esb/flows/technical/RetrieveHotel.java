@@ -44,6 +44,7 @@ public class RetrieveHotel extends RouteBuilder {
                     .otherwise()
                         .log("erreur dans la requete utilisateur")
                         .process(makeFakeHotel)
+                        .setHeader("type", constant("hotel"))
                         .multicast()
                             .to(DEATH_POOL, AGGREG_TRAVELREQUEST)
                 .endChoice()

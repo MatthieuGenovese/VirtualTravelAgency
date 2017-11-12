@@ -49,6 +49,7 @@ public class RetrieveFlight extends RouteBuilder {
                     .otherwise()
                         .log("erreur dans la requete utilisateur")
                         .process(makeFakeFlight)
+                        .setHeader("type", constant("flight"))
                             .multicast()
                             .to(DEATH_POOL, AGGREG_TRAVELREQUEST)// tous les objetc flight sont ensuite mis dans la queue
                 .endChoice()

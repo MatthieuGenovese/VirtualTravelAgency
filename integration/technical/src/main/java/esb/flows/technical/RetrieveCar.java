@@ -53,6 +53,7 @@ public class RetrieveCar extends RouteBuilder {
                     .otherwise()
                         .log("erreur dans la requete utilisateur")
                         .process(makeFakeCar)
+                        .setHeader("type", constant("car"))
                         .multicast()
                             .to(DEATH_POOL, AGGREG_TRAVELREQUEST)
                         .log("Transformation du csv en CarRequest : " + body().toString())
