@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>travelagency</groupId>
+    <groupId>uberoo</groupId>
     <artifactId>document</artifactId>
 
     <packaging>war</packaging>
@@ -12,7 +12,7 @@
     <name>Service Document</name>
 
     <parent>
-        <groupId>travelagency</groupId>
+        <groupId>uberoo</groupId>
         <artifactId>services</artifactId>
         <version>1.0</version>
     </parent>
@@ -36,7 +36,7 @@
     </dependencies>
     
     <build>
-        <finalName>flightreservation-service-document</finalName>
+        <finalName>order-service-document</finalName>
     </build>
     
 </project>
