@@ -16,16 +16,64 @@ version: '3'
 
 services:
 
+  submittravel:                # Submit Travel, on port 9070
+    container_name: submittravel
+    image: travelagency/submittravel-rpc
+    ports:
+      - "9070:8080"
 
+  integration-bus:  # To attach to this container at runtime: docker exec -it tcs-bus sh
+    container_name: travelagency-bus
+    image: travelagency/travelagency-bus
+    volumes:
+      - "./camel_input:/servicemix/camel/input"
+      - "./camel_output:/servicemix/camel/output"
+    ports:
+      - "8181:8181"
+      - "8101:8101"
+      - "1099:1099"
+      - "61616:61616"
+      - "44444:44444"
+
+  cars-hotels-reservation:
+    container_name: cars-hotels-reservation
+    image: travelagency/cars-hotels-reservation-rest
+    ports:
+      - "9090:8080"
       
-  ordersfood-orderFood:               # Flight reservation registry, on port 9080
-    container_name: ordersfood
-    image: uberoo/ordersfood-document
+  flightreservation-registry:               # Flight reservation registry, on port 9080
+    container_name: flightreservation
+    image: travelagency/flightreservation-document
     depends_on:
       - database
     ports:
       - "9080:8080"
 
+  cars:               # Cars, on port 9060
+    container_name: travel-cars
+    image: matthieugenovese/travel-cars
+    ports:
+      - "9060:9060"
+
+  hotels:
+    container_name: hotels-team1
+    image: matthieugenovese/hotels-team1
+    ports:
+      - "8003:8080"
+
+  vols-document:
+     container_name: vols-document
+     image: matthieugenovese/document-vol
+     ports:
+       - "9030:8080"
+
+  spends-management:
+    container_name: spends
+    image: travelagency/spends-document
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
 
   database:                       # MongoDB database, on port 27017
     container_name: tcs-database

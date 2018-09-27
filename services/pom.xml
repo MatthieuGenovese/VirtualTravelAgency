@@ -4,20 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uberoo</groupId>
+    <groupId>travelagency</groupId>
     <artifactId>services</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
     <name> Services </name>
 
     <parent>
-        <groupId>uberoo</groupId>
+        <groupId>travelagency</groupId>
         <artifactId>root</artifactId>
         <version>1.0</version>
     </parent>
 
     <modules>
+        <module>rpc</module>
+        <module>resource</module>
         <module>document</module>
+        <module>document2</module>
     </modules>
 
     <properties>
